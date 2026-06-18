@@ -1,0 +1,324 @@
+[
+  {
+    "id": 1,
+    "date": "2026-06-09",
+    "title": "Chest and Tricep Day",
+    "time": "9:00 AM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Bench Press",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "weight": 70, "reps": 10 },
+              { "id": 2, "weight": 55, "reps": 8 }
+            ]
+          },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 70, "reps": 8 }] },
+          { "id": 3, "dropsets": [{ "id": 1, "weight": 65, "reps": 8 }] }
+        ]
+      },
+      {
+        "id": 2,
+        "exerciseName": "Tricep Pushdown",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "weight": 28, "reps": 12 },
+              { "id": 2, "weight": 20, "reps": 10 }
+            ]
+          },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 28, "reps": 10 }] }
+        ]
+      },
+      {
+        "id": 3,
+        "exerciseName": "Push Up",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 30 }]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              { "id": 1, "difficulty": "assisted", "weights": 15, "reps": 25 }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "date": "2026-06-07",
+    "title": "Back and Bicep Day",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Deadlift",
+        "sets": [
+          { "id": 1, "dropsets": [{ "id": 1, "weight": 115, "reps": 5 }] },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 115, "reps": 5 }] },
+          { "id": 3, "dropsets": [{ "id": 1, "weight": 110, "reps": 4 }] }
+        ]
+      },
+      {
+        "id": 2,
+        "exerciseName": "Bicep Curl",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "weight": 14, "reps": 12 },
+              { "id": 2, "weight": 10, "reps": 10 }
+            ]
+          },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 14, "reps": 10 }] }
+        ]
+      },
+      {
+        "id": 3,
+        "exerciseName": "Pull Up",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "difficulty": "weighted", "weight": 15, "reps": 8 }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 7 }]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "date": "2026-06-05",
+    "title": "Leg Day",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Squat",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "difficulty": "weighted", "weight": 95, "reps": 8 }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              { "id": 1, "difficulty": "weighted", "weight": 95, "reps": 7 }
+            ]
+          },
+          {
+            "id": 3,
+            "dropsets": [
+              { "id": 1, "difficulty": "weighted", "weight": 85, "reps": 6 },
+              { "id": 2, "difficulty": "weighted", "weight": 70, "reps": 8 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "exerciseName": "Leg Press",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "weight": 145, "reps": 12 },
+              { "id": 2, "weight": 115, "reps": 10 }
+            ]
+          },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 145, "reps": 10 }] }
+        ]
+      },
+      {
+        "id": 3,
+        "exerciseName": "Plank",
+        "sets": [
+          {
+            "id": 1,
+            "difficulty": "weighted",
+            "dropsets": [{ "id": 1, "weight": 20, "minutes": 1, "seconds": 15 }]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              { "id": 1, "difficulty": "normal", "minutes": 1, "seconds": 0 }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "date": "2026-06-09",
+    "title": "Evening Cardio",
+    "time": "6:30 PM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Burpee",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 15 }]
+          },
+          {
+            "id": 2,
+            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 12 }]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "exerciseName": "Hollow Hold",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "difficulty": "normal", "minutes": 0, "seconds": 45 }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              { "id": 1, "difficulty": "normal", "minutes": 0, "seconds": 50 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "exerciseName": "Squat Jump",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 20 }]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "date": "2026-06-11",
+    "title": "Shoulder Day",
+    "time": "9:30 AM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Overhead Press",
+        "sets": [
+          { "id": 1, "dropsets": [{ "id": 1, "weight": 40, "reps": 8 }] },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 45, "reps": 6 }] }
+        ]
+      },
+      {
+        "id": 2,
+        "exerciseName": "Dumbbell Shoulder Press",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "weight": 18, "reps": 10 },
+              { "id": 2, "weight": 14, "reps": 8 }
+            ]
+          },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 18, "reps": 9 }] }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "date": "2026-06-11",
+    "title": "Arms Burnout",
+    "time": "7:00 PM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Bicep Curl",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "weight": 14, "reps": 12 },
+              { "id": 2, "weight": 10, "reps": 10 }
+            ]
+          },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 12, "reps": 12 }] }
+        ]
+      },
+      {
+        "id": 2,
+        "exerciseName": "Dip",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 12 }]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              { "id": 1, "difficulty": "weighted", "weight": 10, "reps": 8 }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "date": "2026-06-12",
+    "title": "Pull Day",
+    "time": "8:15 AM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Barbell Row",
+        "sets": [
+          { "id": 1, "dropsets": [{ "id": 1, "weight": 55, "reps": 10 }] },
+          { "id": 2, "dropsets": [{ "id": 1, "weight": 60, "reps": 8 }] }
+        ]
+      },
+      {
+        "id": 2,
+        "exerciseName": "Lat Pulldown",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "weight": 50, "reps": 12 },
+              { "id": 2, "weight": 35, "reps": 10 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "exerciseName": "Chin Up",
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              { "id": 1, "difficulty": "normal", "reps": 8 },
+              { "id": 2, "difficulty": "assisted", "weight": 12, "reps": 5 }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
