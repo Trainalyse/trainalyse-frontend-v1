@@ -8,11 +8,6 @@ import {
 } from "@workspace/ui/components/card"
 import React from "react"
 import { Button } from "@workspace/ui/components/button"
-import { Label } from "@workspace/ui/components/label"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@workspace/ui/components/radio-group"
 
 interface SetsProps {
   number: number
@@ -25,7 +20,6 @@ function Sets({ number, exerciseType, isBodyweight }: SetsProps) {
   const id = React.useId()
   const counter = React.useRef(1)
   const [arrOfDS, setArrOfDS] = React.useState([{ id: id + "-0" }])
-  const [difficulty, setDifficulty] = React.useState<Difficulty>("normal")
 
   function handleDropSets() {
     const updatedDropSets = [
@@ -50,31 +44,11 @@ function Sets({ number, exerciseType, isBodyweight }: SetsProps) {
           <CardTitle>Set {number}</CardTitle>
         </CardHeader>
         <CardContent>
-          {isBodyweight && (
-            <RadioGroup
-              value={difficulty}
-              onValueChange={(value) => setDifficulty(value as Difficulty)}
-            >
-              <div className="flex items-center gap-3">
-                <RadioGroupItem value="normal" id="normal" />
-                <Label htmlFor="normal">Normal</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <RadioGroupItem value="assisted" id="assisted" />
-                <Label htmlFor="assisted">Assisted</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <RadioGroupItem value="weighted" id="weighted" />
-                <Label htmlFor="weighted">Weighted</Label>
-              </div>
-            </RadioGroup>
-          )}
           {arrOfDS.map((dropset) => (
             <Dropsets
               key={dropset.id}
               exerciseType={exerciseType}
               isBodyweight={isBodyweight}
-              difficulty={difficulty}
             />
           ))}
           <br />

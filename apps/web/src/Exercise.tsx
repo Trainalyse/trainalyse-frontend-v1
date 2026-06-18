@@ -19,11 +19,9 @@ interface Dropset {
   hours?: number
 }
 
-interface SetData {
+// This is what's stored in the array
+interface SetItem {
   id: string
-  number: number
-  exerciseType: ExerciseType | ""
-  isBodyweight: boolean // add this
   dropsets: Dropset[]
 }
 
@@ -50,7 +48,7 @@ function Exercise({ number }: ExerciseProps) {
     setExerciseMode("searching")
   }
 
-  const [arrOfSet, setArrOfSet] = React.useState<SetData[]>([
+  const [arrOfSet, setArrOfSet] = React.useState<SetItem[]>([
     { id: id + "-0", dropsets: [] },
   ])
 

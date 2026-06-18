@@ -63,6 +63,9 @@ function Workout() {
 
   return (
     <>
+      {time && (
+        <p className="text-sm text-muted-foreground">Started at {time}</p>
+      )}
       <DatePickerDemo />
       <Input
         type="text"

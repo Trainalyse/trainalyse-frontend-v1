@@ -5,6 +5,9 @@ import "@workspace/ui/globals.css"
 import { App } from "./App.tsx"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import Workout from "./Workout.tsx"
+import Login from "./Login.tsx"
+import Signup from "./Signup.tsx"
+import Moreinfo from "./Moreinfo.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -14,6 +17,9 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<App />} />
           <Route path="/Workout" element={<Workout />} />
           <Route path="*" element={<App />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/Moreinfo" element={<Moreinfo />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
