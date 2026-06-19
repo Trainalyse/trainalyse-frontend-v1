@@ -11,12 +11,21 @@ import React from "react"
 
 interface DatePickerDemoProps {
   initialDate?: string
+  onDateChange?: (date: Date | undefined) => void
 }
 
-export function DatePickerDemo({ initialDate }: DatePickerDemoProps) {
+export function DatePickerDemo({
+  initialDate,
+  onDateChange,
+}: DatePickerDemoProps) {
   const [date, setDate] = React.useState<Date | undefined>(
     initialDate ? parseISO(initialDate) : undefined
   )
+
+  function handleSelect(selected: Date | undefined) {
+    setDate(selected)
+    onDateChange?.(selected)
+  }
 
   return (
     <>
@@ -32,7 +41,7 @@ export function DatePickerDemo({ initialDate }: DatePickerDemoProps) {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
-          <Calendar mode="single" selected={date} onSelect={setDate} />
+          <Calendar mode="single" selected={date} onSelect={handleSelect} />
         </PopoverContent>
       </Popover>
 
