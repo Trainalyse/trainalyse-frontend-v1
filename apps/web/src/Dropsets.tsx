@@ -3,6 +3,7 @@ import { type ChangeEvent } from "react"
 import { Input } from "@workspace/ui/components/input"
 import { type ExerciseType } from "./data/exercise"
 import { type Difficulty } from "./Set"
+import { type Dropset } from "./data/workouts"
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card"
 import {
   Select,
@@ -15,15 +16,34 @@ import {
 interface DropsetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
+  dropsetData?: Dropset
 }
 
-function Dropsets({ exerciseType, isBodyweight }: DropsetsProps) {
-  const [weights, setWeights] = React.useState<number>()
-  const [reps, setReps] = React.useState<number>()
-  const [minutes, setMinutes] = React.useState<number>()
-  const [seconds, setSeconds] = React.useState<number>()
-  const [hours, setHours] = React.useState<number>()
-  const [difficulty, setDifficulty] = React.useState<Difficulty>("normal")
+function Dropsets({ exerciseType, isBodyweight, dropsetData }: DropsetsProps) {
+  // a bodyweight dropset stores its weight under assistedWeights/extraWeights
+  // (by difficulty); a normal weightsAndReps dropset stores it under weights.
+  const [weights, setWeights] = React.useState<number | undefined>(
+    dropsetData?.weights
+  )
+  const [reps, setReps] = React.useState<number | undefined>(dropsetData?.reps)
+  const [minutes, setMinutes] = React.useState<number | undefined>(
+    dropsetData?.minutes
+  )
+  const [seconds, setSeconds] = React.useState<number | undefined>(
+    dropsetData?.seconds
+  )
+  const [hours, setHours] = React.useState<number | undefined>(
+    dropsetData?.hours
+  )
+  const [difficulty, setDifficulty] = React.useState<Difficulty>(
+    dropsetData?.difficulty ?? "normal"
+  )
+  const [assistedWeights, setAssistedWeights] = React.useState<
+    number | undefined
+  >(dropsetData?.assistedWeights)
+  const [extraWeights, setExtraWeights] = React.useState<number | undefined>(
+    dropsetData?.extraWeights
+  )
   const id = React.useId()
 
   function handleWeightsChange(e: ChangeEvent<HTMLInputElement>) {
@@ -32,6 +52,13 @@ function Dropsets({ exerciseType, isBodyweight }: DropsetsProps) {
 
   function handleRepsChange(e: ChangeEvent<HTMLInputElement>) {
     setReps(e.target.valueAsNumber)
+  }
+
+  function handleAssistedWeightsChange(e: ChangeEvent<HTMLInputElement>) {
+    setAssistedWeights(e.target.valueAsNumber)
+  }
+  function handleExtraWeightsChange(e: ChangeEvent<HTMLInputElement>) {
+    setExtraWeights(e.target.valueAsNumber)
   }
 
   const difficultySelect = (
@@ -81,18 +108,18 @@ function Dropsets({ exerciseType, isBodyweight }: DropsetsProps) {
                 <Input
                   type="number"
                   placeholder="enter the assisted weights"
-                  id={id + "-weight"}
-                  value={weights}
-                  onChange={handleWeightsChange}
+                  id={id + "-assistedWeight"}
+                  value={assistedWeights}
+                  onChange={handleAssistedWeightsChange}
                 />
               )}
               {difficulty === "weighted" && (
                 <Input
                   type="number"
                   placeholder="enter the extra weights"
-                  id={id + "-weight"}
-                  value={weights}
-                  onChange={handleWeightsChange}
+                  id={id + "-extraWeight"}
+                  value={extraWeights}
+                  onChange={handleExtraWeightsChange}
                 />
               )}
 
@@ -142,9 +169,9 @@ function Dropsets({ exerciseType, isBodyweight }: DropsetsProps) {
                   <Input
                     type="number"
                     placeholder="enter the assisted weights"
-                    id={id + "-weight"}
-                    value={weights}
-                    onChange={handleWeightsChange}
+                    id={id + "-assistedWeight"}
+                    value={assistedWeights}
+                    onChange={handleAssistedWeightsChange}
                   />
                   <Input
                     type="number"
@@ -160,10 +187,11 @@ function Dropsets({ exerciseType, isBodyweight }: DropsetsProps) {
                   <Input
                     type="number"
                     placeholder="enter the extra weights"
-                    id={id + "-weight"}
-                    value={weights}
-                    onChange={handleWeightsChange}
+                    id={id + "-extraWeight"}
+                    value={extraWeights}
+                    onChange={handleExtraWeightsChange}
                   />
+
                   <Input
                     type="number"
                     placeholder="enter the reps"

@@ -1,4 +1,4 @@
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { Calendar } from "@workspace/ui/components/calendar"
@@ -9,8 +9,14 @@ import {
 } from "@workspace/ui/components/popover"
 import React from "react"
 
-export function DatePickerDemo() {
-  const [date, setDate] = React.useState<Date>()
+interface DatePickerDemoProps {
+  initialDate?: string
+}
+
+export function DatePickerDemo({ initialDate }: DatePickerDemoProps) {
+  const [date, setDate] = React.useState<Date | undefined>(
+    initialDate ? parseISO(initialDate) : undefined
+  )
 
   return (
     <>

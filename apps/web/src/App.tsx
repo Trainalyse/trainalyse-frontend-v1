@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import { format, parseISO } from "date-fns"
 
 export function App() {
   const navigate = useNavigate()
@@ -25,10 +26,12 @@ export function App() {
   return (
     <>
       <header>
-        <h1>Trainalyse</h1>
-        <Button>Date</Button>
-        <Button>Title</Button>
-        <Button>Settings</Button>
+        <div>
+          <h1>Trainalyse</h1>
+          <Button>Date</Button>
+          <Button>Title</Button>
+          <Button>Settings</Button>
+        </div>
         <Separator />
         {workouts.map((workout) => (
           <Card key={workout.id}>
@@ -39,7 +42,7 @@ export function App() {
               </CardAction>
             </CardHeader>
             <CardContent>
-              <p>{workout.date}</p>
+              <p>{format(parseISO(workout.date), "EEEE, do MMMM, yyyy")}</p>
             </CardContent>
             <CardFooter>
               <p>Created at {workout.time}</p>

@@ -6,9 +6,10 @@ import {
 } from "@workspace/ui/components/card"
 import Sets from "./Set"
 import React from "react"
-import { type ExerciseType } from "./data/exercise"
+import { exercises, type ExerciseType } from "./data/exercise"
 import { Button } from "@workspace/ui/components/button"
 import ExerciseAddition from "./ExerciseAddition"
+import { type WorkoutExercise } from "./data/workouts"
 
 interface Dropset {
   id: number
@@ -27,18 +28,31 @@ interface SetItem {
 
 interface ExerciseProps {
   number: number
+  exerciseData?: WorkoutExercise
 }
 
-function Exercise({ number }: ExerciseProps) {
+function Exercise({ number, exerciseData }: ExerciseProps) {
   const id = React.useId()
-  const counter = React.useRef(1)
-  const [selectedExercise, setSelectedExercise] = React.useState("")
-  const [exerciseMode, setExerciseMode] = React.useState("searching")
-  const [exerciseType, setExerciseType] = React.useState<ExerciseType | "">("")
+  // when prefilled, look up type/isBodyweight from the catalog by name
+  const matchedExercise = exerciseData
+    ? exercises.find((e) => e.name === exerciseData.exerciseName)
+    : undefined
+  const counter = React.useRef(exerciseData ? exerciseData.sets.length : 1)
+  const [selectedExercise, setSelectedExercise] = React.useState(
+    exerciseData?.exerciseName ?? ""
+  )
+  const [exerciseMode, setExerciseMode] = React.useState(
+    exerciseData ? "selected" : "searching"
+  )
+  const [exerciseType, setExerciseType] = React.useState<ExerciseType | "">(
+    matchedExercise?.type ?? ""
+  )
   // "searching" — show Add Exercise button + search UI
   // "selected" — show exercise name + edit button
   const [showSearch, setShowSearch] = React.useState(false)
-  const [isBodyweight, setIsBodyweight] = React.useState<boolean>(false)
+  const [isBodyweight, setIsBodyweight] = React.useState<boolean>(
+    matchedExercise?.isBodyweight ?? false
+  )
 
   const handleExerciseAddition = () => {
     setShowSearch(true)
@@ -48,9 +62,14 @@ function Exercise({ number }: ExerciseProps) {
     setExerciseMode("searching")
   }
 
-  const [arrOfSet, setArrOfSet] = React.useState<SetItem[]>([
-    { id: id + "-0", dropsets: [] },
-  ])
+  const [arrOfSet, setArrOfSet] = React.useState<SetItem[]>(
+    exerciseData
+      ? exerciseData.sets.map((_, index) => ({
+          id: id + "-" + index,
+          dropsets: [],
+        }))
+      : [{ id: id + "-0", dropsets: [] }]
+  )
 
   function handleAddSets() {
     setArrOfSet([
@@ -100,6 +119,7 @@ function Exercise({ number }: ExerciseProps) {
                 number={index + 1}
                 exerciseType={exerciseType}
                 isBodyweight={isBodyweight}
+                setData={exerciseData?.sets[index]}
               />
             ))}
           {selectedExercise && (

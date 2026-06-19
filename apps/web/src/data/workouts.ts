@@ -5,7 +5,9 @@ export type Difficulty = "normal" | "assisted" | "weighted"
 export type Dropset = {
   id: number
   difficulty?: Difficulty
-  weight?: number
+  weights?: number
+  assistedWeights?: number
+  extraWeights?: number
   reps?: number
   hours?: number
   minutes?: number

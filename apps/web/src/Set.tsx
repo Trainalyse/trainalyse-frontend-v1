@@ -8,18 +8,24 @@ import {
 } from "@workspace/ui/components/card"
 import React from "react"
 import { Button } from "@workspace/ui/components/button"
+import { type WorkoutSet } from "./data/workouts"
 
 interface SetsProps {
   number: number
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
+  setData?: WorkoutSet
 }
 export type Difficulty = "normal" | "assisted" | "weighted"
 
-function Sets({ number, exerciseType, isBodyweight }: SetsProps) {
+function Sets({ number, exerciseType, isBodyweight, setData }: SetsProps) {
   const id = React.useId()
-  const counter = React.useRef(1)
-  const [arrOfDS, setArrOfDS] = React.useState([{ id: id + "-0" }])
+  const counter = React.useRef(setData ? setData.dropsets.length : 1)
+  const [arrOfDS, setArrOfDS] = React.useState(
+    setData
+      ? setData.dropsets.map((_, index) => ({ id: id + "-" + index }))
+      : [{ id: id + "-0" }]
+  )
 
   function handleDropSets() {
     const updatedDropSets = [
@@ -44,11 +50,12 @@ function Sets({ number, exerciseType, isBodyweight }: SetsProps) {
           <CardTitle>Set {number}</CardTitle>
         </CardHeader>
         <CardContent>
-          {arrOfDS.map((dropset) => (
+          {arrOfDS.map((dropset, index) => (
             <Dropsets
               key={dropset.id}
               exerciseType={exerciseType}
               isBodyweight={isBodyweight}
+              dropsetData={setData?.dropsets[index]}
             />
           ))}
           <br />

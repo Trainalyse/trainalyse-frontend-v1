@@ -6,6 +6,7 @@ import Exercise from "./Exercise"
 import { type ExerciseType } from "./data/exercise"
 import { Button } from "@workspace/ui/components/button"
 import { useLocation } from "react-router-dom"
+import { type Workout as WorkoutData } from "./data/workouts"
 
 interface Dropset {
   id: number
@@ -27,24 +28,28 @@ interface Exercise {
   exerciseType: ExerciseType
   sets: Set[]
 }
+
 function Workout() {
-  const [title, setTitle] = React.useState("")
-  const id = React.useId()
-  const [exerciseArray, setExerciseArray] = React.useState(
-    [
-      {
-        id: id + "-0",
-        sets: [],
-      },
-    ] // pre-fill exercises if data was passed, otherwise start with one default
-  )
   const location = useLocation()
   const time = location.state?.time
+  const passedWorkout = location.state?.workout as WorkoutData | undefined
+  const [title, setTitle] = React.useState(passedWorkout?.title || "")
+  const id = React.useId()
+  // one structural slot per passed exercise, otherwise a single empty one.
+  // The actual data is passed down by index from passedWorkout below.
+  const [exerciseArray, setExerciseArray] = React.useState(
+    passedWorkout
+      ? passedWorkout.exercises.map((_, index) => ({
+          id: id + "-" + index,
+          sets: [],
+        }))
+      : [{ id: id + "-0", sets: [] }]
+  )
 
   function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value)
   }
-  const counter = React.useRef(1)
+  const counter = React.useRef(passedWorkout ? passedWorkout.exercises.length : 1)
   function handleExerciseAddition() {
     setExerciseArray([
       ...exerciseArray,
@@ -66,7 +71,7 @@ function Workout() {
       {time && (
         <p className="text-sm text-muted-foreground">Started at {time}</p>
       )}
-      <DatePickerDemo />
+      <DatePickerDemo initialDate={passedWorkout?.date} />
       <Input
         type="text"
         placeholder="Enter your title"
@@ -74,7 +79,11 @@ function Workout() {
         onChange={handleTitleChange}
       />
       {exerciseArray.map((exercise, index) => (
-        <Exercise key={exercise.id} number={index + 1} />
+        <Exercise
+          key={exercise.id}
+          number={index + 1}
+          exerciseData={passedWorkout?.exercises[index]}
+        />
       ))}
       <Button onClick={handleExerciseAddition}>+ for Exercises</Button>
       {exerciseArray.length > 1 && (
