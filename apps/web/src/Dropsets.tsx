@@ -207,6 +207,13 @@ function Dropsets({ exerciseType, isBodyweight, dropsetData }: DropsetsProps) {
             <>
               <Input
                 type="number"
+                placeholder="enter the weights"
+                id={id + "-weight"}
+                value={weights}
+                onChange={handleWeightsChange}
+              />
+              <Input
+                type="number"
                 min={0}
                 max={24}
                 placeholder="hours"
