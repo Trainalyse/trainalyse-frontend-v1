@@ -43,6 +43,10 @@ export function App() {
     navigate("/Workout", { state: { workout } })
   }
 
+  function handleGraphs() {
+    navigate("/Graphs")
+  }
+
   const filteredWorkouts = dateSearched
     ? workouts.filter(
         (workout) => workout.date === format(dateSearched, "yyyy-MM-dd")
@@ -110,7 +114,7 @@ export function App() {
           <Button onClick={handleClick}>+</Button>
           <nav>
             <Button>Home</Button>
-            <Button>Graph</Button>
+            <Button onClick={handleGraphs}>Graph</Button>
             <Button>Improve</Button>
             <Button>More</Button>
           </nav>
