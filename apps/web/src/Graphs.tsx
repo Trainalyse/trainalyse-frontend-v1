@@ -141,7 +141,7 @@ function Graphs() {
         <>
           <ChartContainer
             config={chartConfigForVolume}
-            className="min-h-[300px] w-full"
+            className="min-h-75 w-full"
           >
             <LineChart data={volumeData}>
               <XAxis dataKey="label" />
@@ -158,7 +158,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForMaxWeight}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={maxWeightData}>
                 <XAxis dataKey="label" />
@@ -179,7 +179,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForTotalReps}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={totalRepsData}>
                 <XAxis dataKey="label" />
@@ -197,7 +197,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForMaxAssistedWeight}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={maxAssistedWeightData}>
                 <XAxis dataKey="label" />
@@ -218,7 +218,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForMaxExtraWeight}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={maxExtraWeightData}>
                 <XAxis dataKey="label" />
@@ -236,7 +236,7 @@ function Graphs() {
         <>
           <ChartContainer
             config={chartConfigForEndurance}
-            className="min-h-[300px] w-full"
+            className="min-h-75 w-full"
           >
             <LineChart data={enduranceData}>
               <XAxis dataKey="label" />
@@ -253,7 +253,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForEnduranceMaxWeight}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={maxEnduranceWeightData}>
                 <XAxis dataKey="label" />
@@ -277,7 +277,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForTotalSeconds}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={totalSecondsData}>
                 <XAxis dataKey="label" />
@@ -298,7 +298,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForMaxEnduranceAssistedWeight}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={maxEnduranceAssistedWeightData}>
                 <XAxis dataKey="label" />
@@ -319,7 +319,7 @@ function Graphs() {
           <>
             <ChartContainer
               config={chartConfigForMaxEnduranceExtraWeight}
-              className="min-h-[300px] w-full"
+              className="min-h-75 w-full"
             >
               <LineChart data={maxEnduranceExtraWeightData}>
                 <XAxis dataKey="label" />

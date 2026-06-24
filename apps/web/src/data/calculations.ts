@@ -6,6 +6,7 @@ import { type WorkoutExercise } from "./workouts"
 import { type Workout } from "./workouts"
 import { workouts } from "./workouts"
 import { parse } from "date-fns"
+import { format, parseISO } from "date-fns"
 
 export function dropsetVolume(dropset: Dropset, isBodyweight: boolean) {
   if (!isBodyweight) {
@@ -122,6 +123,10 @@ export function getExerciseInstance(name: string) {
         result.push({
           date: workout.date,
           time: workout.time,
+          label:
+            format(parseISO(workout.date), "d MMMM, yyyy") +
+            ", " +
+            workout.time,
           exercise: exercise,
         })
       }
@@ -145,7 +150,7 @@ export function getExerciseInstance(name: string) {
 export function instanceVolume(name: string) {
   const instances = getExerciseInstance(name)
   const chartPoint = instances.map((inst) => ({
-    label: inst.date + "," + inst.time,
+    label: inst.label,
     volume: exerciseVolume(inst.exercise),
   }))
   return chartPoint
@@ -160,7 +165,7 @@ export function instanceMaxWeight(name: string) {
         maxWeight = Math.max(maxWeight, dropset.weights ?? 0)
       }
     }
-    return { label: inst.date + ", " + inst.time, maxWeight: maxWeight }
+    return { label: inst.label, maxWeight: maxWeight }
   })
 }
 
@@ -182,7 +187,7 @@ export function instanceTotalReps(name: string) {
         }
       }
       return {
-        label: inst.date + ", " + inst.time,
+        label: inst.label,
         totalReps: totalReps,
       }
     })
@@ -209,7 +214,7 @@ export function instanceMaxAssistedWeight(name: string) {
         }
       }
       return {
-        label: inst.date + ", " + inst.time,
+        label: inst.label,
         maxAssistedWeight: maxAssistedWeight,
       }
     })
@@ -233,7 +238,7 @@ export function instanceMaxExtraWeight(name: string) {
         }
       }
       return {
-        label: inst.date + ", " + inst.time,
+        label: inst.label,
         maxExtraWeight: maxExtraWeight,
       }
     })
@@ -242,7 +247,7 @@ export function instanceMaxExtraWeight(name: string) {
 export function instanceEndurance(name: string) {
   const instances = getExerciseInstance(name)
   const chartPoint = instances.map((inst) => ({
-    label: inst.date + "," + inst.time,
+    label: inst.label,
     endurance: exerciseEndurance(inst.exercise),
   }))
   return chartPoint
@@ -258,7 +263,7 @@ export function instanceEnduranceMaxWeight(name: string) {
       }
     }
     return {
-      label: inst.date + ", " + inst.time,
+      label: inst.label,
       maxEnduranceWeight: maxEnduranceWeight,
     }
   })
@@ -285,7 +290,7 @@ export function instanceTotalSeconds(name: string) {
         }
       }
       return {
-        label: inst.date + ", " + inst.time,
+        label: inst.label,
         totalSeconds: totalSeconds,
       }
     })
@@ -312,7 +317,7 @@ export function instanceEnduranceMaxAssistedWeight(name: string) {
         }
       }
       return {
-        label: inst.date + ", " + inst.time,
+        label: inst.label,
         maxEnduranceAssistedWeight: maxEnduranceAssistedWeight,
       }
     })
@@ -339,7 +344,7 @@ export function instanceEnduranceMaxExtraWeight(name: string) {
         }
       }
       return {
-        label: inst.date + ", " + inst.time,
+        label: inst.label,
         maxEnduranceExtraWeight: maxEnduranceExtraWeight,
       }
     })
