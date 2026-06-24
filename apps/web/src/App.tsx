@@ -46,7 +46,9 @@ export function App() {
   function handleGraphs() {
     navigate("/Graphs")
   }
-
+  function handleLogin() {
+    navigate("/Login")
+  }
   const filteredWorkouts = dateSearched
     ? workouts.filter(
         (workout) => workout.date === format(dateSearched, "yyyy-MM-dd")
@@ -64,7 +66,7 @@ export function App() {
           <h1>Trainalyse</h1>
           <Button onClick={handleDateSearch}>Date</Button>
           <Button onClick={handleTitleSearch}>Title</Button>
-          <Button>Settings</Button>
+          <Button onClick={handleLogin}>Login</Button>
         </div>
         {searchMode === "date" && (
           <DatePickerDemo onDateChange={setDateSearched} />
