@@ -3,20 +3,13 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
+import { Card, CardContent } from "@workspace/ui/components/card"
 
 function Moreinfo() {
   const navigate = useNavigate()
   const [userAge, setUserAge] = React.useState("")
   const [userWeight, setUserWeight] = React.useState("")
   const [userHeight, setUserHeight] = React.useState("")
-  const [userActivity, setUserActivity] = React.useState("")
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -32,13 +25,6 @@ function Moreinfo() {
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>About you</CardTitle>
-            <CardDescription>
-              Tell us a bit more to personalize your experience
-            </CardDescription>
-          </CardHeader>
-
           <CardContent className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="age">Age</Label>
@@ -70,17 +56,6 @@ function Moreinfo() {
                 placeholder="Enter your height"
                 value={userHeight}
                 onChange={(e) => setUserHeight(e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="activity">Activity</Label>
-              <Input
-                id="activity"
-                type="text"
-                placeholder="Your activity in a week"
-                value={userActivity}
-                onChange={(e) => setUserActivity(e.target.value)}
               />
             </div>
 

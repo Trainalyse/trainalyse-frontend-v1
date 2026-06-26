@@ -1,0 +1,89 @@
+/*Design System for Trainalyse*/
+
+/*1. Color pallette*/
+
+:root {
+  --color-black: #0a0a0a;
+  --white-channels: 255 255 255;
+  --color-grey-1: #171717;
+  --color-grey-2: #26262680;
+  --color-grey-3: #a1a1a1;
+  --color-white-1: #fafafa;
+  --color-white-2: #e5e5e5;
+  --color-neon: #cdf23a;
+}
+
+/*2. Color Usage*/
+
+:root {
+  /*Backgrounds*/
+  --bg-page: var(--color-black);
+  --bg-surface-primary: var(--color-grey-1);
+  --bg-surface-secondary: var(--color-grey-2);
+  --bg-inputBox: rgb(var(--white-channels) / 5%);
+  --bg-button-primary: var(--color-white-2);
+
+  /*Text*/
+  --text-accent: var(--color-neon);
+  --text-subheading: var(--color-grey-3);
+  --text-label: var(--color-white-1);
+  --text-placeholder: var(--color-grey-3);
+  --text-on-button: var(--color-black);
+  --text-primary: var(--color-white-1);
+
+  /*Border*/
+  --border-cardEdge: rgb(var(--white-channels) / 10%);
+  --border-inputEdge: rgb(var(--white-channels) / 15%);
+}
+
+/*3. Text properties*/
+
+:root {
+  /*Font Families*/
+  --font-family: "Geist Variable", sans-serif;
+
+  /*Font Sizes*/
+  --size-h1: 36px;
+  --size-h2: 16px;
+  --size-label: 14px;
+  --size-placeholder: 16px;
+  --size-primaryText: 16px;
+  --size-textOnButton: 14px;
+  --size-footer: 14px;
+
+  /*Line Heights*/
+  --lh-h1: 40px;
+  --lh-h2: 24px;
+  --lh-label: 14px;
+  --lh-placeholder: 24px;
+  --lh-primaryText: 24px;
+  --lh-textOnButton: 20px;
+  --lh-footer: 20px;
+
+  /*Font Weights*/
+  --fw-regular: 400;
+  --fw-bold: 700;
+  --fw-medium: 500;
+}
+
+/*4. Spacing*/
+
+:root {
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+  --space-4xl: 48px;
+}
+
+/*5. Borders and radii*/
+
+:root {
+  --radius-card: 14px;
+  --radius-input: 10px;
+  --radius-button: 10px;
+  --border-size: 1px;
+}

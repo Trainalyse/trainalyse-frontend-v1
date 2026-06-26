@@ -3,14 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
+import { Card, CardContent, CardFooter } from "@workspace/ui/components/card"
 
 function Signup() {
   const navigate = useNavigate()
@@ -52,13 +45,6 @@ function Signup() {
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Sign up</CardTitle>
-            <CardDescription>
-              Enter your details to get started
-            </CardDescription>
-          </CardHeader>
-
           <CardContent className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="username">Username</Label>
