@@ -14,8 +14,7 @@ import { DatePickerDemo } from "./components/DatePicker"
 import { Input } from "@workspace/ui/components/input"
 import { CalendarIcon } from "lucide-react"
 import { SearchIcon } from "lucide-react"
-import { EllipsisVerticalIcon } from "lucide-react"
-import { Separator } from "@workspace/ui/components/separator"
+import { Settings } from "lucide-react"
 
 export function App() {
   const navigate = useNavigate()
@@ -45,12 +44,10 @@ export function App() {
     navigate("/Workout", { state: { workout } })
   }
 
-  function handleGraphs() {
-    navigate("/Graphs")
-  }
   function handleSettings() {
     navigate("/Settings")
   }
+
   const filteredWorkouts = dateSearched
     ? workouts.filter(
         (workout) => workout.date === format(dateSearched, "yyyy-MM-dd")
@@ -63,37 +60,37 @@ export function App() {
 
   return (
     <>
-      <main className="flex h-svh flex-col">
+      <main className="flex min-h-0 flex-1 flex-col">
         <header className="mb-[12px] border-b border-[#FFFFFF1A] bg-[#26262680]">
-          <div className="flex items-center justify-between p-4">
+          <div className="flex min-h-[90px] items-center justify-between px-[23px] py-6">
             <h1 className="text-3xl font-bold text-brand">Trainalyse</h1>
-            <div className="flex items-center gap-2">
+            <div className="-mr-2.5 flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
                 aria-label="Search by date"
                 onClick={handleDateSearch}
-                className="text-primary"
+                className="size-11 text-primary"
               >
-                <CalendarIcon />
+                <CalendarIcon className="size-6" strokeWidth={2.25} />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 aria-label="Search by Title"
                 onClick={handleTitleSearch}
-                className="text-primary"
+                className="size-11 text-primary"
               >
-                <SearchIcon />
+                <SearchIcon className="size-6" strokeWidth={2.25} />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 aria-label="Go to Settings"
                 onClick={handleSettings}
-                className="text-primary"
+                className="size-11 text-primary"
               >
-                <EllipsisVerticalIcon />
+                <Settings className="size-6" strokeWidth={2.25} />
               </Button>
             </div>
           </div>
@@ -149,14 +146,6 @@ export function App() {
           )}
           <Button onClick={handleClick}>+</Button>
         </section>
-        <footer>
-          <nav>
-            <Button>Home</Button>
-            <Button onClick={handleGraphs}>Graph</Button>
-            <Button>Improve</Button>
-            <Button>More</Button>
-          </nav>
-        </footer>
       </main>
     </>
   )
