@@ -9,6 +9,7 @@ import Login from "./Login.tsx"
 import Signup from "./Signup.tsx"
 import Moreinfo from "./Moreinfo.tsx"
 import Graphs from "./Graphs.tsx"
+import Settings from "./Settings.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Moreinfo" element={<Moreinfo />} />
           <Route path="/Graphs" element={<Graphs />} />
+          <Route path="/Settings" element={<Settings />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
