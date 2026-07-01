@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { workouts, type Workout } from "./data/workouts"
 import {
   Card,
-  CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -15,6 +15,7 @@ import { Input } from "@workspace/ui/components/input"
 import { CalendarIcon } from "lucide-react"
 import { SearchIcon } from "lucide-react"
 import { Settings } from "lucide-react"
+import { Plus } from "lucide-react"
 
 export function App() {
   const navigate = useNavigate()
@@ -60,11 +61,11 @@ export function App() {
 
   return (
     <>
-      <main className="flex min-h-0 flex-1 flex-col">
-        <header className="mb-[12px] border-b border-[#FFFFFF1A] bg-[#26262680]">
+      <main className="relative flex min-h-0 flex-1 flex-col">
+        <header className="mb-[12px] border-b border-[#FFFFFF1A] bg-[#26262680] pt-[env(safe-area-inset-top)]">
           <div className="flex min-h-[90px] items-center justify-between px-[23px] py-6">
-            <h1 className="text-3xl font-bold text-brand">Trainalyse</h1>
-            <div className="-mr-2.5 flex items-center gap-4">
+            <h1 className="text-2xl font-bold text-brand">Trainalyse</h1>
+            <div className="-mr-3 flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
@@ -72,7 +73,7 @@ export function App() {
                 onClick={handleDateSearch}
                 className="size-11 text-primary"
               >
-                <CalendarIcon className="size-6" strokeWidth={2.25} />
+                <CalendarIcon className="size-5" strokeWidth={2.25} />
               </Button>
               <Button
                 variant="ghost"
@@ -81,7 +82,7 @@ export function App() {
                 onClick={handleTitleSearch}
                 className="size-11 text-primary"
               >
-                <SearchIcon className="size-6" strokeWidth={2.25} />
+                <SearchIcon className="size-5" strokeWidth={2.25} />
               </Button>
               <Button
                 variant="ghost"
@@ -90,7 +91,7 @@ export function App() {
                 onClick={handleSettings}
                 className="size-11 text-primary"
               >
-                <Settings className="size-6" strokeWidth={2.25} />
+                <Settings className="size-5" strokeWidth={2.25} />
               </Button>
             </div>
           </div>
@@ -118,23 +119,23 @@ export function App() {
               .map((workout) => (
                 <div key={workout.id}>
                   <Button
-                    className="h-auto p-0 px-[23px] py-3"
+                    className="h-auto w-full p-0 px-[23px] py-2"
                     variant="ghost"
                     onClick={() => handleWorkoutOpen(workout)}
                   >
-                    <Card className="py-6 [--card-spacing:--spacing(6)]">
-                      <CardHeader>
-                        <CardTitle>{workout.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p>
+                    <Card className="w-full gap-0 rounded-[14px] bg-[#171717] py-0 [--card-spacing:--spacing(6)]">
+                      <CardHeader className="flex flex-col items-start pt-[14px] pb-3">
+                        <CardTitle className="text-base font-normal">
+                          {workout.title}
+                        </CardTitle>
+                        <CardDescription>
                           {format(
                             parseISO(workout.date),
                             "EEEE, do MMMM, yyyy"
                           )}
-                        </p>
-                      </CardContent>
-                      <CardFooter>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardFooter className="rounded-b-[14px] border-[#FFFFFF1A] bg-[#26262680] py-3 text-xs text-muted-foreground">
                         <p>Created at {workout.time}</p>
                       </CardFooter>
                     </Card>
@@ -144,8 +145,15 @@ export function App() {
           ) : (
             <p>No workouts found</p>
           )}
-          <Button onClick={handleClick}>+</Button>
         </section>
+        <Button
+          aria-label="Add workout"
+          size="icon"
+          className="absolute right-[23px] bottom-6 size-[60px] rounded-full bg-brand text-[#171717] shadow-lg hover:bg-brand/90"
+          onClick={handleClick}
+        >
+          <Plus className="size-8" strokeWidth={2.5} />
+        </Button>
       </main>
     </>
   )

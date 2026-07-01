@@ -20,20 +20,20 @@ function Footer() {
   }
   return (
     <>
-      <footer className="border-t border-[#FFFFFF1A] bg-[#26262680]">
-        <nav className="flex min-h-[80px] items-center justify-between px-[23px] py-6">
+      <footer className="border-t border-[#FFFFFF1A] bg-[#26262680] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <nav className="flex min-h-[80px] items-center justify-between px-[23px]">
           <Button
             variant="ghost"
             aria-label="Go to Home"
             onClick={() => {
               handleHome()
             }}
-            className={`flex h-auto flex-col items-center ${
+            className={`flex h-auto flex-col px-0 ${
               location.pathname === "/" ? "text-brand" : "text-muted-foreground"
             }`}
           >
-            <Home className="size-6" strokeWidth={1.2} />
-            <Label className="mt-2">Home</Label>
+            <Home className="size-5" strokeWidth={1.2} />
+            <Label>Home</Label>
           </Button>
           <Button
             variant="ghost"
@@ -41,14 +41,14 @@ function Footer() {
             onClick={() => {
               handleGraphs()
             }}
-            className={`flex h-auto flex-col items-center ${
+            className={`flex h-auto flex-col items-center px-0 ${
               location.pathname === "/Graphs"
                 ? "text-brand"
                 : "text-muted-foreground"
             }`}
           >
-            <ChartLine className="size-6" strokeWidth={1.2} />{" "}
-            <Label className="mt-2">Graph</Label>
+            <ChartLine className="size-5" strokeWidth={1.2} />{" "}
+            <Label>Graphs</Label>
           </Button>
           <Button
             variant="ghost"
@@ -56,14 +56,14 @@ function Footer() {
             onClick={() => {
               handleImprove()
             }}
-            className={`flex h-auto flex-col items-center ${
+            className={`flex h-auto flex-col items-center px-0 ${
               location.pathname === "/Improve"
                 ? "text-brand"
                 : "text-muted-foreground"
             }`}
           >
-            <Target className="size-6" strokeWidth={1.2} />
-            <Label className="mt-2">Improve</Label>
+            <Target className="size-5" strokeWidth={1.2} />
+            <Label>Improve</Label>
           </Button>
           <Button
             variant="ghost"
@@ -71,14 +71,14 @@ function Footer() {
             onClick={() => {
               handleMore()
             }}
-            className={`flex h-auto flex-col items-center ${
+            className={`flex h-auto flex-col items-center px-0 ${
               location.pathname === "/More"
                 ? "text-brand"
                 : "text-muted-foreground"
             }`}
           >
-            <Menu className="size-6" strokeWidth={1.2} />
-            <Label className="mt-2">More</Label>
+            <Menu className="size-5" strokeWidth={1.2} />
+            <Label>More</Label>
           </Button>
         </nav>
       </footer>
