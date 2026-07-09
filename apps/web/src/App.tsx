@@ -10,6 +10,7 @@ import {
 } from "@workspace/ui/components/card"
 import { format, parseISO } from "date-fns"
 import React, { type ChangeEvent } from "react"
+import { Calendar } from "@workspace/ui/components/calendar"
 import { DatePickerDemo } from "./components/DatePicker"
 import { Input } from "@workspace/ui/components/input"
 import { CalendarIcon } from "lucide-react"
@@ -63,7 +64,7 @@ export function App() {
     <>
       <main className="relative flex min-h-0 flex-1 flex-col">
         <header className="mb-[12px] border-b border-[#FFFFFF1A] bg-[#26262680] pt-[env(safe-area-inset-top)]">
-          <div className="flex min-h-[90px] items-center justify-between px-[23px] py-6">
+          <div className="flex min-h-[80px] items-center justify-between px-[23px] py-6">
             <h1 className="text-2xl font-bold text-brand">Trainalyse</h1>
             <div className="-mr-3 flex items-center gap-4">
               <Button
@@ -96,9 +97,7 @@ export function App() {
             </div>
           </div>
 
-          {searchMode === "date" && (
-            <DatePickerDemo onDateChange={setDateSearched} />
-          )}
+          {searchMode === "date" && <Calendar onDateChange={setDateSearched} />}
           {searchMode === "title" && (
             <Input
               type="text"
