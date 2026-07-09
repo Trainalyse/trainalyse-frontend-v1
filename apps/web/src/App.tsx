@@ -11,12 +11,12 @@ import {
 import { format, parseISO } from "date-fns"
 import React, { type ChangeEvent } from "react"
 import { Calendar } from "@workspace/ui/components/calendar"
-import { DatePickerDemo } from "./components/DatePicker"
 import { Input } from "@workspace/ui/components/input"
 import { CalendarIcon } from "lucide-react"
 import { SearchIcon } from "lucide-react"
 import { Settings } from "lucide-react"
 import { Plus } from "lucide-react"
+import { X } from "lucide-react"
 
 export function App() {
   const navigate = useNavigate()
@@ -62,6 +62,29 @@ export function App() {
 
   return (
     <>
+      {searchMode === "date" && (
+        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <Card className="relative p-4">
+            <Calendar
+              className="mt-6 [--cell-size:--spacing(9)]"
+              mode="single"
+              selected={dateSearched}
+              onSelect={(date) => {
+                setDateSearched(date)
+                setSearchMode("none")
+              }}
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2.5"
+              onClick={() => setSearchMode("none")}
+            >
+              <X className="size-8" strokeWidth="1.5" />
+            </Button>
+          </Card>
+        </div>
+      )}
       <main className="relative flex min-h-0 flex-1 flex-col">
         <header className="mb-[12px] border-b border-[#FFFFFF1A] bg-[#26262680] pt-[env(safe-area-inset-top)]">
           <div className="flex min-h-[80px] items-center justify-between px-[23px] py-6">
@@ -97,7 +120,6 @@ export function App() {
             </div>
           </div>
 
-          {searchMode === "date" && <Calendar onDateChange={setDateSearched} />}
           {searchMode === "title" && (
             <Input
               type="text"
@@ -109,7 +131,11 @@ export function App() {
         </header>
 
         <section className="flex-1 overflow-y-auto">
-          {filteredWorkouts.length > 0 ? (
+          {workouts.length === 0 ? (
+            <div className="flex h-full items-center justify-center px-8 text-center text-muted-foreground">
+              <p>Start logging — your workouts will show up here.</p>
+            </div>
+          ) : filteredWorkouts.length > 0 ? (
             [...filteredWorkouts]
               .sort(
                 (a, b) =>
@@ -142,9 +168,24 @@ export function App() {
                 </div>
               ))
           ) : (
-            <p>No workouts found</p>
+            <div className="flex h-full items-center justify-center px-8 text-center text-muted-foreground">
+              <p>
+                {dateSearched
+                  ? `No workouts on ${format(dateSearched, "EEEE, do MMMM, yyyy")}`
+                  : "No workouts"}
+              </p>
+            </div>
           )}
         </section>
+        {dateSearched && (
+          <Button
+            className="absolute bottom-0 mb-4 self-center bg-brand"
+            onClick={() => setDateSearched(undefined)}
+          >
+            Clear Date
+          </Button>
+        )}
+
         <Button
           aria-label="Add workout"
           size="icon"
