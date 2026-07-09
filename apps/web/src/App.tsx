@@ -24,12 +24,13 @@ export function App() {
     const time = new Date().toLocaleString()
     navigate("/Workout", { state: { time } })
   }
-
+  const titleSearchRef = React.useRef<HTMLInputElement>(null)
   const [searchMode, setSearchMode] = React.useState<"none" | "date" | "title">(
     "none"
   )
   const [dateSearched, setDateSearched] = React.useState<Date>()
   const [titleSearched, setTitleSearched] = React.useState("")
+  const [showSearchBar, setShowSearchBar] = React.useState(false)
 
   function handleTitleTypeForSearch(e: ChangeEvent<HTMLInputElement>) {
     setTitleSearched(e.target.value)
@@ -40,6 +41,7 @@ export function App() {
   }
   function handleTitleSearch() {
     setSearchMode("title")
+    setShowSearchBar((current) => !current)
     setDateSearched(undefined)
   }
   function handleWorkoutOpen(workout: Workout) {
@@ -59,6 +61,12 @@ export function App() {
           workout.title.toLowerCase().includes(titleSearched.toLowerCase())
         )
       : workouts
+
+  React.useEffect(() => {
+    if (showSearchBar) {
+      titleSearchRef.current?.focus()
+    }
+  }, [showSearchBar])
 
   return (
     <>
@@ -87,46 +95,60 @@ export function App() {
       )}
       <main className="relative flex min-h-0 flex-1 flex-col">
         <header className="mb-[12px] border-b border-[#FFFFFF1A] bg-[#26262680] pt-[env(safe-area-inset-top)]">
-          <div className="flex min-h-[80px] items-center justify-between px-[23px] py-6">
-            <h1 className="text-2xl font-bold text-brand">Trainalyse</h1>
-            <div className="-mr-3 flex items-center gap-4">
+          {showSearchBar ? (
+            <div className="-mr-1.5 flex min-h-[80px] items-center justify-between gap-7 px-[23px] py-6">
+              <Input
+                className="h-11 origin-left scale-x-100 opacity-100 transition duration-500 ease-out starting:scale-x-0 starting:opacity-0"
+                type="text"
+                placeholder="Enter the title of the workout"
+                value={titleSearched}
+                ref={titleSearchRef}
+                onChange={handleTitleTypeForSearch}
+              />
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Search by date"
-                onClick={handleDateSearch}
-                className="size-11 text-primary"
+                onClick={() => {
+                  setShowSearchBar(false)
+                  setTitleSearched("")
+                }}
               >
-                <CalendarIcon className="size-5" strokeWidth={2.25} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Search by Title"
-                onClick={handleTitleSearch}
-                className="size-11 text-primary"
-              >
-                <SearchIcon className="size-5" strokeWidth={2.25} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Go to Settings"
-                onClick={handleSettings}
-                className="size-11 text-primary"
-              >
-                <Settings className="size-5" strokeWidth={2.25} />
+                <X className="size-8" strokeWidth="1.5" />
               </Button>
             </div>
-          </div>
-
-          {searchMode === "title" && (
-            <Input
-              type="text"
-              placeholder="enter the title of the workout"
-              value={titleSearched}
-              onChange={handleTitleTypeForSearch}
-            />
+          ) : (
+            <div className="flex min-h-[80px] items-center justify-between px-[23px] py-6">
+              <h1 className="text-2xl font-bold text-brand">Trainalyse</h1>
+              <div className="-mr-3 flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Search by date"
+                  onClick={handleDateSearch}
+                  className="size-11 text-primary"
+                >
+                  <CalendarIcon className="size-5" strokeWidth={2.25} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Search by Title"
+                  onClick={handleTitleSearch}
+                  className="size-11 text-primary"
+                >
+                  <SearchIcon className="size-5" strokeWidth={2.25} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Go to Settings"
+                  onClick={handleSettings}
+                  className="size-11 text-primary"
+                >
+                  <Settings className="size-5" strokeWidth={2.25} />
+                </Button>
+              </div>
+            </div>
           )}
         </header>
 
@@ -172,7 +194,7 @@ export function App() {
               <p>
                 {dateSearched
                   ? `No workouts on ${format(dateSearched, "EEEE, do MMMM, yyyy")}`
-                  : "No workouts"}
+                  : "No workouts by this title"}
               </p>
             </div>
           )}
