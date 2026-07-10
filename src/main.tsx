@@ -1,0 +1,38 @@
+import { StrictMode } from "react"
+import { createRoot } from "react-dom/client"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import "@/styles/globals.css"
+import { App } from "./App.tsx"
+import { ThemeProvider } from "@/components/theme-provider.tsx"
+import Workout from "./Workout.tsx"
+import Login from "./Login.tsx"
+import Signup from "./Signup.tsx"
+import Moreinfo from "./Moreinfo.tsx"
+import Graphs from "./Graphs.tsx"
+import Settings from "./Settings.tsx"
+import Improve from "./Improve.tsx"
+import More from "./More.tsx"
+import Layout from "./Layout.tsx"
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/Workout" element={<Workout />} />
+          <Route path="*" element={<App />} />
+          <Route path="/Settings" element={<Settings />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/Moreinfo" element={<Moreinfo />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<App />} />
+            <Route path="/Graphs" element={<Graphs />} />
+            <Route path="/Improve" element={<Improve />} />
+            <Route path="/More" element={<More />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  </StrictMode>
+)
