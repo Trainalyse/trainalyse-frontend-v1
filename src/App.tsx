@@ -18,6 +18,7 @@ import { Settings } from "lucide-react"
 import { Plus } from "lucide-react"
 import { X } from "lucide-react"
 
+
 export function App() {
   const navigate = useNavigate()
   const handleClick = () => {
@@ -94,9 +95,9 @@ export function App() {
         </div>
       )}
       <main className="relative flex min-h-0 flex-1 flex-col">
-        <header className="mb-[12px] border-b border-[#FFFFFF1A] bg-[#26262680] pt-[env(safe-area-inset-top)]">
+        <header className="mb-[var(--space-md)] border-b border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] pt-[env(safe-area-inset-top)]">
           {showSearchBar ? (
-            <div className="-mr-1.5 flex min-h-[80px] items-center justify-between gap-7 px-[23px] py-6">
+            <div className="-mr-1.5 flex min-h-[80px] items-center justify-between gap-7 px-[var(--space-23)] py-6">
               <Input
                 className="h-11 origin-left scale-x-100 opacity-100 transition duration-500 ease-out starting:scale-x-0 starting:opacity-0"
                 type="text"
@@ -117,7 +118,7 @@ export function App() {
               </Button>
             </div>
           ) : (
-            <div className="flex min-h-[80px] items-center justify-between px-[23px] py-6">
+            <div className="flex min-h-[80px] items-center justify-between px-[var(--space-23)] py-6">
               <h1 className="text-2xl font-bold text-brand">Trainalyse</h1>
               <div className="-mr-3 flex items-center gap-4">
                 <Button
@@ -166,11 +167,11 @@ export function App() {
               .map((workout) => (
                 <div key={workout.id}>
                   <Button
-                    className="h-auto w-full p-0 px-[23px] py-2"
+                    className="h-auto w-full p-0 px-[var(--space-23)] py-2"
                     variant="ghost"
                     onClick={() => handleWorkoutOpen(workout)}
                   >
-                    <Card className="w-full gap-0 rounded-[14px] bg-[#171717] py-0 [--card-spacing:--spacing(6)]">
+                    <Card className="w-full gap-0 rounded-[var(--radius-card)] bg-[var(--bg-surface-primary)] py-0 [--card-spacing:--spacing(6)]">
                       <CardHeader className="flex flex-col items-start pt-[14px] pb-3">
                         <CardTitle className="text-base font-normal">
                           {workout.title}
@@ -182,7 +183,7 @@ export function App() {
                           )}
                         </CardDescription>
                       </CardHeader>
-                      <CardFooter className="rounded-b-[14px] border-[#FFFFFF1A] bg-[#26262680] py-3 text-xs text-muted-foreground">
+                      <CardFooter className="rounded-b-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] py-3 text-xs text-muted-foreground">
                         <p>Created at {workout.time}</p>
                       </CardFooter>
                     </Card>
@@ -211,7 +212,7 @@ export function App() {
         <Button
           aria-label="Add workout"
           size="icon"
-          className="absolute right-[23px] bottom-6 size-[60px] rounded-full bg-brand text-[#171717] shadow-lg hover:bg-brand/90"
+          className="absolute right-[var(--space-23)] bottom-6 size-[60px] rounded-full bg-brand text-[var(--bg-surface-primary)] shadow-lg hover:bg-brand/90"
           onClick={handleClick}
         >
           <Plus className="size-8" strokeWidth={2.5} />

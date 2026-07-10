@@ -20,8 +20,8 @@ function Footer() {
   }
   return (
     <>
-      <footer className="border-t border-[#FFFFFF1A] bg-[#26262680] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <nav className="flex min-h-[80px] items-center justify-between px-[23px]">
+      <footer className="border-t border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <nav className="flex min-h-[80px] items-center justify-between px-[var(--space-23)]">
           <Button
             variant="ghost"
             aria-label="Go to Home"
