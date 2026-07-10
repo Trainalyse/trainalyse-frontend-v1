@@ -16,7 +16,7 @@ import Layout from "./Layout.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider>
+    <ThemeProvider defaultTheme="dark">
       <BrowserRouter>
         <Routes>
           <Route path="/Workout" element={<Workout />} />
