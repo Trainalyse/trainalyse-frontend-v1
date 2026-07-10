@@ -7,6 +7,8 @@ import { type ExerciseType } from "./data/exercise"
 import { Button } from "@workspace/ui/components/button"
 import { useLocation } from "react-router-dom"
 import { type Workout as WorkoutData } from "./data/workouts"
+import { format } from "date-fns"
+import Timesetter from "@workspace/ui/components/timesetter"
 
 interface Dropset {
   id: number
@@ -31,9 +33,11 @@ interface Exercise {
 
 function Workout() {
   const location = useLocation()
-  const time = location.state?.time
   const passedWorkout = location.state?.workout as WorkoutData | undefined
   const [title, setTitle] = React.useState(passedWorkout?.title || "")
+  const [pickTime, setPickTime] = React.useState(
+    passedWorkout?.time ?? format(new Date(), "HH:mm")
+  )
   const id = React.useId()
   // one structural slot per passed exercise, otherwise a single empty one.
   // The actual data is passed down by index from passedWorkout below.
@@ -49,7 +53,9 @@ function Workout() {
   function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value)
   }
-  const counter = React.useRef(passedWorkout ? passedWorkout.exercises.length : 1)
+  const counter = React.useRef(
+    passedWorkout ? passedWorkout.exercises.length : 1
+  )
   function handleExerciseAddition() {
     setExerciseArray([
       ...exerciseArray,
@@ -68,10 +74,10 @@ function Workout() {
 
   return (
     <>
-      {time && (
-        <p className="text-sm text-muted-foreground">Started at {time}</p>
-      )}
-      <DatePickerDemo initialDate={passedWorkout?.date} />
+      <DatePickerDemo
+        initialDate={passedWorkout?.date ?? format(new Date(), "yyyy-MM-dd")}
+      />
+      <Timesetter value={pickTime} onChange={setPickTime} />
       <Input
         type="text"
         placeholder="Enter your title"
