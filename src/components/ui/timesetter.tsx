@@ -98,7 +98,7 @@ function Timesetter({ value, onChange }: TimesetterProps) {
   return (
     <>
       {/* TRIGGER: the field showing the prefilled time. */}
-      <Button variant="outline" onClick={handleOpen}>
+      <Button variant="outline" className="w-full" onClick={handleOpen}>
         {value}
       </Button>
 

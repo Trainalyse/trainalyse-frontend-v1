@@ -1,9 +1,7 @@
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+  CardHeader,} from "@/components/ui/card"
 import Sets from "./Set"
 import React from "react"
 import { exercises, type ExerciseType } from "./data/exercise"
@@ -31,7 +29,7 @@ interface ExerciseProps {
   exerciseData?: WorkoutExercise
 }
 
-function Exercise({ number, exerciseData }: ExerciseProps) {
+function Exercise({  exerciseData }: ExerciseProps) {
   const id = React.useId()
   // when prefilled, look up type/isBodyweight from the catalog by name
   const matchedExercise = exerciseData
@@ -89,7 +87,7 @@ function Exercise({ number, exerciseData }: ExerciseProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Exercise {number}</CardTitle>
+
         </CardHeader>
         <CardContent>
           {exerciseMode === "searching" && (

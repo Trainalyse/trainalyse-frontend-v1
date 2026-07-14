@@ -4,7 +4,6 @@ import { workouts, type Workout } from "./data/workouts"
 import {
   Card,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -183,9 +182,9 @@ export function App() {
                           )}
                         </CardDescription>
                       </CardHeader>
-                      <CardFooter className="rounded-b-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] py-3 text-xs text-muted-foreground">
+                      {/*<CardFooter className="rounded-b-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] py-3 text-xs text-muted-foreground">
                         <p>Created at {workout.time}</p>
-                      </CardFooter>
+                      </CardFooter>*/}
                     </Card>
                   </Button>
                 </div>

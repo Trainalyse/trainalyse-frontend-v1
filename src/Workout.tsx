@@ -2,34 +2,14 @@
 import { Input } from "@/components/ui/input"
 import React, { type ChangeEvent } from "react"
 import { DatePickerDemo } from "./components/DatePicker"
-import Exercise from "./Exercise"
-import { type ExerciseType } from "./data/exercise"
 import { Button } from "@/components/ui/button"
 import { useLocation } from "react-router-dom"
 import { type Workout as WorkoutData } from "./data/workouts"
 import { format } from "date-fns"
 import Timesetter from "@/components/ui/timesetter"
-
-interface Dropset {
-  id: number
-  weight?: number
-  reps?: number
-  minutes?: number
-  seconds?: number
-  hours?: number
-}
-
-interface Set {
-  id: number
-  dropsets: Dropset[]
-}
-
-interface Exercise {
-  id: number
-  exerciseName: string
-  exerciseType: ExerciseType
-  sets: Set[]
-}
+import { Trash2Icon } from "lucide-react"
+import { Label } from "./components/ui/label"
+import ExerciseSearch from "./components/ExerciseSearch"
 
 function Workout() {
   const location = useLocation()
@@ -38,64 +18,44 @@ function Workout() {
   const [pickTime, setPickTime] = React.useState(
     passedWorkout?.time ?? format(new Date(), "HH:mm")
   )
-  const id = React.useId()
-  // one structural slot per passed exercise, otherwise a single empty one.
-  // The actual data is passed down by index from passedWorkout below.
-  const [exerciseArray, setExerciseArray] = React.useState(
-    passedWorkout
-      ? passedWorkout.exercises.map((_, index) => ({
-          id: id + "-" + index,
-          sets: [],
-        }))
-      : [{ id: id + "-0", sets: [] }]
-  )
+  const [showExerciseSearch, setShowExerciseSearch] =
+    React.useState<boolean>(false)
 
   function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value)
   }
-  const counter = React.useRef(
-    passedWorkout ? passedWorkout.exercises.length : 1
-  )
-  function handleExerciseAddition() {
-    setExerciseArray([
-      ...exerciseArray,
-      {
-        id: id + "-" + counter.current++,
-        sets: [],
-      },
-    ])
-  }
-  function handleMinus() {
-    if (exerciseArray.length > 0) {
-      const updatedExercises = exerciseArray.slice(0, -1) //0th to last element but the last element is excluded
-      setExerciseArray(updatedExercises)
-    }
-  }
 
   return (
-    <>
+    <div className="flex flex-col mx-auto max-w-[430px] min-h-svh px-[var(--space-23)] gap-2 ">
+      <div className="flex justify-between items-center mt-4">
+        <Button className="pl-0 text-base" variant="ghost">
+          <Trash2Icon className="size-5" />
+          Discard
+        </Button>
+        <Button className="bg-brand h-10 px-6 text-base">Save</Button>
+      </div>
+      <div className="flex gap-3">
+        <div className="flex flex-col gap-1 flex-1">
+        <Label className="text-muted-foreground">Date</Label>
       <DatePickerDemo
         initialDate={passedWorkout?.date ?? format(new Date(), "yyyy-MM-dd")}
-      />
-      <Timesetter value={pickTime} onChange={setPickTime} />
+         /></div>
+        <div className="flex flex-col gap-1 flex-1" >
+        <Label className="text-muted-foreground">Time</Label>
+      <Timesetter value={pickTime} onChange={setPickTime} /></div></div>
       <Input
         type="text"
         placeholder="Enter your title"
         value={title}
         onChange={handleTitleChange}
       />
-      {exerciseArray.map((exercise, index) => (
-        <Exercise
-          key={exercise.id}
-          number={index + 1}
-          exerciseData={passedWorkout?.exercises[index]}
-        />
-      ))}
-      <Button onClick={handleExerciseAddition}>+ for Exercises</Button>
-      {exerciseArray.length > 1 && (
-        <Button onClick={handleMinus}>- for Exercises</Button>
+
+      <Button className="bg-brand mt-3 h-11"onClick={()=>(setShowExerciseSearch(true))}>Add new Exercise</Button>
+
+      {showExerciseSearch && (
+        <ExerciseSearch onClose={() => setShowExerciseSearch(false)} />
       )}
-    </>
+    </div>
   )
 }
 
