@@ -25,7 +25,7 @@ function ExerciseSearch({ onClose }: ExerciseSearchProps) {
   return (
     // BACKDROP: blurred workout page behind; clicking it closes the popup.
     <div
-      className="fixed inset-0 z-10 flex items-start justify-center bg-black/60 pt-[12vh] backdrop-blur-sm"
+      className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm "
       onClick={onClose}
     >
       {/* CARD: the small popup. stopPropagation so clicks inside don't close it. */}
