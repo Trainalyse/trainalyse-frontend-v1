@@ -2,8 +2,7 @@ import workoutData from "./workouts.json"
 
 export type Difficulty = "normal" | "assisted" | "weighted"
 
-export type Dropset = {
-  id: number
+export type LimbValues = {
   difficulty?: Difficulty
   weights?: number
   assistedWeights?: number
@@ -12,6 +11,12 @@ export type Dropset = {
   hours?: number
   minutes?: number
   seconds?: number
+}
+
+export type Dropset = {
+  id: number
+  left: LimbValues
+  right?: LimbValues
 }
 
 export type WorkoutSet = {
@@ -23,6 +28,7 @@ export type WorkoutExercise = {
   id: number
   exerciseName: string
   sets: WorkoutSet[]
+  perLimbEnabled?: boolean
 }
 
 export type Workout = {
@@ -32,5 +38,7 @@ export type Workout = {
   time?: string
   exercises: WorkoutExercise[]
 }
+
+export type Limb = "left" | "right"
 
 export const workouts = workoutData as Workout[]

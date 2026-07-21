@@ -1,135 +1,91 @@
 import {
   Card,
   CardContent,
-  CardHeader,} from "@/components/ui/card"
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import Sets from "./Set"
-import React from "react"
 import { exercises, type ExerciseType } from "./data/exercise"
 import { Button } from "@/components/ui/button"
-import ExerciseAddition from "./ExerciseAddition"
-import { type WorkoutExercise } from "./data/workouts"
-
-interface Dropset {
-  id: number
-  weight?: number
-  reps?: number
-  minutes?: number
-  seconds?: number
-  hours?: number
-}
-
-// This is what's stored in the array
-interface SetItem {
-  id: string
-  dropsets: Dropset[]
-}
+import { type WorkoutExercise, type WorkoutSet ,type Limb} from "./data/workouts"
+import { Switch } from "@/components/ui/switch"
+import { useState } from "react"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface ExerciseProps {
-  number: number
-  exerciseData?: WorkoutExercise
+  exerciseData: WorkoutExercise
+  onChange: (updated: WorkoutExercise) => void
+  onDelete: () => void
 }
 
-function Exercise({  exerciseData }: ExerciseProps) {
-  const id = React.useId()
-  // when prefilled, look up type/isBodyweight from the catalog by name
-  const matchedExercise = exerciseData
-    ? exercises.find((e) => e.name === exerciseData.exerciseName)
-    : undefined
-  const counter = React.useRef(exerciseData ? exerciseData.sets.length : 1)
-  const [selectedExercise, setSelectedExercise] = React.useState(
-    exerciseData?.exerciseName ?? ""
+function Exercise({ exerciseData, onChange ,onDelete}: ExerciseProps) {
+  // The exercise is already chosen (via the popup), so just look up its
+  // type/bodyweight from the catalog by name — no local state needed.
+  const matchedExercise = exercises.find(
+    (e) => e.name === exerciseData.exerciseName
   )
-  const [exerciseMode, setExerciseMode] = React.useState(
-    exerciseData ? "selected" : "searching"
-  )
-  const [exerciseType, setExerciseType] = React.useState<ExerciseType | "">(
-    matchedExercise?.type ?? ""
-  )
-  // "searching" — show Add Exercise button + search UI
-  // "selected" — show exercise name + edit button
-  const [showSearch, setShowSearch] = React.useState(false)
-  const [isBodyweight, setIsBodyweight] = React.useState<boolean>(
-    matchedExercise?.isBodyweight ?? false
-  )
+  const exerciseType: ExerciseType | "" = matchedExercise?.type ?? ""
+  const isBodyweight = matchedExercise?.isBodyweight ?? false
+  const perLimb = matchedExercise?.perLimb ?? false
+  const [activeLimb, setActiveLimb] = useState<Limb>("left")
+  function handleAddSet() {
+      const base = Date.now()
+      const newSet: WorkoutSet = { id: base, dropsets: [{ id: base + 1 ,left:{}}] }
+      onChange({ ...exerciseData, sets: [...exerciseData.sets, newSet] })
+    }
 
-  const handleExerciseAddition = () => {
-    setShowSearch(true)
-  }
-
-  function handleEditExercise() {
-    setExerciseMode("searching")
-  }
-
-  const [arrOfSet, setArrOfSet] = React.useState<SetItem[]>(
-    exerciseData
-      ? exerciseData.sets.map((_, index) => ({
-          id: id + "-" + index,
-          dropsets: [],
-        }))
-      : [{ id: id + "-0", dropsets: [] }]
-  )
-
-  function handleAddSets() {
-    setArrOfSet([
-      ...arrOfSet,
-      { id: id + "-" + counter.current++, dropsets: [] },
-    ])
-  }
-
-  function handleMinus() {
-    if (arrOfSet.length > 0) {
-      const updatedSets = arrOfSet.slice(0, -1)
-      setArrOfSet(updatedSets)
+  function handleSetChange(updatedSet: WorkoutSet) {
+    if (updatedSet.dropsets.length === 0) {
+      onChange({
+        ...exerciseData,sets : exerciseData.sets.filter( (s)=>s.id!== updatedSet.id),
+      })
+    } else {
+      onChange({
+        ...exerciseData,sets : exerciseData.sets.map((s)=>s.id===updatedSet.id?updatedSet:s),
+      })
     }
   }
+  function handleTogglePerLimb(value: boolean) {
+     onChange({ ...exerciseData, perLimbEnabled: value })
+   }
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-
-        </CardHeader>
-        <CardContent>
-          {exerciseMode === "searching" && (
-            <>
-              <Button onClick={handleExerciseAddition}>Search Exercise</Button>
-              {showSearch && (
-                <ExerciseAddition
-                  selectedExercise={selectedExercise}
-                  setSelectedExercise={setSelectedExercise}
-                  setExerciseMode={setExerciseMode}
-                  setExerciseType={setExerciseType}
-                  setIsBodyweight={setIsBodyweight}
-                />
-              )}
-            </>
-          )}
-          {exerciseMode === "selected" && (
-            <>
-              <p>{selectedExercise}</p>
-              <Button onClick={handleEditExercise}>Edit exercise</Button>
-            </>
-          )}
-          {selectedExercise &&
-            arrOfSet.map((set, index) => (
-              <Sets
-                key={set.id}
-                number={index + 1}
-                exerciseType={exerciseType}
-                isBodyweight={isBodyweight}
-                setData={exerciseData?.sets[index]}
+    <Card>
+      <CardHeader>
+        <CardTitle>{exerciseData.exerciseName}</CardTitle>
+        <Button onClick={onDelete}>Delete</Button>
+        {perLimb && (
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={exerciseData.perLimbEnabled ?? false}
+                onCheckedChange={handleTogglePerLimb}
               />
-            ))}
-          {selectedExercise && (
-            <Button onClick={handleAddSets}>+ for Sets</Button>
+              <span>Log separate for each limb</span>
+            </div>
           )}
-
-          {arrOfSet.length > 1 && (
-            <Button onClick={handleMinus}>- for Sets</Button>
+        {perLimb && exerciseData.perLimbEnabled && (
+            <Tabs value={activeLimb} onValueChange={(v) => setActiveLimb(v as "left" | "right")}>
+              <TabsList>
+                <TabsTrigger value="left">Left</TabsTrigger>
+                <TabsTrigger value="right">Right</TabsTrigger>
+              </TabsList>
+            </Tabs>
           )}
-        </CardContent>
-      </Card>
-    </>
+      </CardHeader>
+      <CardContent>
+        {exerciseData.sets.map((set) => (
+          <Sets
+            key={set.id}
+            exerciseType={exerciseType}
+            isBodyweight={isBodyweight}
+            setData={set}
+            activeLimb={activeLimb}
+            onChange={handleSetChange}
+          />
+        ))}
+        <Button onClick={handleAddSet}>+ for Sets</Button>
+      </CardContent>
+    </Card>
   )
 }
 

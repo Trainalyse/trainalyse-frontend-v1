@@ -4,11 +4,13 @@ import { X } from "lucide-react"
 import { exercises } from "@/data/exercise"
 import React, { type ChangeEvent } from "react"
 
-interface ExerciseSearchProps {
-  onClose: () => void
-}
 
-function ExerciseSearch({ onClose }: ExerciseSearchProps) {
+interface ExerciseSearchProps {
+    onClose: () => void
+    onConfirm: (exerciseName: string) => void
+  }
+
+  function ExerciseSearch({ onClose, onConfirm }: ExerciseSearchProps) {
   const [exerciseSearch, setExerciseSearch] = React.useState("")
 
   const [selectedExercise, setSelectedExercise] = React.useState<string>("")
@@ -25,7 +27,7 @@ function ExerciseSearch({ onClose }: ExerciseSearchProps) {
   return (
     // BACKDROP: blurred workout page behind; clicking it closes the popup.
     <div
-      className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm "
+      className="fixed inset-0 z-10 flex items-start + pt-[15vh] justify-center bg-black/60 backdrop-blur-sm "
       onClick={onClose}
     >
       {/* CARD: the small popup. stopPropagation so clicks inside don't close it. */}
@@ -42,7 +44,15 @@ function ExerciseSearch({ onClose }: ExerciseSearchProps) {
           />
           <div className="flex w-24 shrink-0 justify-end">
             {selectedExercise ? (
-              <Button className="bg-brand h-10 w-full text-base">Confirm</Button>
+              <Button
+                  className="bg-brand h-10 w-full text-base"
+                  onClick={() => {
+                    onConfirm(selectedExercise)
+                    onClose()
+                  }}
+                >
+                  Confirm
+                </Button>
             ) : (
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="size-9" />

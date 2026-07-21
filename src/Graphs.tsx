@@ -56,43 +56,60 @@ function Graphs() {
   const maxEnduranceExtraWeightData =
     instanceEnduranceMaxExtraWeight(selectedExercise)
   const chartConfigForVolume = {
-    volume: { label: "Volume", color: "var(--chart-1)" },
+    volume: { label: "Total", color: "var(--chart-1)" },
+    volumeLeft: { label: "Left", color: "var(--chart-2)" },
+    volumeRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForMaxWeight = {
     maxWeight: { label: "Max Weight", color: "var(--chart-1)" },
+    maxWeightLeft: { label: "Left", color: "var(--chart-2)" },
+    maxWeightRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForTotalReps = {
     totalReps: { label: "Total Reps", color: "var(--chart-1)" },
+    totalRepsLeft: { label: "Left", color: "var(--chart-2)" },
+    totalRepsRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForMaxAssistedWeight = {
-    maxAssistedWeight: {
-      label: "Max Assisted Weight",
-      color: "var(--chart-1)",
-    },
+    maxAssistedWeight: { label: "Max Assisted Weight", color: "var(--chart-1)" },
+    maxAssistedWeightLeft: { label: "Left", color: "var(--chart-2)" },
+    maxAssistedWeightRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForMaxExtraWeight = {
     maxExtraWeight: { label: "Max Extra Weight", color: "var(--chart-1)" },
+    maxExtraWeightLeft: { label: "Left", color: "var(--chart-2)" },
+    maxExtraWeightRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForEndurance = {
     endurance: { label: "Endurance", color: "var(--chart-1)" },
+    enduranceLeft: { label: "Left", color: "var(--chart-2)" },
+    enduranceRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForEnduranceMaxWeight = {
     maxEnduranceWeight: { label: "Max End Weight", color: "var(--chart-1)" },
+    maxEnduranceWeightLeft: { label: "Left", color: "var(--chart-2)" },
+    maxEnduranceWeightRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForTotalSeconds = {
     totalSeconds: { label: "Total Seconds", color: "var(--chart-1)" },
+    totalSecondsLeft: { label: "Left", color: "var(--chart-2)" },
+    totalSecondsRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForMaxEnduranceAssistedWeight = {
     maxEnduranceAssistedWeight: {
       label: "Max End Assisted Weight",
       color: "var(--chart-1)",
     },
+    maxEnduranceAssistedWeightLeft: { label: "Left", color: "var(--chart-2)" },
+    maxEnduranceAssistedWeightRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const chartConfigForMaxEnduranceExtraWeight = {
     maxEnduranceExtraWeight: {
       label: "Max End Extra Weight",
       color: "var(--chart-1)",
     },
+    maxEnduranceExtraWeightLeft: { label: "Left", color: "var(--chart-2)" },
+    maxEnduranceExtraWeightRight: { label: "Right", color: "var(--chart-3)" },
   } satisfies ChartConfig
   const difficultySelect = (
     <Select
@@ -147,6 +164,8 @@ function Graphs() {
               <XAxis dataKey="label" />
               <YAxis />
               <Line dataKey="volume" stroke="var(--color-volume)" />
+              <Line dataKey="volumeLeft" stroke="var(--color-volumeLeft)" />
+              <Line dataKey="volumeRight" stroke="var(--color-volumeRight)" />
               <ChartTooltip content={<ChartTooltipContent />} />
             </LineChart>
           </ChartContainer>
@@ -164,6 +183,8 @@ function Graphs() {
                 <XAxis dataKey="label" />
                 <YAxis />
                 <Line dataKey="maxWeight" stroke="var(--color-maxWeight)" />
+                <Line dataKey="maxWeightLeft" stroke="var(--color-maxWeightLeft)" />
+                <Line dataKey="maxWeightRight" stroke="var(--color-maxWeightRight)" />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
             </ChartContainer>
@@ -185,6 +206,8 @@ function Graphs() {
                 <XAxis dataKey="label" />
                 <YAxis />
                 <Line dataKey="totalReps" stroke="var(--color-totalReps)" />
+                <Line dataKey="totalRepsLeft" stroke="var(--color-totalRepsLeft)" />
+                <Line dataKey="totalRepsRight" stroke="var(--color-totalRepsRight)" />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
             </ChartContainer>
@@ -205,6 +228,14 @@ function Graphs() {
                 <Line
                   dataKey="maxAssistedWeight"
                   stroke="var(--color-maxAssistedWeight)"
+                />
+                <Line
+                  dataKey="maxAssistedWeightLeft"
+                  stroke="var(--color-maxAssistedWeightLeft)"
+                />
+                <Line
+                  dataKey="maxAssistedWeightRight"
+                  stroke="var(--color-maxAssistedWeightRight)"
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
@@ -227,6 +258,14 @@ function Graphs() {
                   dataKey="maxExtraWeight"
                   stroke="var(--color-maxExtraWeight)"
                 />
+                <Line
+                  dataKey="maxExtraWeightLeft"
+                  stroke="var(--color-maxExtraWeightLeft)"
+                />
+                <Line
+                  dataKey="maxExtraWeightRight"
+                  stroke="var(--color-maxExtraWeightRight)"
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
             </ChartContainer>
@@ -242,6 +281,8 @@ function Graphs() {
               <XAxis dataKey="label" />
               <YAxis />
               <Line dataKey="endurance" stroke="var(--color-endurance)" />
+              <Line dataKey="enduranceLeft" stroke="var(--color-enduranceLeft)" />
+              <Line dataKey="enduranceRight" stroke="var(--color-enduranceRight)" />
               <ChartTooltip content={<ChartTooltipContent />} />
             </LineChart>
           </ChartContainer>
@@ -261,6 +302,14 @@ function Graphs() {
                 <Line
                   dataKey="maxEnduranceWeight"
                   stroke="var(--color-maxEnduranceWeight)"
+                />
+                <Line
+                  dataKey="maxEnduranceWeightLeft"
+                  stroke="var(--color-maxEnduranceWeightLeft)"
+                />
+                <Line
+                  dataKey="maxEnduranceWeightRight"
+                  stroke="var(--color-maxEnduranceWeightRight)"
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
@@ -286,6 +335,14 @@ function Graphs() {
                   dataKey="totalSeconds"
                   stroke="var(--color-totalSeconds)"
                 />
+                <Line
+                  dataKey="totalSecondsLeft"
+                  stroke="var(--color-totalSecondsLeft)"
+                />
+                <Line
+                  dataKey="totalSecondsRight"
+                  stroke="var(--color-totalSecondsRight)"
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
             </ChartContainer>
@@ -307,6 +364,14 @@ function Graphs() {
                   dataKey="maxEnduranceAssistedWeight"
                   stroke="var(--color-maxEnduranceAssistedWeight)"
                 />
+                <Line
+                  dataKey="maxEnduranceAssistedWeightLeft"
+                  stroke="var(--color-maxEnduranceAssistedWeightLeft)"
+                />
+                <Line
+                  dataKey="maxEnduranceAssistedWeightRight"
+                  stroke="var(--color-maxEnduranceAssistedWeightRight)"
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
             </ChartContainer>
@@ -327,6 +392,14 @@ function Graphs() {
                 <Line
                   dataKey="maxEnduranceExtraWeight"
                   stroke="var(--color-maxEnduranceExtraWeight)"
+                />
+                <Line
+                  dataKey="maxEnduranceExtraWeightLeft"
+                  stroke="var(--color-maxEnduranceExtraWeightLeft)"
+                />
+                <Line
+                  dataKey="maxEnduranceExtraWeightRight"
+                  stroke="var(--color-maxEnduranceExtraWeightRight)"
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>

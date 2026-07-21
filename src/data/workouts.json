@@ -12,12 +12,46 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 70, "reps": 10 },
-              { "id": 2, "weights": 55, "reps": 8 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 70,
+                  "reps": 10
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 55,
+                  "reps": 8
+                }
+              }
             ]
           },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 70, "reps": 8 }] },
-          { "id": 3, "dropsets": [{ "id": 1, "weights": 65, "reps": 8 }] }
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 70,
+                  "reps": 8
+                }
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 65,
+                  "reps": 8
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -27,11 +61,34 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 28, "reps": 12 },
-              { "id": 2, "weights": 20, "reps": 10 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 28,
+                  "reps": 12
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 20,
+                  "reps": 10
+                }
+              }
             ]
           },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 28, "reps": 10 }] }
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 28,
+                  "reps": 10
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -40,16 +97,26 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 30 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 30
+                }
+              }
+            ]
           },
           {
             "id": 2,
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "assisted",
-                "assistedWeights": 15,
-                "reps": 25
+                "left": {
+                  "difficulty": "assisted",
+                  "assistedWeights": 15,
+                  "reps": 25
+                }
               }
             ]
           }
@@ -67,9 +134,42 @@
         "id": 1,
         "exerciseName": "Deadlift",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 115, "reps": 5 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 115, "reps": 5 }] },
-          { "id": 3, "dropsets": [{ "id": 1, "weights": 110, "reps": 4 }] }
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 115,
+                  "reps": 5
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 115,
+                  "reps": 5
+                }
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 110,
+                  "reps": 4
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -79,32 +179,64 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 14, "reps": 12 },
-              { "id": 2, "weights": 10, "reps": 10 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 14,
+                  "reps": 12
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 10,
+                  "reps": 10
+                }
+              }
             ]
           },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 14, "reps": 10 }] }
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 14,
+                  "reps": 10
+                }
+              }
+            ]
+          }
         ]
       },
       {
         "id": 3,
         "exerciseName": "Pull Up",
-
         "sets": [
           {
             "id": 1,
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "weighted",
-                "extraWeights": 15,
-                "reps": 8
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 15,
+                  "reps": 8
+                }
               }
             ]
           },
           {
             "id": 2,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 7 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 7
+                }
+              }
+            ]
           }
         ]
       }
@@ -125,9 +257,11 @@
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "weighted",
-                "extraWeights": 95,
-                "reps": 8
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 95,
+                  "reps": 8
+                }
               }
             ]
           },
@@ -136,9 +270,11 @@
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "weighted",
-                "extraWeights": 95,
-                "reps": 7
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 95,
+                  "reps": 7
+                }
               }
             ]
           },
@@ -147,15 +283,19 @@
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "weighted",
-                "extraWeights": 85,
-                "reps": 6
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 85,
+                  "reps": 6
+                }
               },
               {
                 "id": 2,
-                "difficulty": "weighted",
-                "extraWeights": 70,
-                "reps": 8
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 70,
+                  "reps": 8
+                }
               }
             ]
           }
@@ -168,11 +308,34 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 145, "reps": 12 },
-              { "id": 2, "weights": 115, "reps": 10 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 145,
+                  "reps": 12
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 115,
+                  "reps": 10
+                }
+              }
             ]
           },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 145, "reps": 10 }] }
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 145,
+                  "reps": 10
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -184,17 +347,26 @@
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "weighted",
-                "extraWeights": 20,
-                "minutes": 1,
-                "seconds": 15
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 20,
+                  "minutes": 1,
+                  "seconds": 15
+                }
               }
             ]
           },
           {
             "id": 2,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "minutes": 1, "seconds": 0 }
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "minutes": 1,
+                  "seconds": 0
+                }
+              }
             ]
           }
         ]
@@ -213,11 +385,27 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 15 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 15
+                }
+              }
+            ]
           },
           {
             "id": 2,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 12 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 12
+                }
+              }
+            ]
           }
         ]
       },
@@ -228,13 +416,27 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "minutes": 0, "seconds": 45 }
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "minutes": 0,
+                  "seconds": 45
+                }
+              }
             ]
           },
           {
             "id": 2,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "minutes": 0, "seconds": 50 }
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "minutes": 0,
+                  "seconds": 50
+                }
+              }
             ]
           }
         ]
@@ -245,7 +447,15 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 20 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 20
+                }
+              }
+            ]
           }
         ]
       }
@@ -261,8 +471,30 @@
         "id": 1,
         "exerciseName": "Overhead Press",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 40, "reps": 8 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 45, "reps": 6 }] }
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 40,
+                  "reps": 8
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 45,
+                  "reps": 6
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -272,11 +504,34 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 18, "reps": 10 },
-              { "id": 2, "weights": 14, "reps": 8 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 18,
+                  "reps": 10
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 14,
+                  "reps": 8
+                }
+              }
             ]
           },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 18, "reps": 9 }] }
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 18,
+                  "reps": 9
+                }
+              }
+            ]
+          }
         ]
       }
     ]
@@ -294,11 +549,34 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 14, "reps": 12 },
-              { "id": 2, "weights": 10, "reps": 10 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 14,
+                  "reps": 12
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 10,
+                  "reps": 10
+                }
+              }
             ]
           },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 12, "reps": 12 }] }
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 12,
+                  "reps": 12
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -307,16 +585,26 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 12 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 12
+                }
+              }
+            ]
           },
           {
             "id": 2,
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "weighted",
-                "extraWeights": 10,
-                "reps": 8
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 10,
+                  "reps": 8
+                }
               }
             ]
           }
@@ -334,8 +622,30 @@
         "id": 1,
         "exerciseName": "Barbell Row",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 55, "reps": 10 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 60, "reps": 8 }] }
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 55,
+                  "reps": 10
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 60,
+                  "reps": 8
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -345,8 +655,20 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 50, "reps": 12 },
-              { "id": 2, "weights": 35, "reps": 10 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 50,
+                  "reps": 12
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 35,
+                  "reps": 10
+                }
+              }
             ]
           }
         ]
@@ -358,12 +680,20 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "reps": 8 },
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 8
+                }
+              },
               {
                 "id": 2,
-                "difficulty": "assisted",
-                "assistedWeights": 12,
-                "reps": 5
+                "left": {
+                  "difficulty": "assisted",
+                  "assistedWeights": 12,
+                  "reps": 5
+                }
               }
             ]
           }
@@ -381,13 +711,47 @@
         "id": 1,
         "exerciseName": "Bench Press",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 55, "reps": 10 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 60, "reps": 8 }] },
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 55,
+                  "reps": 10
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 60,
+                  "reps": 8
+                }
+              }
+            ]
+          },
           {
             "id": 3,
             "dropsets": [
-              { "id": 1, "weights": 65, "reps": 6 },
-              { "id": 2, "weights": 50, "reps": 6 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 65,
+                  "reps": 6
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 50,
+                  "reps": 6
+                }
+              }
             ]
           }
         ]
@@ -398,16 +762,26 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 10 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 10
+                }
+              }
+            ]
           },
           {
             "id": 2,
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "assisted",
-                "assistedWeights": 20,
-                "reps": 8
+                "left": {
+                  "difficulty": "assisted",
+                  "assistedWeights": 20,
+                  "reps": 8
+                }
               }
             ]
           }
@@ -417,8 +791,30 @@
         "id": 3,
         "exerciseName": "Tricep Pushdown",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 22, "reps": 12 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 25, "reps": 10 }] }
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 22,
+                  "reps": 12
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 25,
+                  "reps": 10
+                }
+              }
+            ]
+          }
         ]
       }
     ]
@@ -433,9 +829,42 @@
         "id": 1,
         "exerciseName": "Deadlift",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 95, "reps": 5 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 105, "reps": 5 }] },
-          { "id": 3, "dropsets": [{ "id": 1, "weights": 110, "reps": 3 }] }
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 95,
+                  "reps": 5
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 105,
+                  "reps": 5
+                }
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 110,
+                  "reps": 3
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -445,11 +874,34 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "weights": 45, "reps": 12 },
-              { "id": 2, "weights": 30, "reps": 10 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 45,
+                  "reps": 12
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 30,
+                  "reps": 10
+                }
+              }
             ]
           },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 45, "reps": 10 }] }
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 45,
+                  "reps": 10
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -458,16 +910,26 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 6 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 6
+                }
+              }
+            ]
           },
           {
             "id": 2,
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "assisted",
-                "assistedWeights": 18,
-                "reps": 8
+                "left": {
+                  "difficulty": "assisted",
+                  "assistedWeights": 18,
+                  "reps": 8
+                }
               }
             ]
           }
@@ -487,11 +949,27 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 12 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 12
+                }
+              }
+            ]
           },
           {
             "id": 2,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 12 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 12
+                }
+              }
+            ]
           }
         ]
       },
@@ -502,13 +980,27 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "minutes": 1, "seconds": 0 }
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "minutes": 1,
+                  "seconds": 0
+                }
+              }
             ]
           },
           {
             "id": 2,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "minutes": 1, "seconds": 10 }
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "minutes": 1,
+                  "seconds": 10
+                }
+              }
             ]
           }
         ]
@@ -519,7 +1011,15 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 18 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 18
+                }
+              }
+            ]
           }
         ]
       }
@@ -535,13 +1035,47 @@
         "id": 1,
         "exerciseName": "Bench Press",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 60, "reps": 10 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 67, "reps": 7 }] },
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 60,
+                  "reps": 10
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 67,
+                  "reps": 7
+                }
+              }
+            ]
+          },
           {
             "id": 3,
             "dropsets": [
-              { "id": 1, "weights": 70, "reps": 5 },
-              { "id": 2, "weights": 55, "reps": 6 }
+              {
+                "id": 1,
+                "left": {
+                  "weights": 70,
+                  "reps": 5
+                }
+              },
+              {
+                "id": 2,
+                "left": {
+                  "weights": 55,
+                  "reps": 6
+                }
+              }
             ]
           }
         ]
@@ -552,16 +1086,26 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 25 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 25
+                }
+              }
+            ]
           },
           {
             "id": 2,
             "dropsets": [
               {
                 "id": 1,
-                "difficulty": "weighted",
-                "extraWeights": 10,
-                "reps": 15
+                "left": {
+                  "difficulty": "weighted",
+                  "extraWeights": 10,
+                  "reps": 15
+                }
               }
             ]
           }
@@ -579,8 +1123,30 @@
         "id": 1,
         "exerciseName": "Barbell Row",
         "sets": [
-          { "id": 1, "dropsets": [{ "id": 1, "weights": 50, "reps": 10 }] },
-          { "id": 2, "dropsets": [{ "id": 1, "weights": 57, "reps": 8 }] }
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 50,
+                  "reps": 10
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "weights": 57,
+                  "reps": 8
+                }
+              }
+            ]
+          }
         ]
       },
       {
@@ -589,17 +1155,33 @@
         "sets": [
           {
             "id": 1,
-            "dropsets": [{ "id": 1, "difficulty": "normal", "reps": 7 }]
+            "dropsets": [
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 7
+                }
+              }
+            ]
           },
           {
             "id": 2,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "reps": 6 },
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "reps": 6
+                }
+              },
               {
                 "id": 2,
-                "difficulty": "assisted",
-                "assistedWeights": 15,
-                "reps": 5
+                "left": {
+                  "difficulty": "assisted",
+                  "assistedWeights": 15,
+                  "reps": 5
+                }
               }
             ]
           }
@@ -612,7 +1194,119 @@
           {
             "id": 1,
             "dropsets": [
-              { "id": 1, "difficulty": "normal", "minutes": 0, "seconds": 40 }
+              {
+                "id": 1,
+                "left": {
+                  "difficulty": "normal",
+                  "minutes": 0,
+                  "seconds": 40
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "date": "2026-06-14",
+    "title": "Per-Limb Arm Day",
+    "time": "10:00 AM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Bicep Curl (Dumbbell)",
+        "perLimbEnabled": true,
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": { "weights": 12, "reps": 10 },
+                "right": { "weights": 10, "reps": 10 }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": { "weights": 12, "reps": 8 },
+                "right": { "weights": 10, "reps": 8 }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "date": "2026-06-18",
+    "title": "Per-Limb Arm Day",
+    "time": "10:00 AM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Bicep Curl (Dumbbell)",
+        "perLimbEnabled": true,
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": { "weights": 14, "reps": 10 },
+                "right": { "weights": 12, "reps": 10 }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": { "weights": 14, "reps": 8 },
+                "right": { "weights": 12, "reps": 8 }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "date": "2026-06-22",
+    "title": "Per-Limb Arm Day",
+    "time": "10:00 AM",
+    "exercises": [
+      {
+        "id": 1,
+        "exerciseName": "Bicep Curl (Dumbbell)",
+        "perLimbEnabled": true,
+        "sets": [
+          {
+            "id": 1,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": { "weights": 14, "reps": 12 },
+                "right": { "weights": 12, "reps": 12 }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "dropsets": [
+              {
+                "id": 1,
+                "left": { "weights": 16, "reps": 8 },
+                "right": { "weights": 14, "reps": 8 }
+              }
             ]
           }
         ]

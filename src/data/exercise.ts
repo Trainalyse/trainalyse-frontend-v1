@@ -7,6 +7,7 @@ export type Exercise = {
   name: string
   type: ExerciseType
   isBodyweight: boolean
+   perLimb?: boolean
 }
 
 export const exercises = exerciseData as Exercise[]

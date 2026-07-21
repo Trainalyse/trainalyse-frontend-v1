@@ -3,71 +3,68 @@ import { type ExerciseType } from "./data/exercise"
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
+
 } from "@/components/ui/card"
-import React from "react"
 import { Button } from "@/components/ui/button"
-import { type WorkoutSet } from "./data/workouts"
+import { type WorkoutSet, type Dropset, type Limb } from "./data/workouts"
 
 interface SetsProps {
-  number: number
+
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
-  setData?: WorkoutSet
+  setData: WorkoutSet
+  activeLimb: Limb
+  onChange: (updated: WorkoutSet) => void
 }
 export type Difficulty = "normal" | "assisted" | "weighted"
 
-function Sets({ number, exerciseType, isBodyweight, setData }: SetsProps) {
-  const id = React.useId()
-  const counter = React.useRef(setData ? setData.dropsets.length : 1)
-  const [arrOfDS, setArrOfDS] = React.useState(
-    setData
-      ? setData.dropsets.map((_, index) => ({ id: id + "-" + index }))
-      : [{ id: id + "-0" }]
-  )
-
-  function handleDropSets() {
-    const updatedDropSets = [
-      ...arrOfDS,
-      {
-        id: id + "-" + counter.current++,
-      },
-    ]
-    setArrOfDS(updatedDropSets)
+function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange }: SetsProps) {
+  function handleAddDropset() {
+    const newDropset: Dropset = { id: Date.now(), left: {} }
+    // rebuild THIS set with the new dropset, and hand it up to Exercise
+    onChange({ ...setData, dropsets: [...setData.dropsets, newDropset] })
   }
 
-  function handleMinus() {
-    if (arrOfDS.length > 0) {
-      const updatedDropSets = arrOfDS.slice(0, -1)
-      setArrOfDS(updatedDropSets)
-    }
+  function handleRemoveDropset(id: number) {
+
+    onChange({ ...setData, dropsets: setData.dropsets.filter((d)=>d.id!==id) })
   }
+
+  function handleDropsetChange(updatedDropset: Dropset) {
+    // one of my dropsets changed — swap it in by id and hand my new self up
+    onChange({
+      ...setData,
+      dropsets: setData.dropsets.map((d) =>
+        d.id === updatedDropset.id ? updatedDropset : d
+      ),
+    })
+  }
+
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle>Set {number}</CardTitle>
-        </CardHeader>
+
         <CardContent>
-          {arrOfDS.map((dropset, index) => (
+          {setData.dropsets.map((dropset) => (
+            <div key={dropset.id}>
             <Dropsets
-              key={dropset.id}
               exerciseType={exerciseType}
               isBodyweight={isBodyweight}
-              dropsetData={setData?.dropsets[index]}
-            />
+              dropsetData={dropset}
+              activeLimb={activeLimb}
+              onChange={handleDropsetChange}
+              />
+              <Button onClick={() => handleRemoveDropset(dropset.id)}>Delete</Button>
+            </div>
           ))}
           <br />
           {/* this is the button to add a new drop set */}
           {exerciseType && (
-            <Button onClick={handleDropSets}>+ for drop sets</Button>
+            <Button onClick={handleAddDropset}>+ for drop sets</Button>
           )}
 
           {/* this is the button to remove a drop set, only shown if there are drop sets */}
-          {arrOfDS.length > 1 && (
-            <Button onClick={handleMinus}>- for drop sets</Button>
-          )}
+
         </CardContent>
       </Card>
     </>

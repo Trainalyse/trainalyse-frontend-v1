@@ -19,6 +19,7 @@ import { X } from "lucide-react"
 
 
 export function App() {
+
   const navigate = useNavigate()
   const handleClick = () => {
     const time = new Date().toLocaleString()
