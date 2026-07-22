@@ -10,6 +10,10 @@ import { workouts } from "./workouts"
 import { parse } from "date-fns"
 import { format, parseISO } from "date-fns"
 
+// an unfilled limb (e.g. Right before it's edited) counts as nothing — not as a
+// copy of the other limb. Left and Right are independent.
+const EMPTY_LIMB: LimbValues = {}
+
 function limbVolume(limb: LimbValues, isBodyweight: boolean) {
   if (!isBodyweight) {
     return (limb.weights ?? 0) * (limb.reps ?? 0)
@@ -32,7 +36,7 @@ export function dropsetVolume(
 ) {
   let total = limbVolume(dropset.left, isBodyweight)
   if (perLimb) {
-    total += limbVolume(dropset.right ?? dropset.left, isBodyweight)
+    total += limbVolume(dropset.right ?? EMPTY_LIMB, isBodyweight)
   }
   return total
 }
@@ -94,7 +98,7 @@ export function dropsetEndurance(
 ) {
   let total = limbEndurance(dropset.left, isBodyweight)
   if (perLimb) {
-    total += limbEndurance(dropset.right ?? dropset.left, isBodyweight)
+    total += limbEndurance(dropset.right ?? EMPTY_LIMB, isBodyweight)
   }
   return total
 }
@@ -172,7 +176,7 @@ function exerciseVolumeForLimb(exercise: WorkoutExercise, limb: Limb) {
   let total = 0
   for (const set of exercise.sets) {
     for (const dropset of set.dropsets) {
-      total += limbVolume(dropset[limb] ?? dropset.left, isBodyweight)
+      total += limbVolume(dropset[limb] ?? EMPTY_LIMB, isBodyweight)
     }
   }
   return total
@@ -205,7 +209,7 @@ export function instanceMaxWeight(name: string) {
     for (const set of inst.exercise.sets) {
       for (const dropset of set.dropsets) {
         left = Math.max(left, dropset.left.weights ?? 0)
-        right = Math.max(right, (dropset.right ?? dropset.left).weights ?? 0)
+        right = Math.max(right, (dropset.right ?? EMPTY_LIMB).weights ?? 0)
       }
     }
     return {
@@ -234,7 +238,7 @@ export function instanceTotalReps(name: string) {
           if (dropset.left.difficulty === "normal") {
             left += dropset.left.reps ?? 0
           }
-          const r = dropset.right ?? dropset.left
+          const r = dropset.right ?? EMPTY_LIMB
           if (r.difficulty === "normal") {
             right += r.reps ?? 0
           }
@@ -266,7 +270,7 @@ export function instanceMaxAssistedWeight(name: string) {
           if (dropset.left.difficulty === "assisted") {
             left = Math.max(left, dropset.left.assistedWeights ?? 0)
           }
-          const r = dropset.right ?? dropset.left
+          const r = dropset.right ?? EMPTY_LIMB
           if (r.difficulty === "assisted") {
             right = Math.max(right, r.assistedWeights ?? 0)
           }
@@ -298,7 +302,7 @@ export function instanceMaxExtraWeight(name: string) {
           if (dropset.left.difficulty === "weighted") {
             left = Math.max(left, dropset.left.extraWeights ?? 0)
           }
-          const r = dropset.right ?? dropset.left
+          const r = dropset.right ?? EMPTY_LIMB
           if (r.difficulty === "weighted") {
             right = Math.max(right, r.extraWeights ?? 0)
           }
@@ -321,7 +325,7 @@ function exerciseEnduranceForLimb(exercise: WorkoutExercise, limb: Limb) {
   let total = 0
   for (const set of exercise.sets) {
     for (const dropset of set.dropsets) {
-      total += limbEndurance(dropset[limb] ?? dropset.left, isBodyweight)
+      total += limbEndurance(dropset[limb] ?? EMPTY_LIMB, isBodyweight)
     }
   }
   return total
@@ -354,7 +358,7 @@ export function instanceEnduranceMaxWeight(name: string) {
     for (const set of inst.exercise.sets) {
       for (const dropset of set.dropsets) {
         left = Math.max(left, dropset.left.weights ?? 0)
-        right = Math.max(right, (dropset.right ?? dropset.left).weights ?? 0)
+        right = Math.max(right, (dropset.right ?? EMPTY_LIMB).weights ?? 0)
       }
     }
     return {
@@ -386,7 +390,7 @@ export function instanceTotalSeconds(name: string) {
               (dropset.left.minutes ?? 0) * 60 +
               (dropset.left.seconds ?? 0)
           }
-          const r = dropset.right ?? dropset.left
+          const r = dropset.right ?? EMPTY_LIMB
           if (r.difficulty === "normal") {
             right +=
               (r.hours ?? 0) * 3600 + (r.minutes ?? 0) * 60 + (r.seconds ?? 0)
@@ -419,7 +423,7 @@ export function instanceEnduranceMaxAssistedWeight(name: string) {
           if (dropset.left.difficulty === "assisted") {
             left = Math.max(left, dropset.left.assistedWeights ?? 0)
           }
-          const r = dropset.right ?? dropset.left
+          const r = dropset.right ?? EMPTY_LIMB
           if (r.difficulty === "assisted") {
             right = Math.max(right, r.assistedWeights ?? 0)
           }
@@ -451,7 +455,7 @@ export function instanceEnduranceMaxExtraWeight(name: string) {
           if (dropset.left.difficulty === "weighted") {
             left = Math.max(left, dropset.left.extraWeights ?? 0)
           }
-          const r = dropset.right ?? dropset.left
+          const r = dropset.right ?? EMPTY_LIMB
           if (r.difficulty === "weighted") {
             right = Math.max(right, r.extraWeights ?? 0)
           }

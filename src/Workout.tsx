@@ -1,4 +1,4 @@
-"use client"
+"use client" // this is a just a nextjs thing and its a dead code and does nothing
 import { Input } from "@/components/ui/input"
 import React, { type ChangeEvent } from "react"
 import { DatePickerDemo } from "./components/DatePicker"
@@ -14,21 +14,30 @@ import { useLocation } from "react-router-dom"
 
 
 function Workout() {
-  const location = useLocation()
+  const location = useLocation()// in the other file we navigate with usenavigate and then we receive data here with uselocation
   const passedWorkout = location.state?.workout as WorkoutData | undefined
+  // we are creating a new variable called passedWorkout and we pluck the data from the state by using the key which was
+  // workout and we give the shape to it as Workoutdata from the json file
+  // this is not same as workoutdata, this is just another name for the type Workout and it is Workoutdata
   const [exercises, setExercises] = React.useState<WorkoutExercise[]>(
       passedWorkout?.exercises ?? []
-    )
-  const [title, setTitle] = React.useState(passedWorkout?.title || "")
+  )
+  //this is the making of a new array which will be the exercise array which will have exercises from the saved
+  // workouts if saved otherwise it would start out empty
+  const [title, setTitle] = React.useState(passedWorkout?.title || "") // this is for title
   const [pickTime, setPickTime] = React.useState(
     passedWorkout?.time ?? format(new Date(), "HH:mm")
   )
+  //this is for the modal that will pop up when you click on add new exercise
   const [showExerciseSearch, setShowExerciseSearch] =
     React.useState<boolean>(false)
 
+  // for the title change
   function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value)
   }
+
+  //this is for confirming a selectedexercise and it takes a argument exercisename as a string
   function handleConfirmExercise(exerciseName: string) {
       // start every new exercise with one set that already holds one dropset.
       // `base` + offsets keep the three ids unique even when created in the same ms.
@@ -39,15 +48,18 @@ function Workout() {
         sets: [{ id: base + 1, dropsets: [{ id: base + 2 ,left: {}}] }],
       }
       setExercises([...exercises, newExercise])
-    }
+  }
+
+  // alright this argument called updatedexercise this is being detected when any onchange function is being fired.
     function handleExerciseChange(updatedExercise: WorkoutExercise) {
        setExercises(
          exercises.map((ex) => (ex.id === updatedExercise.id ? updatedExercise : ex))
        )
     }
+  // this one works because the delete button has the same id as the exercise id so it will delete that exercise only
     function handleDeleteExercise(id: number) {
         setExercises(exercises.filter((ex) => ex.id !== id))
-      }
+    }
   return (
     <div className="flex flex-col mx-auto max-w-[430px] min-h-svh px-[var(--space-23)] gap-2 ">
       <div className="flex justify-between items-center mt-4">
@@ -72,6 +84,11 @@ function Workout() {
         value={title}
         onChange={handleTitleChange}
       />
+
+      {/*this is the use of new array called exercises. at first the exercises array is empty but when we click on the add
+       new exercise then there is a new exercise added in the exercises array as you may have seen in the function called
+      handleexerciseChange and in this ondelete is a callback function which means the button is in the child component and the
+     function is in the parent component and it takes the argument of the exercise id so as to delete specifically that exc. */}
       {exercises.map((exercise) => (
         <Exercise
             key={exercise.id}
@@ -80,8 +97,11 @@ function Workout() {
             onDelete={() => handleDeleteExercise(exercise.id)}
           />
         ))}
-      <Button className="bg-brand mt-3 h-11"onClick={()=>(setShowExerciseSearch(true))}>Add new Exercise</Button>
 
+      {/*for the add new exercise button */}
+      <Button className="bg-brand mt-3 h-11" onClick={() => (setShowExerciseSearch(true))}>Add new Exercise</Button>
+
+      {/* this is for modal which shows all the exercise list and the user can search their exercise for them to add it*/}
       {showExerciseSearch && (
          <ExerciseSearch
            onClose={() => setShowExerciseSearch(false)}

@@ -4,133 +4,181 @@
     "name": "Bench Press (BarBell)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : false
+    "perLimb": false
   },
   {
     "id": 23,
     "name": "Bench Press (Dumbbell)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : true
+    "perLimb": true
   },
-
   {
     "id": 2,
     "name": "Deadlift",
     "type": "weightsAndReps",
-    "isBodyweight": false
+    "isBodyweight": false,
+    "perLimb": false
   },
-  { "id": 3, "name": "Squat", "type": "weightsAndReps", "isBodyweight": true },
+  {
+    "id": 3,
+    "name": "Squat",
+    "type": "weightsAndReps",
+    "isBodyweight": true,
+    "perLimb": false
+  },
   {
     "id": 4,
     "name": "Overhead Press (Barbell)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : false
+    "perLimb": false
   },
   {
     "id": 24,
     "name": "Overhead Press (Dumbbell)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : true
+    "perLimb": true
   },
   {
     "id": 5,
     "name": "Barbell Row",
     "type": "weightsAndReps",
-    "isBodyweight": false
+    "isBodyweight": false,
+    "perLimb": false
   },
   {
     "id": 6,
     "name": "Bicep Curl (Barbell)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : false
+    "perLimb": false
   },
   {
     "id": 25,
     "name": "Bicep Curl (Dumbbell)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : true
+    "perLimb": true
   },
   {
     "id": 26,
     "name": "Bicep Curl (Cable)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : true
+    "perLimb": true
   },
   {
     "id": 7,
     "name": "Tricep Pushdown",
     "type": "weightsAndReps",
-    "isBodyweight": false
+    "isBodyweight": false,
+    "perLimb": false
   },
   {
     "id": 8,
     "name": "Lat Pulldown",
     "type": "weightsAndReps",
-    "isBodyweight": false
+    "isBodyweight": false,
+    "perLimb": false
   },
   {
     "id": 9,
     "name": "Leg Press",
     "type": "weightsAndReps",
-    "isBodyweight": false
+    "isBodyweight": false,
+    "perLimb": false
   },
   {
     "id": 10,
     "name": "Shoulder Press (Dumbbell)",
     "type": "weightsAndReps",
     "isBodyweight": false,
-    "perLimb" : true
+    "perLimb": true
   },
-  { "id": 11, "name": "Plank", "type": "duration", "isBodyweight": true ,"perLimb" : true},
-  { "id": 12, "name": "Wall Sit", "type": "duration", "isBodyweight": true ,"perLimb" : true},
-  { "id": 13, "name": "Hollow Hold", "type": "duration", "isBodyweight": true },
-  { "id": 14, "name": "Dead Hang", "type": "duration", "isBodyweight": true ,"perLimb" : true},
+  {
+    "id": 11,
+    "name": "Plank",
+    "type": "duration",
+    "isBodyweight": true,
+    "perLimb": true
+  },
+  {
+    "id": 12,
+    "name": "Wall Sit",
+    "type": "duration",
+    "isBodyweight": true,
+    "perLimb": true
+  },
+  {
+    "id": 13,
+    "name": "Hollow Hold",
+    "type": "duration",
+    "isBodyweight": true,
+    "perLimb": false
+  },
+  {
+    "id": 14,
+    "name": "Dead Hang",
+    "type": "duration",
+    "isBodyweight": true,
+    "perLimb": true
+  },
   {
     "id": 15,
     "name": "Push Up",
     "type": "weightsAndReps",
     "isBodyweight": true,
-    "perLimb" : true
+    "perLimb": true
   },
   {
     "id": 16,
     "name": "Pull Up",
     "type": "weightsAndReps",
     "isBodyweight": true,
-    "perLimb" : true
+    "perLimb": true
   },
   {
     "id": 17,
     "name": "Chin Up",
     "type": "weightsAndReps",
     "isBodyweight": true,
-    "perLimb" : true
+    "perLimb": true
   },
-  { "id": 18, "name": "Dip", "type": "weightsAndReps", "isBodyweight": true ,"perLimb" : true},
+  {
+    "id": 18,
+    "name": "Dip",
+    "type": "weightsAndReps",
+    "isBodyweight": true,
+    "perLimb": true
+  },
   {
     "id": 19,
     "name": "Burpee",
     "type": "weightsAndReps",
-    "isBodyweight": true
+    "isBodyweight": true,
+    "perLimb": false
   },
   {
     "id": 20,
     "name": "Sit Up",
     "type": "weightsAndReps",
-    "isBodyweight": true
+    "isBodyweight": true,
+    "perLimb": false
   },
-  { "id": 21, "name": "Lunge", "type": "weightsAndReps", "isBodyweight": true,"perLimb" : true },
+  {
+    "id": 21,
+    "name": "Lunge",
+    "type": "weightsAndReps",
+    "isBodyweight": true,
+    "perLimb": true
+  },
   {
     "id": 22,
     "name": "Squat Jump",
     "type": "weightsAndReps",
     "isBodyweight": true,
-    "perLimb" : true
+    "perLimb": true
   }
 ]

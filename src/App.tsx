@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
-import { workouts, type Workout } from "./data/workouts"
+import { workouts, type Workout } from "./data/workouts" // we imported both the workouts and the type Workout and mind you that workouts is in the shape of Workout[]
 import {
   Card,
   CardDescription,
@@ -19,40 +19,54 @@ import { X } from "lucide-react"
 
 
 export function App() {
-
   const navigate = useNavigate()
   const handleClick = () => {
     const time = new Date().toLocaleString()
-    navigate("/Workout", { state: { time } })
+    navigate("/Workout", { state: { time } })// here we are navigating to workout page when we click on + button and state is a way so that we can transfer a data while navigating
   }
+  // this ref here we have used that when the user clicks for searching for title, the focus is already at the input and user will not have to click one more time
   const titleSearchRef = React.useRef<HTMLInputElement>(null)
+  // this here is used so that we know what the user is searching at a time like with date or title or nothing.
   const [searchMode, setSearchMode] = React.useState<"none" | "date" | "title">(
     "none"
   )
+
   const [dateSearched, setDateSearched] = React.useState<Date>()
   const [titleSearched, setTitleSearched] = React.useState("")
   const [showSearchBar, setShowSearchBar] = React.useState(false)
 
+  // this function is for the onchange of the title input , so that the ui keeps in sync with what the user is typing
   function handleTitleTypeForSearch(e: ChangeEvent<HTMLInputElement>) {
     setTitleSearched(e.target.value)
   }
+
+  //this function is for setting the searchmode to date and clear the title so that the user can search with either date or tile at a time
   function handleDateSearch() {
     setSearchMode("date")
     setTitleSearched("")
   }
+
+  //this function almost does the same work for title as the above function and it also flips the show search bar state
   function handleTitleSearch() {
     setSearchMode("title")
     setShowSearchBar((current) => !current)
     setDateSearched(undefined)
   }
+
+  //this function occurs when we click on the logged workouts and it takes us to workout page but with the prefilled workout data and that is
+  // done by passing it through state and in that we pass workout : workout or simply workout
   function handleWorkoutOpen(workout: Workout) {
     navigate("/Workout", { state: { workout } })
   }
 
+  // this is simple
   function handleSettings() {
     navigate("/Settings")
   }
 
+  //this here shows the workouts but there is a catch , so if the user is searching with date it will show only those
+  // workouts that are on that date and if not then if the user is searching with title it will show only those workouts
+  // and if none of that then it will show all the workouts that were logged.
   const filteredWorkouts = dateSearched
     ? workouts.filter(
         (workout) => workout.date === format(dateSearched, "yyyy-MM-dd")
@@ -63,6 +77,8 @@ export function App() {
         )
       : workouts
 
+
+  // this use effect is for when the component mounts and it is used for auto focusing for the user to save a click
   React.useEffect(() => {
     if (showSearchBar) {
       titleSearchRef.current?.focus()
@@ -76,7 +92,7 @@ export function App() {
           <Card className="relative p-4">
             <Calendar
               className="mt-6 [--cell-size:--spacing(9)]"
-              mode="single"
+              mode="single" // allows only one date selection and not a range
               selected={dateSearched}
               onSelect={(date) => {
                 setDateSearched(date)
@@ -153,10 +169,15 @@ export function App() {
           )}
         </header>
 
+        {/*in this section we handle all the 4 cases that the workouts can be displayed like, that are
+         1. all the workouts that are saved are shown
+        2. there are no workouts saved so show a text for the user to start logging the workouts
+       3. the user is searching with date for the workouts so those workouts only which are on that date
+      4.  the user is searching with title for the workouts so those workouts only which are with that title */}
         <section className="flex-1 overflow-y-auto">
           {workouts.length === 0 ? (
             <div className="flex h-full items-center justify-center px-8 text-center text-muted-foreground">
-              <p>Start logging — your workouts will show up here.</p>
+              <p>Start logging — your workouts will show up here.</p>{/*when there is no workout saved , this will show */}
             </div>
           ) : filteredWorkouts.length > 0 ? (
             [...filteredWorkouts]
@@ -200,6 +221,8 @@ export function App() {
             </div>
           )}
         </section>
+
+        {/*this is for the button which clears the date so that all the workouts are shown normally */}
         {dateSearched && (
           <Button
             className="absolute bottom-0 mb-4 self-center bg-brand"
@@ -209,6 +232,7 @@ export function App() {
           </Button>
         )}
 
+        {/* this is for the + button*/}
         <Button
           aria-label="Add workout"
           size="icon"

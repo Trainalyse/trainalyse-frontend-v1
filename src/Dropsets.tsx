@@ -31,13 +31,15 @@ function Dropsets({
 }: DropsetsProps) {
   const id = React.useId()
 
-  // the values for whichever limb is active — falls back to left, so Right
-  // starts as a copy of Left until it's edited
-  const limb = dropsetData[activeLimb] ?? dropsetData.left
+  // the values for whichever limb is active — empty when that limb has no data
+  // yet, so Left and Right stay fully independent (no mirroring)
+  const limb: LimbValues = dropsetData[activeLimb] ?? {}
 
   // rebuild the ACTIVE limb with whatever field changed, and hand it up to Set
   function update(patch: Partial<LimbValues>) {
-    onChange({ ...dropsetData, [activeLimb]: { ...limb, ...patch } })
+    const next = { ...dropsetData, [activeLimb]: { ...limb, ...patch } }
+    console.log("[Dropsets] activeLimb:", activeLimb, "| typed:", patch, "| new dropset:", next)
+    onChange(next)
   }
 
   // difficulty defaults to "normal" when nothing has been chosen yet

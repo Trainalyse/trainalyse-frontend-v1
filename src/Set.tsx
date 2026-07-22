@@ -6,7 +6,7 @@ import {
 
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { type WorkoutSet, type Dropset, type Limb } from "./data/workouts"
+import { type WorkoutSet, type Dropset,type Limb} from "./data/workouts"
 
 interface SetsProps {
 
@@ -18,7 +18,7 @@ interface SetsProps {
 }
 export type Difficulty = "normal" | "assisted" | "weighted"
 
-function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange }: SetsProps) {
+function Sets({ exerciseType, isBodyweight, setData,activeLimb, onChange }: SetsProps) {
   function handleAddDropset() {
     const newDropset: Dropset = { id: Date.now(), left: {} }
     // rebuild THIS set with the new dropset, and hand it up to Exercise
@@ -50,8 +50,8 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange }: Set
             <Dropsets
               exerciseType={exerciseType}
               isBodyweight={isBodyweight}
-              dropsetData={dropset}
-              activeLimb={activeLimb}
+                dropsetData={dropset}
+                activeLimb={activeLimb}
               onChange={handleDropsetChange}
               />
               <Button onClick={() => handleRemoveDropset(dropset.id)}>Delete</Button>
