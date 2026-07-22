@@ -3,28 +3,29 @@ import { type ExerciseType } from "./data/exercise"
 import {
   Card,
   CardContent,
-
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { type WorkoutSet, type Dropset,type Limb} from "./data/workouts"
 
-interface SetsProps {
 
+interface SetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
   setData: WorkoutSet
   activeLimb: Limb
   onChange: (updated: WorkoutSet) => void
 }
-export type Difficulty = "normal" | "assisted" | "weighted"
 
-function Sets({ exerciseType, isBodyweight, setData,activeLimb, onChange }: SetsProps) {
+
+function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange }: SetsProps) {
+  {/*this is for adding new dropset */}
   function handleAddDropset() {
     const newDropset: Dropset = { id: Date.now(), left: {} }
     // rebuild THIS set with the new dropset, and hand it up to Exercise
     onChange({ ...setData, dropsets: [...setData.dropsets, newDropset] })
   }
 
+//deletion of a dropset
   function handleRemoveDropset(id: number) {
 
     onChange({ ...setData, dropsets: setData.dropsets.filter((d)=>d.id!==id) })
@@ -43,7 +44,6 @@ function Sets({ exerciseType, isBodyweight, setData,activeLimb, onChange }: Sets
   return (
     <>
       <Card>
-
         <CardContent>
           {setData.dropsets.map((dropset) => (
             <div key={dropset.id}>

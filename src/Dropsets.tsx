@@ -2,7 +2,7 @@ import React from "react"
 import { type ChangeEvent } from "react"
 import { Input } from "@/components/ui/input"
 import { type ExerciseType } from "./data/exercise"
-import { type Difficulty } from "./Set"
+import { type Difficulty } from "./data/workouts"
 import { type Dropset ,type LimbValues,type Limb} from "./data/workouts"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
@@ -37,10 +37,12 @@ function Dropsets({
 
   // rebuild the ACTIVE limb with whatever field changed, and hand it up to Set
   function update(patch: Partial<LimbValues>) {
-    const next = { ...dropsetData, [activeLimb]: { ...limb, ...patch } }
-    console.log("[Dropsets] activeLimb:", activeLimb, "| typed:", patch, "| new dropset:", next)
-    onChange(next)
+    onChange({ ...dropsetData, [activeLimb]: { ...limb, ...patch } })
   }
+  {/*alright so for the above 2 sections this is the comment:-
+    The two lines in one sentence each:
+    - Line 1: "grab the active limb's values (or empty if it has none)."
+    - update: "rebuild the dropset with the active limb's values + the one field that changed, and hand it up." */}
 
   // difficulty defaults to "normal" when nothing has been chosen yet
   const difficulty: Difficulty = limb.difficulty ?? "normal"
@@ -89,14 +91,14 @@ function Dropsets({
                 type="number"
                 placeholder="enter the weights"
                 id={id + "-weight"}
-                value={limb.weights}
+                value={limb.weights ?? ""}
                 onChange={handleWeightsChange}
               />
               <Input
                 type="number"
                 placeholder="enter the reps"
                 id={id + "-reps"}
-                value={limb.reps}
+                value={limb.reps ?? ""}
                 onChange={handleRepsChange}
               />
             </>
@@ -109,7 +111,7 @@ function Dropsets({
                   type="number"
                   placeholder="enter the assisted weights"
                   id={id + "-assistedWeight"}
-                  value={limb.assistedWeights}
+                  value={limb.assistedWeights ?? ""}
                   onChange={handleAssistedWeightsChange}
                 />
               )}
@@ -118,7 +120,7 @@ function Dropsets({
                   type="number"
                   placeholder="enter the extra weights"
                   id={id + "-extraWeight"}
-                  value={limb.extraWeights}
+                  value={limb.extraWeights ?? ""}
                   onChange={handleExtraWeightsChange}
                 />
               )}
@@ -129,7 +131,7 @@ function Dropsets({
                 max={24}
                 placeholder="hours"
                 id={id + "-hours"}
-                value={limb.hours}
+                value={limb.hours ?? ""}
                 onChange={(e) => update({ hours: e.target.valueAsNumber })}
               />
               <Input
@@ -138,7 +140,7 @@ function Dropsets({
                 max={59}
                 placeholder="minutes"
                 id={id + "-minutes"}
-                value={limb.minutes}
+                value={limb.minutes ?? ""}
                 onChange={(e) => update({ minutes: e.target.valueAsNumber })}
               />
               <Input
@@ -147,7 +149,7 @@ function Dropsets({
                 max={59}
                 placeholder="seconds"
                 id={id + "-seconds"}
-                value={limb.seconds}
+                value={limb.seconds ?? ""}
                 onChange={(e) => update({ seconds: e.target.valueAsNumber })}
               />
             </>
@@ -160,7 +162,7 @@ function Dropsets({
                   type="number"
                   placeholder="enter the reps"
                   id={id + "-reps"}
-                  value={limb.reps}
+                  value={limb.reps ?? ""}
                   onChange={handleRepsChange}
                 />
               )}
@@ -170,14 +172,14 @@ function Dropsets({
                     type="number"
                     placeholder="enter the assisted weights"
                     id={id + "-assistedWeight"}
-                    value={limb.assistedWeights}
+                    value={limb.assistedWeights ?? ""}
                     onChange={handleAssistedWeightsChange}
                   />
                   <Input
                     type="number"
                     placeholder="enter the reps"
                     id={id + "-reps"}
-                    value={limb.reps}
+                    value={limb.reps ?? ""}
                     onChange={handleRepsChange}
                   />
                 </>
@@ -188,7 +190,7 @@ function Dropsets({
                     type="number"
                     placeholder="enter the extra weights"
                     id={id + "-extraWeight"}
-                    value={limb.extraWeights}
+                    value={limb.extraWeights ?? ""}
                     onChange={handleExtraWeightsChange}
                   />
 
@@ -196,7 +198,7 @@ function Dropsets({
                     type="number"
                     placeholder="enter the reps"
                     id={id + "-reps"}
-                    value={limb.reps}
+                    value={limb.reps ?? ""}
                     onChange={handleRepsChange}
                   />
                 </>
@@ -209,7 +211,7 @@ function Dropsets({
                 type="number"
                 placeholder="enter the weights"
                 id={id + "-weight"}
-                value={limb.weights}
+                value={limb.weights ?? ""}
                 onChange={handleWeightsChange}
               />
               <Input
@@ -218,7 +220,7 @@ function Dropsets({
                 max={24}
                 placeholder="hours"
                 id={id + "-hours"}
-                value={limb.hours}
+                value={limb.hours ?? ""}
                 onChange={(e) => update({ hours: e.target.valueAsNumber })}
               />
               <Input
@@ -227,7 +229,7 @@ function Dropsets({
                 max={59}
                 placeholder="minutes"
                 id={id + "-minutes"}
-                value={limb.minutes}
+                value={limb.minutes ?? ""}
                 onChange={(e) => update({ minutes: e.target.valueAsNumber })}
               />
               <Input
@@ -236,7 +238,7 @@ function Dropsets({
                 max={59}
                 placeholder="seconds"
                 id={id + "-seconds"}
-                value={limb.seconds}
+                value={limb.seconds ?? ""}
                 onChange={(e) => update({ seconds: e.target.valueAsNumber })}
               />
             </>
