@@ -31,6 +31,7 @@ function Workout() {
   //this is for the modal that will pop up when you click on add new exercise
   const [showExerciseSearch, setShowExerciseSearch] =
     React.useState<boolean>(false)
+  const[editingExerciseId, setEditingExerciseId] = React.useState<number | null>(null)
 
   // for the title change
   function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -39,16 +40,27 @@ function Workout() {
 
   //this is for confirming a selectedexercise and it takes a argument exercisename as a string
   function handleConfirmExercise(exerciseName: string) {
-      // start every new exercise with one set that already holds one dropset.
-      // `base` + offsets keep the three ids unique even when created in the same ms.
-      const base = Date.now()
-      const newExercise: WorkoutExercise = {
-        id: base,
-        exerciseName,
-        sets: [{ id: base + 1, dropsets: [{ id: base + 2 ,left: {}}] }],
-      }
-      setExercises([...exercises, newExercise])
-  }
+     const base = Date.now()
+     if (editingExerciseId !== null) {
+       // EDITING: keep the exercise's id, swap the name, reset its sets to one fresh set+dropset
+       setExercises(
+         exercises.map((ex) =>
+           ex.id === editingExerciseId
+             ? { ...ex, exerciseName, sets: [{ id: base + 1, dropsets: [{ id: base + 2, left: {} }] }] }
+             : ex
+         )
+       )
+       setEditingExerciseId(null)
+     } else {
+       // ADDING: brand-new exercise (your existing behavior)
+       const newExercise: WorkoutExercise = {
+         id: base,
+         exerciseName,
+         sets: [{ id: base + 1, dropsets: [{ id: base + 2, left: {} }] }],
+       }
+       setExercises([...exercises, newExercise])
+     }
+   }
 
   // alright this argument called updatedexercise this is being detected when any onchange function is being fired.
     function handleExerciseChange(updatedExercise: WorkoutExercise) {
@@ -94,7 +106,11 @@ function Workout() {
             key={exercise.id}
             exerciseData={exercise}
             onChange={handleExerciseChange}
-            onDelete={() => handleDeleteExercise(exercise.id)}
+          onDelete={() => handleDeleteExercise(exercise.id)}
+          onEdit={() => {
+                setEditingExerciseId(exercise.id)
+                setShowExerciseSearch(true)
+              }}
           />
         ))}
 
@@ -104,7 +120,10 @@ function Workout() {
       {/* this is for modal which shows all the exercise list and the user can search their exercise for them to add it*/}
       {showExerciseSearch && (
          <ExerciseSearch
-           onClose={() => setShowExerciseSearch(false)}
+         onClose={() => {
+             setShowExerciseSearch(false)
+             setEditingExerciseId(null)
+           }}
            onConfirm={handleConfirmExercise}
          />
        )}
