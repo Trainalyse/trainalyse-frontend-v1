@@ -102,15 +102,15 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
     <Card>
       <Accordion type="single" collapsible defaultValue="exercise">
         <AccordionItem value="exercise">
-          <CardHeader className="pl-3.5 pr-4">
-            <AccordionTrigger>
-              <CardTitle>{exerciseData.exerciseName}</CardTitle>
+          <CardHeader className="pl-3.5 pr-4 items-center">
+            <AccordionTrigger className="py-0">
+              <CardTitle className="text-lg font-bold">{exerciseData.exerciseName}</CardTitle>
             </AccordionTrigger>
-            <CardAction>
+            <CardAction className="self-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="-mr-3.5">
-                    <EllipsisVerticalIcon />
+                  <Button variant="ghost" size="icon">
+                    <EllipsisVerticalIcon className="translate-x-3.5 size-6" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -124,7 +124,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
             </CardAction>
           </CardHeader>
 
-          <AccordionContent className="h-auto">
+          <AccordionContent className="h-auto pb-0">
             <CardContent className="pl-3.5 pr-4 flex flex-col gap-[var(--space-md)]">
               {/*ok so the below sections logic is that if the perlimb is true so either dumbbell or cable(nnot barbell) so thats
                when the switch wil be provided and when the user clicks on the switch the flip happens in the component internally
@@ -180,7 +180,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                   onChange={handleSetChange}
                 />
               ))}</div>
-              <Button className="w-full" onClick={handleAddSet}>+ for Sets</Button>
+              <Button className="w-full" onClick={handleAddSet}>Add new Set</Button>
             </CardContent>
           </AccordionContent>
         </AccordionItem>
