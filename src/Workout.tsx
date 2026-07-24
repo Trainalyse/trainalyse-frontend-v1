@@ -73,13 +73,13 @@ function Workout() {
         setExercises(exercises.filter((ex) => ex.id !== id))
     }
   return (
-    <div className="flex flex-col mx-auto max-w-[430px] min-h-svh px-[var(--space-23)] gap-2 ">
+    <div className="flex flex-col mx-auto max-w-[430px] min-h-svh px-[var(--space-23)] gap-[var(--space-md)] ">
       <div className="flex justify-between items-center mt-4">
-        <Button className="pl-0 text-base " variant="ghost">
+        <Button className="pl-0 text-base text-destructive " variant="ghost" >
           <Trash2Icon className="size-5" />
           Discard
         </Button>
-        <Button className="bg-brand h-10 px-6 text-base">Save</Button>
+        <Button className="bg-brand h-10 px-4 text-base">Save</Button>
       </div>
       <div className="flex gap-3">
         <div className="flex flex-col gap-1 flex-1">
@@ -93,6 +93,7 @@ function Workout() {
       <Input
         type="text"
         placeholder="Enter your title"
+        className="pl-3.5"
         value={title}
         onChange={handleTitleChange}
       />
@@ -115,7 +116,7 @@ function Workout() {
         ))}
 
       {/*for the add new exercise button */}
-      <Button className="bg-brand mt-3 h-11" onClick={() => (setShowExerciseSearch(true))}>Add new Exercise</Button>
+      <Button className="bg-brand h-11" onClick={() => (setShowExerciseSearch(true))}>Add new Exercise</Button>
 
       {/* this is for modal which shows all the exercise list and the user can search their exercise for them to add it*/}
       {showExerciseSearch && (

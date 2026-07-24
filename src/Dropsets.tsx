@@ -1,10 +1,10 @@
 import React from "react"
 import { type ChangeEvent } from "react"
 import { Input } from "@/components/ui/input"
+import TimeInput from "@/components/TimeInput"
 import { type ExerciseType } from "./data/exercise"
 import { type Difficulty } from "./data/workouts"
 import { type Dropset ,type LimbValues,type Limb} from "./data/workouts"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
   Select,
   SelectContent,
@@ -67,7 +67,7 @@ function Dropsets({
       value={difficulty}
       onValueChange={(value) => update({ difficulty: value as Difficulty })}
     >
-      <SelectTrigger>
+      <SelectTrigger className="w-28">
         <SelectValue placeholder="Difficulty" />
       </SelectTrigger>
       <SelectContent>
@@ -78,173 +78,114 @@ function Dropsets({
     </Select>
   )
 
+  // shared styling for the borderless, centered numeric cells
+  const cellInputClass =
+    "w-17 mx-auto border-0 bg-transparent dark:bg-transparent text-center shadow-none focus-visible:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+
+  // Weights cell for BODYWEIGHT exercises — identical in weights&reps and duration.
+  // Normal adds no weight → a muted "-" that still holds the column width; Assisted/
+  // Weighted → the assist/extra weight is entered here. Always rendered so the
+  // column never moves when difficulty changes.
+  const bodyweightWeightsCell = (
+    <div className="text-center">
+      {difficulty === "normal" ? (
+        <span className="inline-block w-17 text-center text-muted-foreground">-</span>
+      ) : (
+        <Input
+          type="number"
+          placeholder="-"
+          className={cellInputClass}
+          id={id + "-weight"}
+          value={(difficulty === "assisted" ? limb.assistedWeights : limb.extraWeights) ?? ""}
+          onChange={difficulty === "assisted" ? handleAssistedWeightsChange : handleExtraWeightsChange}
+        />
+      )}
+    </div>
+  )
+
   return (
 
     <>
-      <Card>
-        <CardHeader></CardHeader>
-        <CardContent>
-          {isBodyweight && <p>Difficulty</p>}
-          {exerciseType === "weightsAndReps" && !isBodyweight && (
-            <>
-              <Input
-                type="number"
-                placeholder="enter the weights"
-                id={id + "-weight"}
-                value={limb.weights ?? ""}
-                onChange={handleWeightsChange}
-              />
-              <Input
-                type="number"
-                placeholder="enter the reps"
-                id={id + "-reps"}
-                value={limb.reps ?? ""}
-                onChange={handleRepsChange}
-              />
-            </>
-          )}
-          {exerciseType === "duration" && isBodyweight && (
-            <>
-              {difficultySelect}
-              {difficulty === "assisted" && (
-                <Input
-                  type="number"
-                  placeholder="enter the assisted weights"
-                  id={id + "-assistedWeight"}
-                  value={limb.assistedWeights ?? ""}
-                  onChange={handleAssistedWeightsChange}
-                />
-              )}
-              {difficulty === "weighted" && (
-                <Input
-                  type="number"
-                  placeholder="enter the extra weights"
-                  id={id + "-extraWeight"}
-                  value={limb.extraWeights ?? ""}
-                  onChange={handleExtraWeightsChange}
-                />
-              )}
-
-              <Input
-                type="number"
-                min={0}
-                max={24}
-                placeholder="hours"
-                id={id + "-hours"}
-                value={limb.hours ?? ""}
-                onChange={(e) => update({ hours: e.target.valueAsNumber })}
-              />
-              <Input
-                type="number"
-                min={0}
-                max={59}
-                placeholder="minutes"
-                id={id + "-minutes"}
-                value={limb.minutes ?? ""}
-                onChange={(e) => update({ minutes: e.target.valueAsNumber })}
-              />
-              <Input
-                type="number"
-                min={0}
-                max={59}
-                placeholder="seconds"
-                id={id + "-seconds"}
-                value={limb.seconds ?? ""}
-                onChange={(e) => update({ seconds: e.target.valueAsNumber })}
-              />
-            </>
-          )}
+      {/* Barbell: Weights + Reps */}
+      {exerciseType === "weightsAndReps" && !isBodyweight && (
+        <>
+          <div>
+            <Input
+              type="number"
+              placeholder="-"
+              className={cellInputClass}
+              id={id + "-weight"}
+              value={limb.weights ?? ""}
+              onChange={handleWeightsChange}
+            />
+          </div>
+          <div>
+            <Input
+              type="number"
+              placeholder="-"
+              className={cellInputClass}
+              id={id + "-reps"}
+              value={limb.reps ?? ""}
+              onChange={handleRepsChange}
+            />
+          </div>
+        </>
+      )}
+          {/* Bodyweight reps (pull-up): Difficulty + Weights + Reps */}
           {exerciseType === "weightsAndReps" && isBodyweight && (
             <>
-              {difficultySelect}
-              {difficulty === "normal" && (
+              <div>{difficultySelect}</div>
+              {bodyweightWeightsCell}
+              <div>
                 <Input
                   type="number"
-                  placeholder="enter the reps"
+                  placeholder="-"
+                  className={cellInputClass}
                   id={id + "-reps"}
                   value={limb.reps ?? ""}
                   onChange={handleRepsChange}
                 />
-              )}
-              {difficulty === "assisted" && (
-                <>
-                  <Input
-                    type="number"
-                    placeholder="enter the assisted weights"
-                    id={id + "-assistedWeight"}
-                    value={limb.assistedWeights ?? ""}
-                    onChange={handleAssistedWeightsChange}
-                  />
-                  <Input
-                    type="number"
-                    placeholder="enter the reps"
-                    id={id + "-reps"}
-                    value={limb.reps ?? ""}
-                    onChange={handleRepsChange}
-                  />
-                </>
-              )}
-              {difficulty === "weighted" && (
-                <>
-                  <Input
-                    type="number"
-                    placeholder="enter the extra weights"
-                    id={id + "-extraWeight"}
-                    value={limb.extraWeights ?? ""}
-                    onChange={handleExtraWeightsChange}
-                  />
-
-                  <Input
-                    type="number"
-                    placeholder="enter the reps"
-                    id={id + "-reps"}
-                    value={limb.reps ?? ""}
-                    onChange={handleRepsChange}
-                  />
-                </>
-              )}
+              </div>
             </>
           )}
+          {/* Duration (weighted): Weights + Time */}
           {exerciseType === "duration" && !isBodyweight && (
             <>
-              <Input
-                type="number"
-                placeholder="enter the weights"
-                id={id + "-weight"}
-                value={limb.weights ?? ""}
-                onChange={handleWeightsChange}
-              />
-              <Input
-                type="number"
-                min={0}
-                max={24}
-                placeholder="hours"
-                id={id + "-hours"}
-                value={limb.hours ?? ""}
-                onChange={(e) => update({ hours: e.target.valueAsNumber })}
-              />
-              <Input
-                type="number"
-                min={0}
-                max={59}
-                placeholder="minutes"
-                id={id + "-minutes"}
-                value={limb.minutes ?? ""}
-                onChange={(e) => update({ minutes: e.target.valueAsNumber })}
-              />
-              <Input
-                type="number"
-                min={0}
-                max={59}
-                placeholder="seconds"
-                id={id + "-seconds"}
-                value={limb.seconds ?? ""}
-                onChange={(e) => update({ seconds: e.target.valueAsNumber })}
-              />
+              <div>
+                <Input
+                  type="number"
+                  placeholder="-"
+                  className={cellInputClass}
+                  id={id + "-weight"}
+                  value={limb.weights ?? ""}
+                  onChange={handleWeightsChange}
+                />
+              </div>
+              <div>
+                <TimeInput
+                  hours={limb.hours}
+                  minutes={limb.minutes}
+                  seconds={limb.seconds}
+                  onChange={(v) => update(v)}
+                />
+              </div>
             </>
           )}
-        </CardContent>
-      </Card>
+          {/* Duration bodyweight (plank): Difficulty + Weights + Time */}
+          {exerciseType === "duration" && isBodyweight && (
+            <>
+              <div>{difficultySelect}</div>
+              {bodyweightWeightsCell}
+              <div>
+                <TimeInput
+                  hours={limb.hours}
+                  minutes={limb.minutes}
+                  seconds={limb.seconds}
+                  onChange={(v) => update(v)}
+                />
+              </div>
+            </>
+          )}
     </>
   )
 }

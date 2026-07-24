@@ -1,5 +1,4 @@
 import { format, parseISO } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card } from "./ui/card"
@@ -28,11 +27,8 @@ export function DatePickerDemo({
   return (
     <>
 
-        <Button variant="outline" onClick={()=>(setOpen(true))}>
-
-            <CalendarIcon />
+        <Button variant="outline" onClick={()=>(setOpen(true))} >
             {date ? format(date, "EEE, d MMMM yyyy") : <span>Pick a date</span>}
-
         </Button>
         {open  && (
           <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">

@@ -1,29 +1,28 @@
 import Dropsets from "./Dropsets"
+import { Fragment } from "react"
 import { type ExerciseType } from "./data/exercise"
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { type WorkoutSet, type Dropset,type Limb} from "./data/workouts"
+import { type WorkoutSet, type Dropset, type Limb } from "./data/workouts"
 
 
 interface SetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
+  number : number
   setData: WorkoutSet
   activeLimb: Limb
   onChange: (updated: WorkoutSet) => void
 }
 
 
-function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange }: SetsProps) {
+function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number }: SetsProps) {
   {/*this is for adding new dropset */}
   function handleAddDropset() {
     const newDropset: Dropset = { id: Date.now(), left: {} }
     // rebuild THIS set with the new dropset, and hand it up to Exercise
     onChange({ ...setData, dropsets: [...setData.dropsets, newDropset] })
   }
+
 
 //deletion of a dropset
   function handleRemoveDropset(id: number) {
@@ -43,30 +42,35 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange }: Set
 
   return (
     <>
-      <Card>
-        <CardContent>
-          {setData.dropsets.map((dropset) => (
-            <div key={dropset.id}>
-            <Dropsets
-              exerciseType={exerciseType}
-              isBodyweight={isBodyweight}
-                dropsetData={dropset}
-                activeLimb={activeLimb}
-              onChange={handleDropsetChange}
-              />
-              <Button onClick={() => handleRemoveDropset(dropset.id)}>Delete</Button>
-            </div>
-          ))}
-          <br />
-          {/* this is the button to add a new drop set */}
-          {exerciseType && (
-            <Button onClick={handleAddDropset}>+ for drop sets</Button>
-          )}
-
-          {/* this is the button to remove a drop set, only shown if there are drop sets */}
-
-        </CardContent>
-      </Card>
+      {setData.dropsets.map((dropset, i) => (
+        <Fragment key={dropset.id}>
+          {/* Set# cell — number on the first dropset of the set, empty on the rest */}
+          <div className="self-center text-center">{i === 0 ? number : ""}</div>
+          {/* Dropsets renders the value cells (weights, reps) */}
+          <Dropsets
+            exerciseType={exerciseType}
+            isBodyweight={isBodyweight}
+            dropsetData={dropset}
+            activeLimb={activeLimb}
+            onChange={handleDropsetChange}
+          />
+          {/* delete cell */}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              aria-label="delete dropset"
+              onClick={() => handleRemoveDropset(dropset.id)}
+              className="size-4 rounded-full bg-white/80"
+            />
+          </div>
+        </Fragment>
+      ))}
+      {/* + for drop sets spans the whole grid row */}
+      {exerciseType && (
+        <Button variant="outline" className="col-span-full w-3/4 justify-self-center" onClick={handleAddDropset}>
+          + for drop sets
+        </Button>
+      )}
     </>
   )
 }
