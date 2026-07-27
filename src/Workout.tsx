@@ -81,19 +81,19 @@ function Workout() {
         </Button>
         <Button className="bg-brand h-10 px-4 text-base">Save</Button>
       </div>
-      <div className="flex gap-3">
-        <div className="flex flex-col gap-1 flex-1">
+      <div className="flex gap-6">
+        <div className="flex flex-col gap-2 flex-1">
         <Label className="text-muted-foreground">Date</Label>
       <DatePickerDemo
         initialDate={passedWorkout?.date ?? format(new Date(), "yyyy-MM-dd")}
          /></div>
-        <div className="flex flex-col gap-1 flex-1" >
+        <div className="flex flex-col gap-2 flex-1" >
         <Label className="text-muted-foreground">Time</Label>
       <Timesetter value={pickTime} onChange={setPickTime} /></div></div>
       <Input
         type="text"
         placeholder="Enter your title"
-        className="pl-3.5"
+        className="pl-3.5 h-10"
         value={title}
         onChange={handleTitleChange}
       />

@@ -67,7 +67,7 @@ function Dropsets({
       value={difficulty}
       onValueChange={(value) => update({ difficulty: value as Difficulty })}
     >
-      <SelectTrigger className="w-28">
+      <SelectTrigger className="w-26">
         <SelectValue placeholder="Difficulty" />
       </SelectTrigger>
       <SelectContent>
@@ -89,7 +89,7 @@ function Dropsets({
   const bodyweightWeightsCell = (
     <div className="text-center">
       {difficulty === "normal" ? (
-        <span className="inline-block w-17 text-center text-muted-foreground">-</span>
+        <span className="inline-block w-17 text-center text-muted-foreground">NA</span>
       ) : (
         <Input
           type="number"

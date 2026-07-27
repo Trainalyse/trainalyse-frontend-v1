@@ -164,9 +164,9 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                 )}
 
               <div className={`grid ${gridConfig.template} items-center gap-x-[var(--space-md)] gap-y-[var(--space-lg)]`}>
-                  <div className="text-center">Set</div>
+                  <div className="text-center ">Set</div>
                   {gridConfig.headers.map((label) => (
-                    <div key={label} className="text-center">{label}</div>
+                    <div key={label} className="text-center ">{label}</div>
                   ))}
                   <div />
               {exerciseData.sets.map((set,index) => (
@@ -177,6 +177,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                   isBodyweight={isBodyweight}
                   setData={set}
                   activeLimb={activeLimb}
+                  isOnlySet={exerciseData.sets.length === 1}
                   onChange={handleSetChange}
                 />
               ))}</div>
