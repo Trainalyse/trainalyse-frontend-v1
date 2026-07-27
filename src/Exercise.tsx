@@ -106,11 +106,11 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
             <AccordionTrigger className="py-0">
               <CardTitle className="text-lg font-bold">{exerciseData.exerciseName}</CardTitle>
             </AccordionTrigger>
-            <CardAction className="self-center">
+            <CardAction className="self-center row-span-1">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <EllipsisVerticalIcon className="translate-x-3.5 size-6" />
+                  <Button variant="ghost" size="icon" className="translate-x-3.5">
+                    <EllipsisVerticalIcon className="size-6" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
