@@ -135,6 +135,9 @@ function Graphs() {
       {selectedExercise && !hasInstances && (
         <p>You have not done this exercise yet.</p>
       )}
+      {/* volume and endurance are the only charts that differ by exercise type.
+          everything below them depends on bodyweight/difficulty instead, so the
+          type check would tell us nothing and is left out. */}
       {showCharts && selectedExerciseType === "weightsAndReps" && (
         <>
           <h3 className="text-sm font-medium">Volume</h3>
@@ -153,89 +156,6 @@ function Graphs() {
           </ChartContainer>
         </>
       )}
-      {showCharts &&
-        selectedExerciseType === "weightsAndReps" &&
-        !selectedExerciseIsBodyweight && (
-          <>
-            <h3 className="text-sm font-medium">Max Weight</h3>
-            <ChartContainer
-              config={chartConfigForMaxWeight}
-              className="min-h-75 w-full"
-            >
-              <LineChart data={maxWeightData} margin={chartMargin}>
-                <XAxis dataKey="label" label={xAxisLabel} />
-                <YAxis label={yAxisLabel("Weight")} />
-                <Line dataKey="maxWeight" stroke="var(--color-maxWeight)" />
-                <Line dataKey="maxWeightLeft" stroke="var(--color-maxWeightLeft)" />
-                <Line dataKey="maxWeightRight" stroke="var(--color-maxWeightRight)" />
-                <ChartTooltip content={<ChartTooltipContent />} />
-              </LineChart>
-            </ChartContainer>
-          </>
-        )}
-      {showCharts &&
-        selectedExerciseType === "weightsAndReps" &&
-        selectedExerciseIsBodyweight && <>{difficultySelect}</>}
-      {showCharts &&
-        selectedExerciseType === "weightsAndReps" &&
-        selectedExerciseIsBodyweight &&
-        selectedExerciseDifficulty === "assisted" && (
-          <>
-            <h3 className="text-sm font-medium">Max Assisted Weight</h3>
-            <ChartContainer
-              config={chartConfigForMaxAssistedWeight}
-              className="min-h-75 w-full"
-            >
-              <LineChart data={maxAssistedWeightData} margin={chartMargin}>
-                <XAxis dataKey="label" label={xAxisLabel} />
-                <YAxis label={yAxisLabel("Max Assisted Weight")} />
-                <Line
-                  dataKey="maxAssistedWeight"
-                  stroke="var(--color-maxAssistedWeight)"
-                />
-                <Line
-                  dataKey="maxAssistedWeightLeft"
-                  stroke="var(--color-maxAssistedWeightLeft)"
-                />
-                <Line
-                  dataKey="maxAssistedWeightRight"
-                  stroke="var(--color-maxAssistedWeightRight)"
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-              </LineChart>
-            </ChartContainer>
-          </>
-        )}
-      {showCharts &&
-        selectedExerciseType === "weightsAndReps" &&
-        selectedExerciseIsBodyweight &&
-        selectedExerciseDifficulty === "weighted" && (
-          <>
-            <h3 className="text-sm font-medium">Max Extra Weight</h3>
-            <ChartContainer
-              config={chartConfigForMaxExtraWeight}
-              className="min-h-75 w-full"
-            >
-              <LineChart data={maxExtraWeightData} margin={chartMargin}>
-                <XAxis dataKey="label" label={xAxisLabel} />
-                <YAxis label={yAxisLabel("Max Extra Weight")} />
-                <Line
-                  dataKey="maxExtraWeight"
-                  stroke="var(--color-maxExtraWeight)"
-                />
-                <Line
-                  dataKey="maxExtraWeightLeft"
-                  stroke="var(--color-maxExtraWeightLeft)"
-                />
-                <Line
-                  dataKey="maxExtraWeightRight"
-                  stroke="var(--color-maxExtraWeightRight)"
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-              </LineChart>
-            </ChartContainer>
-          </>
-        )}
       {showCharts && selectedExerciseType === "duration" && (
         <>
           <h3 className="text-sm font-medium">Endurance</h3>
@@ -254,33 +174,35 @@ function Graphs() {
           </ChartContainer>
         </>
       )}
+      {showCharts && !selectedExerciseIsBodyweight && (
+        <>
+          <h3 className="text-sm font-medium">Max Weight</h3>
+          <ChartContainer
+            config={chartConfigForMaxWeight}
+            className="min-h-75 w-full"
+          >
+            <LineChart data={maxWeightData} margin={chartMargin}>
+              <XAxis dataKey="label" label={xAxisLabel} />
+              <YAxis label={yAxisLabel("Weight")} />
+              <Line dataKey="maxWeight" stroke="var(--color-maxWeight)" />
+              <Line dataKey="maxWeightLeft" stroke="var(--color-maxWeightLeft)" />
+              <Line dataKey="maxWeightRight" stroke="var(--color-maxWeightRight)" />
+              <ChartTooltip content={<ChartTooltipContent />} />
+            </LineChart>
+          </ChartContainer>
+        </>
+      )}
+      {showCharts && selectedExerciseIsBodyweight && <>{difficultySelect}</>}
       {showCharts &&
-        selectedExerciseType === "duration" &&
-        !selectedExerciseIsBodyweight && (
-          <>
-            <h3 className="text-sm font-medium">Max Weight</h3>
-            <ChartContainer
-              config={chartConfigForMaxWeight}
-              className="min-h-75 w-full"
-            >
-              <LineChart data={maxWeightData} margin={chartMargin}>
-                <XAxis dataKey="label" label={xAxisLabel} />
-                <YAxis label={yAxisLabel("Weight")} />
-                <Line dataKey="maxWeight" stroke="var(--color-maxWeight)" />
-                <Line dataKey="maxWeightLeft" stroke="var(--color-maxWeightLeft)" />
-                <Line dataKey="maxWeightRight" stroke="var(--color-maxWeightRight)" />
-                <ChartTooltip content={<ChartTooltipContent />} />
-              </LineChart>
-            </ChartContainer>
-          </>
-        )}
-      {showCharts &&
-        selectedExerciseType === "duration" &&
-        selectedExerciseIsBodyweight && <>{difficultySelect}</>}
-      {showCharts &&
-        selectedExerciseType === "duration" &&
         selectedExerciseIsBodyweight &&
-        selectedExerciseDifficulty === "assisted" && (
+        selectedExerciseDifficulty === "assisted" &&
+        // done the exercise, but never assisted, so this chart has nothing to draw
+        (maxAssistedWeightData.length === 0 ? (
+          <p>
+            You have not done this exercise at {selectedExerciseDifficulty}{" "}
+            difficulty.
+          </p>
+        ) : (
           <>
             <h3 className="text-sm font-medium">Max Assisted Weight</h3>
             <ChartContainer
@@ -306,11 +228,17 @@ function Graphs() {
               </LineChart>
             </ChartContainer>
           </>
-        )}
+        ))}
       {showCharts &&
-        selectedExerciseType === "duration" &&
         selectedExerciseIsBodyweight &&
-        selectedExerciseDifficulty === "weighted" && (
+        selectedExerciseDifficulty === "weighted" &&
+        // done the exercise, but never weighted, so this chart has nothing to draw
+        (maxExtraWeightData.length === 0 ? (
+          <p>
+            You have not done this exercise at {selectedExerciseDifficulty}{" "}
+            difficulty.
+          </p>
+        ) : (
           <>
             <h3 className="text-sm font-medium">Max Extra Weight</h3>
             <ChartContainer
@@ -336,7 +264,7 @@ function Graphs() {
               </LineChart>
             </ChartContainer>
           </>
-        )}
+        ))}
     </>
   )
 }
