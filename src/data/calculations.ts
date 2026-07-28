@@ -10,10 +10,27 @@ import { workouts } from "./workouts"
 import { parse } from "date-fns"
 import { format, parseISO } from "date-fns"
 
-// an unfilled limb (e.g. Right before it's edited) counts as nothing — not as a
-// copy of the other limb. Left and Right are independent.
+//it is a new variable which is like limbvalues but it is empty
 const EMPTY_LIMB: LimbValues = {}
 
+
+//so this is a function which has vairable like dropset which is like Dropset and then catalogperlimb is like
+// whether the switch should be provided or not and then the enabled basically is the switch is on or not
+// and this function will return the values which would be either like limbvalues or null and inside the function
+// if the switch is not there then return null for the right side ,else if the enabled is on then return the values
+// input in the right or if they are not just use the empty values and if the switch is off , then just duplicate
+// whatever there is on the left.
+function effectiveRight(
+  dropset: Dropset,
+  catalogPerLimb: boolean,
+  enabled: boolean
+): LimbValues | null {
+  if (!catalogPerLimb) return null
+  return enabled ? (dropset.right ?? EMPTY_LIMB) : dropset.left
+}
+
+//this function takes the values that are input and just the smallest unit for the volume calculation, so it is basically
+// calculating the volume of one side dropset across all cases where the volume can be calculated
 function limbVolume(limb: LimbValues, isBodyweight: boolean) {
   if (!isBodyweight) {
     return (limb.weights ?? 0) * (limb.reps ?? 0)
@@ -29,43 +46,54 @@ function limbVolume(limb: LimbValues, isBodyweight: boolean) {
   return 0
 }
 
+// this function is basically calculating dropset volume for both left and right side
+// so the above function is for only one side and this function is for both sides combined.
 export function dropsetVolume(
   dropset: Dropset,
   isBodyweight: boolean,
-  perLimb: boolean
+  catalogPerLimb: boolean,
+  enabled: boolean
 ) {
   let total = limbVolume(dropset.left, isBodyweight)
-  if (perLimb) {
-    total += limbVolume(dropset.right ?? EMPTY_LIMB, isBodyweight)
+  const right = effectiveRight(dropset, catalogPerLimb, enabled)
+  if (right) {
+    total += limbVolume(right, isBodyweight)
   }
   return total
 }
 
+//just a set volume
 export function setVolume(
   set: WorkoutSet,
   isBodyweight: boolean,
-  perLimb: boolean
+  catalogPerLimb: boolean,
+  enabled: boolean
 ) {
   let total = 0
   for (const dropset of set.dropsets) {
-    total += dropsetVolume(dropset, isBodyweight, perLimb)
+    total += dropsetVolume(dropset, isBodyweight, catalogPerLimb, enabled)
   }
   return total
 }
 
+//just a exercise volume
 export function exerciseVolume(exercise: WorkoutExercise) {
   const matchingExercise = exercises.find(
     (e) => e.name === exercise.exerciseName
   )
   const isBodyweight = matchingExercise?.isBodyweight ?? false
-  const perLimb = exercise.perLimbEnabled ?? false
+  // catalogPerLimb = can this exercise EVER be split (dumbbell/cable)?; enabled =
+  // did the user turn the switch ON for this instance? Both feed effectiveRight.
+  const catalogPerLimb = matchingExercise?.perLimb ?? false
+  const enabled = exercise.perLimbEnabled ?? false
   let total = 0
   for (const set of exercise.sets) {
-    total += setVolume(set, isBodyweight, perLimb)
+    total += setVolume(set, isBodyweight, catalogPerLimb, enabled)
   }
   return total
 }
 
+//workout volume - dont know what is the use for this
 export function workoutVolume(workout: Workout) {
   let total = 0
   for (const exercise of workout.exercises) {
@@ -74,6 +102,7 @@ export function workoutVolume(workout: Workout) {
   return total
 }
 
+// this is just like limbvolume but instead its for endurance.
 function limbEndurance(limb: LimbValues, isBodyweight: boolean) {
   const seconds =
     (limb.hours ?? 0) * 3600 + (limb.minutes ?? 0) * 60 + (limb.seconds ?? 0)
@@ -81,7 +110,10 @@ function limbEndurance(limb: LimbValues, isBodyweight: boolean) {
     return (limb.weights ?? 0) * seconds
   } else {
     if (limb.difficulty === "normal") {
-      return seconds
+      // bodyweight × seconds — consistent with assisted/weighted below (and with
+      // volume's bodyweight × reps), so all three difficulties share the same
+      // kg·seconds unit and combine cleanly on one endurance graph.
+      return user.weight * seconds
     } else if (limb.difficulty === "assisted") {
       return (user.weight - (limb.assistedWeights ?? 0)) * seconds
     } else if (limb.difficulty === "weighted") {
@@ -91,43 +123,51 @@ function limbEndurance(limb: LimbValues, isBodyweight: boolean) {
   return 0
 }
 
+//this is some of both sides left and right for dropset, just like dropsetvolume
 export function dropsetEndurance(
   dropset: Dropset,
   isBodyweight: boolean,
-  perLimb: boolean
+  catalogPerLimb: boolean,
+  enabled: boolean
 ) {
   let total = limbEndurance(dropset.left, isBodyweight)
-  if (perLimb) {
-    total += limbEndurance(dropset.right ?? EMPTY_LIMB, isBodyweight)
+  const right = effectiveRight(dropset, catalogPerLimb, enabled)
+  if (right) {
+    total += limbEndurance(right, isBodyweight)
   }
   return total
 }
 
+//set endurance
 export function setEndurance(
   set: WorkoutSet,
   isBodyweight: boolean,
-  perLimb: boolean
+  catalogPerLimb: boolean,
+  enabled: boolean
 ) {
   let total = 0
   for (const dropset of set.dropsets) {
-    total += dropsetEndurance(dropset, isBodyweight, perLimb)
+    total += dropsetEndurance(dropset, isBodyweight, catalogPerLimb, enabled)
   }
   return total
 }
 
+//exercise endurance
 export function exerciseEndurance(exercise: WorkoutExercise) {
   let total = 0
   const matchingExercise = exercises.find(
     (e) => e.name === exercise.exerciseName
   )
   const isBodyweight = matchingExercise?.isBodyweight ?? false
-  const perLimb = exercise.perLimbEnabled ?? false
+  const catalogPerLimb = matchingExercise?.perLimb ?? false
+  const enabled = exercise.perLimbEnabled ?? false
   for (const set of exercise.sets) {
-    total += setEndurance(set, isBodyweight, perLimb)
+    total += setEndurance(set, isBodyweight, catalogPerLimb, enabled)
   }
   return total
 }
 
+//whole workout endurance, dont know yet what is the use of this just like workout volume
 export function workoutEndurance(workout: Workout) {
   let total = 0
   for (const exercise of workout.exercises) {
@@ -136,6 +176,7 @@ export function workoutEndurance(workout: Workout) {
   return total
 }
 
+//its like gathering all the instances of one exercise in one array
 export function getExerciseInstance(name: string) {
   const result = []
   for (const workout of workouts) {
@@ -168,6 +209,8 @@ export function getExerciseInstance(name: string) {
   })
 }
 
+// so this is for the cases where we have to calculate the volume for both limbs separately , the earlier function for
+// the exercise volume was for the cases where there was no swtich or the switch was off.
 function exerciseVolumeForLimb(exercise: WorkoutExercise, limb: Limb) {
   const matchingExercise = exercises.find(
     (e) => e.name === exercise.exerciseName
@@ -182,13 +225,16 @@ function exerciseVolumeForLimb(exercise: WorkoutExercise, limb: Limb) {
   return total
 }
 
+//this is for getting volume for each and every instance that is stored in that results array
+// in getting the instance function.
 export function instanceVolume(name: string) {
   const instances = getExerciseInstance(name)
   const chartPoint = instances.map((inst) => {
     const perLimb = inst.exercise.perLimbEnabled ?? false
     return {
       label: inst.label,
-      volume: exerciseVolume(inst.exercise),
+      // switch on = left/right only, switch off = one total line. never both.
+      volume: perLimb ? undefined : exerciseVolume(inst.exercise),
       volumeLeft: perLimb
         ? exerciseVolumeForLimb(inst.exercise, "left")
         : undefined,
@@ -200,27 +246,40 @@ export function instanceVolume(name: string) {
   return chartPoint
 }
 
+//this is for getting the max wewight lifted based on the switch is on or off, if the switch is not provided or it is
+// off then the max weight is calculated from the left and if it is on then both limbs are accounted for.
+// works for both exercise types - the weights field is the same whether its reps or duration, so the
+// duration charts use this too. the type gate lives in Graphs, not here.
 export function instanceMaxWeight(name: string) {
   const instances = getExerciseInstance(name)
   return instances.map((inst) => {
-    const perLimb = inst.exercise.perLimbEnabled ?? false
+    const matchingExercise = exercises.find(
+      (e) => e.name === inst.exercise.exerciseName
+    )
+    const catalogPerLimb = matchingExercise?.perLimb ?? false
+    const enabled = inst.exercise.perLimbEnabled ?? false
     let left = 0
     let right = 0
     for (const set of inst.exercise.sets) {
       for (const dropset of set.dropsets) {
         left = Math.max(left, dropset.left.weights ?? 0)
-        right = Math.max(right, (dropset.right ?? EMPTY_LIMB).weights ?? 0)
+        // effectiveRight handles barbell (null) / switch off (mirror) / switch on
+        const r = effectiveRight(dropset, catalogPerLimb, enabled)
+        if (r) {
+          right = Math.max(right, r.weights ?? 0)
+        }
       }
     }
     return {
       label: inst.label,
-      maxWeight: perLimb ? undefined : left,
-      maxWeightLeft: perLimb ? left : undefined,
-      maxWeightRight: perLimb ? right : undefined,
+      maxWeight: enabled ? undefined : left,
+      maxWeightLeft: enabled ? left : undefined,
+      maxWeightRight: enabled ? right : undefined,
     }
   })
 }
 
+//
 export function instanceTotalReps(name: string) {
   const instances = getExerciseInstance(name)
   return instances
@@ -230,7 +289,11 @@ export function instanceTotalReps(name: string) {
       )
     )
     .map((inst) => {
-      const perLimb = inst.exercise.perLimbEnabled ?? false
+      const matchingExercise = exercises.find(
+        (e) => e.name === inst.exercise.exerciseName
+      )
+      const catalogPerLimb = matchingExercise?.perLimb ?? false
+      const enabled = inst.exercise.perLimbEnabled ?? false
       let left = 0
       let right = 0
       for (const set of inst.exercise.sets) {
@@ -238,21 +301,26 @@ export function instanceTotalReps(name: string) {
           if (dropset.left.difficulty === "normal") {
             left += dropset.left.reps ?? 0
           }
-          const r = dropset.right ?? EMPTY_LIMB
-          if (r.difficulty === "normal") {
+          // right already accounts for mirror (switch off) / none (barbell)
+          const r = effectiveRight(dropset, catalogPerLimb, enabled)
+          if (r && r.difficulty === "normal") {
             right += r.reps ?? 0
           }
         }
       }
       return {
         label: inst.label,
-        totalReps: perLimb ? left + right : left,
-        totalRepsLeft: perLimb ? left : undefined,
-        totalRepsRight: perLimb ? right : undefined,
+        // right is 0 (barbell), a left-mirror (switch off), or the real right
+        // (switch on), so the combined total is just left + right in every case
+        totalReps: left + right,
+        // split lines only when the switch is genuinely ON (a real imbalance)
+        totalRepsLeft: enabled ? left : undefined,
+        totalRepsRight: enabled ? right : undefined,
       }
     })
 }
 
+//this is for max assistance taken. used by both exercise types, same as instanceMaxWeight.
 export function instanceMaxAssistedWeight(name: string) {
   const instances = getExerciseInstance(name)
   return instances
@@ -262,7 +330,11 @@ export function instanceMaxAssistedWeight(name: string) {
       )
     )
     .map((inst) => {
-      const perLimb = inst.exercise.perLimbEnabled ?? false
+      const matchingExercise = exercises.find(
+        (e) => e.name === inst.exercise.exerciseName
+      )
+      const catalogPerLimb = matchingExercise?.perLimb ?? false
+      const enabled = inst.exercise.perLimbEnabled ?? false
       let left = 0
       let right = 0
       for (const set of inst.exercise.sets) {
@@ -270,21 +342,23 @@ export function instanceMaxAssistedWeight(name: string) {
           if (dropset.left.difficulty === "assisted") {
             left = Math.max(left, dropset.left.assistedWeights ?? 0)
           }
-          const r = dropset.right ?? EMPTY_LIMB
-          if (r.difficulty === "assisted") {
+          // effectiveRight handles barbell (null) / switch off (mirror) / switch on
+          const r = effectiveRight(dropset, catalogPerLimb, enabled)
+          if (r && r.difficulty === "assisted") {
             right = Math.max(right, r.assistedWeights ?? 0)
           }
         }
       }
       return {
         label: inst.label,
-        maxAssistedWeight: perLimb ? undefined : left,
-        maxAssistedWeightLeft: perLimb ? left : undefined,
-        maxAssistedWeightRight: perLimb ? right : undefined,
+        maxAssistedWeight: enabled ? undefined : left,
+        maxAssistedWeightLeft: enabled ? left : undefined,
+        maxAssistedWeightRight: enabled ? right : undefined,
       }
     })
 }
 
+//this is for max extra weight lifted. used by both exercise types, same as instanceMaxWeight.
 export function instanceMaxExtraWeight(name: string) {
   const instances = getExerciseInstance(name)
   return instances
@@ -294,7 +368,11 @@ export function instanceMaxExtraWeight(name: string) {
       )
     )
     .map((inst) => {
-      const perLimb = inst.exercise.perLimbEnabled ?? false
+      const matchingExercise = exercises.find(
+        (e) => e.name === inst.exercise.exerciseName
+      )
+      const catalogPerLimb = matchingExercise?.perLimb ?? false
+      const enabled = inst.exercise.perLimbEnabled ?? false
       let left = 0
       let right = 0
       for (const set of inst.exercise.sets) {
@@ -302,21 +380,23 @@ export function instanceMaxExtraWeight(name: string) {
           if (dropset.left.difficulty === "weighted") {
             left = Math.max(left, dropset.left.extraWeights ?? 0)
           }
-          const r = dropset.right ?? EMPTY_LIMB
-          if (r.difficulty === "weighted") {
+          // effectiveRight handles barbell (null) / switch off (mirror) / switch on
+          const r = effectiveRight(dropset, catalogPerLimb, enabled)
+          if (r && r.difficulty === "weighted") {
             right = Math.max(right, r.extraWeights ?? 0)
           }
         }
       }
       return {
         label: inst.label,
-        maxExtraWeight: perLimb ? undefined : left,
-        maxExtraWeightLeft: perLimb ? left : undefined,
-        maxExtraWeightRight: perLimb ? right : undefined,
+        maxExtraWeight: enabled ? undefined : left,
+        maxExtraWeightLeft: enabled ? left : undefined,
+        maxExtraWeightRight: enabled ? right : undefined,
       }
     })
 }
 
+//this is same exercisevolumeforlimb function , just takes into account for the cases in which the switch is on.
 function exerciseEnduranceForLimb(exercise: WorkoutExercise, limb: Limb) {
   const matchingExercise = exercises.find(
     (e) => e.name === exercise.exerciseName
@@ -331,13 +411,15 @@ function exerciseEnduranceForLimb(exercise: WorkoutExercise, limb: Limb) {
   return total
 }
 
+//this is for the chartline same as instancevolume function
 export function instanceEndurance(name: string) {
   const instances = getExerciseInstance(name)
   const chartPoint = instances.map((inst) => {
     const perLimb = inst.exercise.perLimbEnabled ?? false
     return {
       label: inst.label,
-      endurance: exerciseEndurance(inst.exercise),
+      // switch on = left/right only, switch off = one total line. never both.
+      endurance: perLimb ? undefined : exerciseEndurance(inst.exercise),
       enduranceLeft: perLimb
         ? exerciseEnduranceForLimb(inst.exercise, "left")
         : undefined,
@@ -349,27 +431,6 @@ export function instanceEndurance(name: string) {
   return chartPoint
 }
 
-export function instanceEnduranceMaxWeight(name: string) {
-  const instances = getExerciseInstance(name)
-  return instances.map((inst) => {
-    const perLimb = inst.exercise.perLimbEnabled ?? false
-    let left = 0
-    let right = 0
-    for (const set of inst.exercise.sets) {
-      for (const dropset of set.dropsets) {
-        left = Math.max(left, dropset.left.weights ?? 0)
-        right = Math.max(right, (dropset.right ?? EMPTY_LIMB).weights ?? 0)
-      }
-    }
-    return {
-      label: inst.label,
-      maxEnduranceWeight: perLimb ? undefined : left,
-      maxEnduranceWeightLeft: perLimb ? left : undefined,
-      maxEnduranceWeightRight: perLimb ? right : undefined,
-    }
-  })
-}
-
 export function instanceTotalSeconds(name: string) {
   const instances = getExerciseInstance(name)
   return instances
@@ -379,7 +440,11 @@ export function instanceTotalSeconds(name: string) {
       )
     )
     .map((inst) => {
-      const perLimb = inst.exercise.perLimbEnabled ?? false
+      const matchingExercise = exercises.find(
+        (e) => e.name === inst.exercise.exerciseName
+      )
+      const catalogPerLimb = matchingExercise?.perLimb ?? false
+      const enabled = inst.exercise.perLimbEnabled ?? false
       let left = 0
       let right = 0
       for (const set of inst.exercise.sets) {
@@ -390,8 +455,9 @@ export function instanceTotalSeconds(name: string) {
               (dropset.left.minutes ?? 0) * 60 +
               (dropset.left.seconds ?? 0)
           }
-          const r = dropset.right ?? EMPTY_LIMB
-          if (r.difficulty === "normal") {
+          // right already accounts for mirror (switch off) / none (barbell)
+          const r = effectiveRight(dropset, catalogPerLimb, enabled)
+          if (r && r.difficulty === "normal") {
             right +=
               (r.hours ?? 0) * 3600 + (r.minutes ?? 0) * 60 + (r.seconds ?? 0)
           }
@@ -399,73 +465,10 @@ export function instanceTotalSeconds(name: string) {
       }
       return {
         label: inst.label,
-        totalSeconds: perLimb ? left + right : left,
-        totalSecondsLeft: perLimb ? left : undefined,
-        totalSecondsRight: perLimb ? right : undefined,
+        totalSeconds: left + right,
+        totalSecondsLeft: enabled ? left : undefined,
+        totalSecondsRight: enabled ? right : undefined,
       }
     })
 }
 
-export function instanceEnduranceMaxAssistedWeight(name: string) {
-  const instances = getExerciseInstance(name)
-  return instances
-    .filter((inst) =>
-      inst.exercise.sets.some((set) =>
-        set.dropsets.some((dropset) => dropset.left.difficulty === "assisted")
-      )
-    )
-    .map((inst) => {
-      const perLimb = inst.exercise.perLimbEnabled ?? false
-      let left = 0
-      let right = 0
-      for (const set of inst.exercise.sets) {
-        for (const dropset of set.dropsets) {
-          if (dropset.left.difficulty === "assisted") {
-            left = Math.max(left, dropset.left.assistedWeights ?? 0)
-          }
-          const r = dropset.right ?? EMPTY_LIMB
-          if (r.difficulty === "assisted") {
-            right = Math.max(right, r.assistedWeights ?? 0)
-          }
-        }
-      }
-      return {
-        label: inst.label,
-        maxEnduranceAssistedWeight: perLimb ? undefined : left,
-        maxEnduranceAssistedWeightLeft: perLimb ? left : undefined,
-        maxEnduranceAssistedWeightRight: perLimb ? right : undefined,
-      }
-    })
-}
-
-export function instanceEnduranceMaxExtraWeight(name: string) {
-  const instances = getExerciseInstance(name)
-  return instances
-    .filter((inst) =>
-      inst.exercise.sets.some((set) =>
-        set.dropsets.some((dropset) => dropset.left.difficulty === "weighted")
-      )
-    )
-    .map((inst) => {
-      const perLimb = inst.exercise.perLimbEnabled ?? false
-      let left = 0
-      let right = 0
-      for (const set of inst.exercise.sets) {
-        for (const dropset of set.dropsets) {
-          if (dropset.left.difficulty === "weighted") {
-            left = Math.max(left, dropset.left.extraWeights ?? 0)
-          }
-          const r = dropset.right ?? EMPTY_LIMB
-          if (r.difficulty === "weighted") {
-            right = Math.max(right, r.extraWeights ?? 0)
-          }
-        }
-      }
-      return {
-        label: inst.label,
-        maxEnduranceExtraWeight: perLimb ? undefined : left,
-        maxEnduranceExtraWeightLeft: perLimb ? left : undefined,
-        maxEnduranceExtraWeightRight: perLimb ? right : undefined,
-      }
-    })
-}

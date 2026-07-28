@@ -7,7 +7,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bench Press",
+        "exerciseName": "Bench Press (BarBell)",
         "sets": [
           {
             "id": 1,
@@ -709,7 +709,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bench Press",
+        "exerciseName": "Bench Press (BarBell)",
         "sets": [
           {
             "id": 1,
@@ -1033,7 +1033,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bench Press",
+        "exerciseName": "Bench Press (BarBell)",
         "sets": [
           {
             "id": 1,
