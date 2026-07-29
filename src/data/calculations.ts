@@ -79,7 +79,7 @@ export function setVolume(
 //just a exercise volume
 export function exerciseVolume(exercise: WorkoutExercise) {
   const matchingExercise = exercises.find(
-    (e) => e.name === exercise.exerciseName
+    (e) => e.id === exercise.exerciseId
   )
   const isBodyweight = matchingExercise?.isBodyweight ?? false
   // catalogPerLimb = can this exercise EVER be split (dumbbell/cable)?; enabled =
@@ -156,7 +156,7 @@ export function setEndurance(
 export function exerciseEndurance(exercise: WorkoutExercise) {
   let total = 0
   const matchingExercise = exercises.find(
-    (e) => e.name === exercise.exerciseName
+    (e) => e.id === exercise.exerciseId
   )
   const isBodyweight = matchingExercise?.isBodyweight ?? false
   const catalogPerLimb = matchingExercise?.perLimb ?? false
@@ -177,11 +177,11 @@ export function workoutEndurance(workout: Workout) {
 }
 
 //its like gathering all the instances of one exercise in one array
-export function getExerciseInstance(name: string) {
+export function getExerciseInstance(exerciseId: number) {
   const result = []
   for (const workout of workouts) {
     for (const exercise of workout.exercises) {
-      if (name === exercise.exerciseName) {
+      if (exerciseId === exercise.exerciseId) {
         result.push({
           date: workout.date,
           time: workout.time,
@@ -213,7 +213,7 @@ export function getExerciseInstance(name: string) {
 // the exercise volume was for the cases where there was no swtich or the switch was off.
 function exerciseVolumeForLimb(exercise: WorkoutExercise, limb: Limb) {
   const matchingExercise = exercises.find(
-    (e) => e.name === exercise.exerciseName
+    (e) => e.id === exercise.exerciseId
   )
   const isBodyweight = matchingExercise?.isBodyweight ?? false
   let total = 0
@@ -227,8 +227,8 @@ function exerciseVolumeForLimb(exercise: WorkoutExercise, limb: Limb) {
 
 //this is for getting volume for each and every instance that is stored in that results array
 // in getting the instance function.
-export function instanceVolume(name: string) {
-  const instances = getExerciseInstance(name)
+export function instanceVolume(exerciseId: number) {
+  const instances = getExerciseInstance(exerciseId)
   const chartPoint = instances.map((inst) => {
     const perLimb = inst.exercise.perLimbEnabled ?? false
     return {
@@ -250,11 +250,11 @@ export function instanceVolume(name: string) {
 // off then the max weight is calculated from the left and if it is on then both limbs are accounted for.
 // works for both exercise types - the weights field is the same whether its reps or duration, so the
 // duration charts use this too. the type gate lives in Graphs, not here.
-export function instanceMaxWeight(name: string) {
-  const instances = getExerciseInstance(name)
+export function instanceMaxWeight(exerciseId: number) {
+  const instances = getExerciseInstance(exerciseId)
   return instances.map((inst) => {
     const matchingExercise = exercises.find(
-      (e) => e.name === inst.exercise.exerciseName
+      (e) => e.id === inst.exercise.exerciseId
     )
     const catalogPerLimb = matchingExercise?.perLimb ?? false
     const enabled = inst.exercise.perLimbEnabled ?? false
@@ -280,8 +280,8 @@ export function instanceMaxWeight(name: string) {
 }
 
 //
-export function instanceTotalReps(name: string) {
-  const instances = getExerciseInstance(name)
+export function instanceTotalReps(exerciseId: number) {
+  const instances = getExerciseInstance(exerciseId)
   return instances
     .filter((inst) =>
       inst.exercise.sets.some((set) =>
@@ -290,7 +290,7 @@ export function instanceTotalReps(name: string) {
     )
     .map((inst) => {
       const matchingExercise = exercises.find(
-        (e) => e.name === inst.exercise.exerciseName
+        (e) => e.id === inst.exercise.exerciseId
       )
       const catalogPerLimb = matchingExercise?.perLimb ?? false
       const enabled = inst.exercise.perLimbEnabled ?? false
@@ -321,8 +321,8 @@ export function instanceTotalReps(name: string) {
 }
 
 //this is for max assistance taken. used by both exercise types, same as instanceMaxWeight.
-export function instanceMaxAssistedWeight(name: string) {
-  const instances = getExerciseInstance(name)
+export function instanceMaxAssistedWeight(exerciseId: number) {
+  const instances = getExerciseInstance(exerciseId)
   return instances
     .filter((inst) =>
       inst.exercise.sets.some((set) =>
@@ -331,7 +331,7 @@ export function instanceMaxAssistedWeight(name: string) {
     )
     .map((inst) => {
       const matchingExercise = exercises.find(
-        (e) => e.name === inst.exercise.exerciseName
+        (e) => e.id === inst.exercise.exerciseId
       )
       const catalogPerLimb = matchingExercise?.perLimb ?? false
       const enabled = inst.exercise.perLimbEnabled ?? false
@@ -359,8 +359,8 @@ export function instanceMaxAssistedWeight(name: string) {
 }
 
 //this is for max extra weight lifted. used by both exercise types, same as instanceMaxWeight.
-export function instanceMaxExtraWeight(name: string) {
-  const instances = getExerciseInstance(name)
+export function instanceMaxExtraWeight(exerciseId: number) {
+  const instances = getExerciseInstance(exerciseId)
   return instances
     .filter((inst) =>
       inst.exercise.sets.some((set) =>
@@ -369,7 +369,7 @@ export function instanceMaxExtraWeight(name: string) {
     )
     .map((inst) => {
       const matchingExercise = exercises.find(
-        (e) => e.name === inst.exercise.exerciseName
+        (e) => e.id === inst.exercise.exerciseId
       )
       const catalogPerLimb = matchingExercise?.perLimb ?? false
       const enabled = inst.exercise.perLimbEnabled ?? false
@@ -399,7 +399,7 @@ export function instanceMaxExtraWeight(name: string) {
 //this is same exercisevolumeforlimb function , just takes into account for the cases in which the switch is on.
 function exerciseEnduranceForLimb(exercise: WorkoutExercise, limb: Limb) {
   const matchingExercise = exercises.find(
-    (e) => e.name === exercise.exerciseName
+    (e) => e.id === exercise.exerciseId
   )
   const isBodyweight = matchingExercise?.isBodyweight ?? false
   let total = 0
@@ -412,8 +412,8 @@ function exerciseEnduranceForLimb(exercise: WorkoutExercise, limb: Limb) {
 }
 
 //this is for the chartline same as instancevolume function
-export function instanceEndurance(name: string) {
-  const instances = getExerciseInstance(name)
+export function instanceEndurance(exerciseId: number) {
+  const instances = getExerciseInstance(exerciseId)
   const chartPoint = instances.map((inst) => {
     const perLimb = inst.exercise.perLimbEnabled ?? false
     return {
@@ -431,8 +431,8 @@ export function instanceEndurance(name: string) {
   return chartPoint
 }
 
-export function instanceTotalSeconds(name: string) {
-  const instances = getExerciseInstance(name)
+export function instanceTotalSeconds(exerciseId: number) {
+  const instances = getExerciseInstance(exerciseId)
   return instances
     .filter((inst) =>
       inst.exercise.sets.some((set) =>
@@ -441,7 +441,7 @@ export function instanceTotalSeconds(name: string) {
     )
     .map((inst) => {
       const matchingExercise = exercises.find(
-        (e) => e.name === inst.exercise.exerciseName
+        (e) => e.id === inst.exercise.exerciseId
       )
       const catalogPerLimb = matchingExercise?.perLimb ?? false
       const enabled = inst.exercise.perLimbEnabled ?? false

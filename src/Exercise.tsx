@@ -53,9 +53,10 @@ interface ExerciseProps {
 
 function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
   // The exercise is already chosen (via the popup), so just look up its
-  // type/bodyweight from the catalog by name — no local state needed.
+  // type/bodyweight from the catalog by id — no local state needed. the name
+  // comes from here too now, rather than being stored on the workout row
   const matchedExercise = exercises.find(
-    (e) => e.name === exerciseData.exerciseName
+    (e) => e.id === exerciseData.exerciseId
   )
   //this below lines means that there is a new variable called exerciseType and it will be like ExerciseType or
   // empty like "" and it will be equal to the exercise that the user has selected to add and it wil be equal to its
@@ -104,7 +105,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
         <AccordionItem value="exercise">
           <CardHeader className="pl-3.5 pr-4 items-center">
             <AccordionTrigger className="py-0">
-              <CardTitle className="text-lg font-bold">{exerciseData.exerciseName}</CardTitle>
+              <CardTitle className="text-lg font-bold">{matchedExercise?.name}</CardTitle>
             </AccordionTrigger>
             <CardAction className="self-center row-span-1">
               <DropdownMenu>

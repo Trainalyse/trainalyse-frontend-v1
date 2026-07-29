@@ -7,7 +7,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bench Press (BarBell)",
+        "exerciseId": 1,
         "sets": [
           {
             "id": 1,
@@ -56,7 +56,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Tricep Pushdown",
+        "exerciseId": 7,
         "sets": [
           {
             "id": 1,
@@ -93,7 +93,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Push Up",
+        "exerciseId": 15,
         "sets": [
           {
             "id": 1,
@@ -132,7 +132,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Deadlift",
+        "exerciseId": 2,
         "sets": [
           {
             "id": 1,
@@ -174,7 +174,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Bicep Curl",
+        "exerciseId": 6,
         "sets": [
           {
             "id": 1,
@@ -211,7 +211,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Pull Up",
+        "exerciseId": 16,
         "sets": [
           {
             "id": 1,
@@ -250,7 +250,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Squat",
+        "exerciseId": 3,
         "sets": [
           {
             "id": 1,
@@ -303,7 +303,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Leg Press",
+        "exerciseId": 9,
         "sets": [
           {
             "id": 1,
@@ -340,7 +340,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Plank",
+        "exerciseId": 11,
         "sets": [
           {
             "id": 1,
@@ -381,7 +381,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Burpee",
+        "exerciseId": 19,
         "sets": [
           {
             "id": 1,
@@ -411,7 +411,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Hollow Hold",
+        "exerciseId": 13,
         "sets": [
           {
             "id": 1,
@@ -443,7 +443,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Squat Jump",
+        "exerciseId": 22,
         "sets": [
           {
             "id": 1,
@@ -469,7 +469,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Overhead Press",
+        "exerciseId": 4,
         "sets": [
           {
             "id": 1,
@@ -499,7 +499,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Dumbbell Shoulder Press",
+        "exerciseId": 10,
         "sets": [
           {
             "id": 1,
@@ -544,7 +544,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bicep Curl",
+        "exerciseId": 6,
         "sets": [
           {
             "id": 1,
@@ -581,7 +581,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Dip",
+        "exerciseId": 18,
         "sets": [
           {
             "id": 1,
@@ -620,7 +620,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Barbell Row",
+        "exerciseId": 5,
         "sets": [
           {
             "id": 1,
@@ -650,7 +650,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Lat Pulldown",
+        "exerciseId": 8,
         "sets": [
           {
             "id": 1,
@@ -675,7 +675,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Chin Up",
+        "exerciseId": 17,
         "sets": [
           {
             "id": 1,
@@ -709,7 +709,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bench Press (BarBell)",
+        "exerciseId": 1,
         "sets": [
           {
             "id": 1,
@@ -758,7 +758,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Dip",
+        "exerciseId": 18,
         "sets": [
           {
             "id": 1,
@@ -789,7 +789,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Tricep Pushdown",
+        "exerciseId": 7,
         "sets": [
           {
             "id": 1,
@@ -827,7 +827,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Deadlift",
+        "exerciseId": 2,
         "sets": [
           {
             "id": 1,
@@ -869,7 +869,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Lat Pulldown",
+        "exerciseId": 8,
         "sets": [
           {
             "id": 1,
@@ -906,7 +906,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Pull Up",
+        "exerciseId": 16,
         "sets": [
           {
             "id": 1,
@@ -945,7 +945,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Burpee",
+        "exerciseId": 19,
         "sets": [
           {
             "id": 1,
@@ -975,7 +975,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Plank",
+        "exerciseId": 11,
         "sets": [
           {
             "id": 1,
@@ -1007,7 +1007,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Squat Jump",
+        "exerciseId": 22,
         "sets": [
           {
             "id": 1,
@@ -1033,7 +1033,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bench Press (BarBell)",
+        "exerciseId": 1,
         "sets": [
           {
             "id": 1,
@@ -1082,7 +1082,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Push Up",
+        "exerciseId": 15,
         "sets": [
           {
             "id": 1,
@@ -1121,7 +1121,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Barbell Row",
+        "exerciseId": 5,
         "sets": [
           {
             "id": 1,
@@ -1151,7 +1151,7 @@
       },
       {
         "id": 2,
-        "exerciseName": "Chin Up",
+        "exerciseId": 17,
         "sets": [
           {
             "id": 1,
@@ -1189,7 +1189,7 @@
       },
       {
         "id": 3,
-        "exerciseName": "Dead Hang",
+        "exerciseId": 14,
         "sets": [
           {
             "id": 1,
@@ -1216,7 +1216,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bicep Curl (Dumbbell)",
+        "exerciseId": 25,
         "perLimbEnabled": true,
         "sets": [
           {
@@ -1224,8 +1224,14 @@
             "dropsets": [
               {
                 "id": 1,
-                "left": { "weights": 12, "reps": 10 },
-                "right": { "weights": 10, "reps": 10 }
+                "left": {
+                  "weights": 12,
+                  "reps": 10
+                },
+                "right": {
+                  "weights": 10,
+                  "reps": 10
+                }
               }
             ]
           },
@@ -1234,8 +1240,14 @@
             "dropsets": [
               {
                 "id": 1,
-                "left": { "weights": 12, "reps": 8 },
-                "right": { "weights": 10, "reps": 8 }
+                "left": {
+                  "weights": 12,
+                  "reps": 8
+                },
+                "right": {
+                  "weights": 10,
+                  "reps": 8
+                }
               }
             ]
           }
@@ -1251,7 +1263,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bicep Curl (Dumbbell)",
+        "exerciseId": 25,
         "perLimbEnabled": true,
         "sets": [
           {
@@ -1259,8 +1271,14 @@
             "dropsets": [
               {
                 "id": 1,
-                "left": { "weights": 14, "reps": 10 },
-                "right": { "weights": 12, "reps": 10 }
+                "left": {
+                  "weights": 14,
+                  "reps": 10
+                },
+                "right": {
+                  "weights": 12,
+                  "reps": 10
+                }
               }
             ]
           },
@@ -1269,8 +1287,14 @@
             "dropsets": [
               {
                 "id": 1,
-                "left": { "weights": 14, "reps": 8 },
-                "right": { "weights": 12, "reps": 8 }
+                "left": {
+                  "weights": 14,
+                  "reps": 8
+                },
+                "right": {
+                  "weights": 12,
+                  "reps": 8
+                }
               }
             ]
           }
@@ -1286,7 +1310,7 @@
     "exercises": [
       {
         "id": 1,
-        "exerciseName": "Bicep Curl (Dumbbell)",
+        "exerciseId": 25,
         "perLimbEnabled": true,
         "sets": [
           {
@@ -1294,8 +1318,14 @@
             "dropsets": [
               {
                 "id": 1,
-                "left": { "weights": 14, "reps": 12 },
-                "right": { "weights": 12, "reps": 12 }
+                "left": {
+                  "weights": 14,
+                  "reps": 12
+                },
+                "right": {
+                  "weights": 12,
+                  "reps": 12
+                }
               }
             ]
           },
@@ -1304,8 +1334,14 @@
             "dropsets": [
               {
                 "id": 1,
-                "left": { "weights": 16, "reps": 8 },
-                "right": { "weights": 14, "reps": 8 }
+                "left": {
+                  "weights": 16,
+                  "reps": 8
+                },
+                "right": {
+                  "weights": 14,
+                  "reps": 8
+                }
               }
             ]
           }

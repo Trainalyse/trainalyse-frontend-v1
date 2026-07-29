@@ -38,15 +38,16 @@ function Workout() {
     setTitle(e.target.value)
   }
 
-  //this is for confirming a selectedexercise and it takes a argument exercisename as a string
-  function handleConfirmExercise(exerciseName: string) {
+  //this is for confirming a selectedexercise and it takes the catalog id of that exercise
+  function handleConfirmExercise(exerciseId: number) {
      const base = Date.now()
      if (editingExerciseId !== null) {
-       // EDITING: keep the exercise's id, swap the name, reset its sets to one fresh set+dropset
+       // EDITING: keep the row's own id, swap which catalog exercise it points at,
+       // reset its sets to one fresh set+dropset
        setExercises(
          exercises.map((ex) =>
            ex.id === editingExerciseId
-             ? { ...ex, exerciseName, sets: [{ id: base + 1, dropsets: [{ id: base + 2, left: {} }] }] }
+             ? { ...ex, exerciseId, sets: [{ id: base + 1, dropsets: [{ id: base + 2, left: {} }] }] }
              : ex
          )
        )
@@ -55,7 +56,7 @@ function Workout() {
        // ADDING: brand-new exercise (your existing behavior)
        const newExercise: WorkoutExercise = {
          id: base,
-         exerciseName,
+         exerciseId,
          sets: [{ id: base + 1, dropsets: [{ id: base + 2, left: {} }] }],
        }
        setExercises([...exercises, newExercise])
@@ -73,7 +74,7 @@ function Workout() {
         setExercises(exercises.filter((ex) => ex.id !== id))
     }
   return (
-    <div className="flex flex-col mx-auto max-w-[430px] min-h-svh px-[var(--space-23)] gap-[var(--space-md)] ">
+    <div className="flex flex-col mx-auto max-w-[430px] px-[var(--space-23)] gap-[var(--space-md)] ">
       <div className="flex justify-between items-center mt-4">
         <Button className="pl-0 text-base text-destructive " variant="ghost" >
           <Trash2Icon className="size-5" />

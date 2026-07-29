@@ -6,7 +6,7 @@
   --color-black: #0a0a0a;
   --white-channels: 255 255 255;
   --color-grey-1: #171717;
-  --color-grey-2: #26262680;
+  --color-grey-2: #262626;
   --color-grey-3: #a1a1a1;
   --color-white-1: #fafafa;
   --color-white-2: #e5e5e5;
@@ -34,6 +34,14 @@
   /*Border*/
   --border-cardEdge: rgb(var(--white-channels) / 10%);
   --border-inputEdge: rgb(var(--white-channels) / 15%);
+
+  /*Graph series - the two limbs. blue and orange, stepped for the dark card
+  surface and checked for colour-blind separation, so left and right stay
+  telling apart for everyone. neon is deliberately NOT one of these - it is
+  reserved for the balanced marker, and it is brighter than both so it pops.*/
+  --graph-left: #3987e5;
+  --graph-right: #d95926;
+  --graph-balanced: var(--color-neon);
 }
 
 /*3. Text properties*/
@@ -44,7 +52,7 @@
 
   /*Font Sizes*/
   --size-h1: 36px;
-  --size-h2: 16px;
+  --size-h2: 20px;
   --size-label: 14px;
   --size-placeholder: 16px;
   --size-primaryText: 16px;

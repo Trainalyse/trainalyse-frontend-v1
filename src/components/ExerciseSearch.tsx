@@ -5,22 +5,27 @@ import { exercises } from "@/data/exercise"
 import React, { type ChangeEvent } from "react"
 
 // this interface is used for the functions that are like properties of this component like onclose it should go to void
-// and onconfirm it should pass the exercise name which was confirmed and should go to void
+// and onconfirm it should pass the id of the exercise which was confirmed and should go to void
 interface ExerciseSearchProps {
     onClose: () => void
-    onConfirm: (exerciseName: string) => void
+    onConfirm: (exerciseId: number) => void
   }
 
 
 function ExerciseSearch({ onClose, onConfirm }: ExerciseSearchProps) {
   // this if for the exercise that is being searched by the user
   const [exerciseSearch, setExerciseSearch] = React.useState("")
-  // this is for the exercise that is selected by the exercise
-  const [selectedExercise, setSelectedExercise] = React.useState<string>("")
+  // the selection is held by id, not by name - the name is only ever display
+  // text, so everything that has to survive a rename keys off this instead
+  const [selectedExerciseId, setSelectedExerciseId] = React.useState<
+    number | null
+  >(null)
+  const selectedExercise =
+    exercises.find((e) => e.id === selectedExerciseId)?.name ?? ""
   // this function is for setting the onchange on the input for the search and also unselecting the selected exercise
   function handleExerciseTypeForSearch(e: ChangeEvent<HTMLInputElement>) {
     setExerciseSearch(e.target.value)
-    setSelectedExercise("")
+    setSelectedExerciseId(null)
   }
   // this lowers down the list of exercises after the user enters their search letters
   const filteredExercises = exercises.filter((exercise) =>
@@ -57,7 +62,7 @@ function ExerciseSearch({ onClose, onConfirm }: ExerciseSearchProps) {
               <Button
                   className="bg-brand h-10 w-full text-base"
                   onClick={() => {
-                    onConfirm(selectedExercise)
+                    if (selectedExerciseId !== null) onConfirm(selectedExerciseId)
                     onClose()
                   }}
                 >
@@ -83,18 +88,15 @@ selected once.*/}
               variant="ghost"
               className="justify-start text-muted-foreground h-15 "
               onClick={() => {
-                if (!selectedExercise) {
-                  setSelectedExercise(exercise.name)
-                } else if (selectedExercise === exercise.name) {
-                  setSelectedExercise("")
-                } else if (selectedExercise !== exercise.name) {
-                  setSelectedExercise(exercise.name)
-                }
+                // tapping the selected one clears it, tapping any other replaces it
+                setSelectedExerciseId(
+                  selectedExerciseId === exercise.id ? null : exercise.id
+                )
               }}
             >
               <p
                 className={
-                  selectedExercise === exercise.name
+                  selectedExerciseId === exercise.id
                     ? "text-lg justify-start text-primary font-bold h-15 "
                     : " text-lg justify-start text-muted-foreground h-15 "
                 }

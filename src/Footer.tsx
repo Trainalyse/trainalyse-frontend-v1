@@ -20,7 +20,9 @@ function Footer() {
   }
   return (
     <>
-      <footer className="border-t border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      {/* shrink-0 is what nails it down - as a flex child it would otherwise be
+          squashed by a tall page instead of holding its height */}
+      <footer className="shrink-0 border-t border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <nav className="flex min-h-[80px] items-center justify-between px-[var(--space-23)]">
           <Button
             variant="ghost"

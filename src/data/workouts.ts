@@ -26,7 +26,9 @@ export type WorkoutSet = {
 
 export type WorkoutExercise = {
   id: number
-  exerciseName: string
+  // points at the catalog by id, not by name - a name is display text and can be
+  // renamed or retyped, which would orphan every workout that logged it
+  exerciseId: number
   sets: WorkoutSet[]
   perLimbEnabled?: boolean
 }
