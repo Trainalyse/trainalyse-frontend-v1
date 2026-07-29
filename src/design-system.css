@@ -50,6 +50,8 @@
   --size-primaryText: 16px;
   --size-textOnButton: 14px;
   --size-footer: 14px;
+  /*the big current-value number on a graph card*/
+  --size-metric: 26px;
 
   /*Line Heights*/
   --lh-h1: 40px;
@@ -59,6 +61,7 @@
   --lh-primaryText: 24px;
   --lh-textOnButton: 20px;
   --lh-footer: 20px;
+  --lh-metric: 32px;
 
   /*Font Weights*/
   --fw-regular: 400;
