@@ -24,21 +24,32 @@ import { EllipsisVerticalIcon } from "lucide-react"
 
 // Per-exercise-type column config: the grid-cols template AND the header labels
 // come from ONE place so the header count can never drift from the column count
-// (a mismatch makes the grid auto-flow shift diagonally). The value-cell headers
-// sit BETWEEN the always-present Set (left) and Delete (right) columns, so
-// `headers` lists only the middle cells and the template adds Set + Delete.
+// (a mismatch makes the grid auto-flow shift diagonally). The Set number is no
+// longer a column — it's a per-set heading above the rows — so `headers` lists
+// the value cells and the template adds only the trailing Delete column.
+//
+// Responsive sizing, from left to right:
+//   • Difficulty — min-content: a fixed dropdown, pinned to its label width at
+//     every screen size (it shouldn't balloon on wide screens).
+//   • Weights / Reps — minmax(min-content, 1fr): at their header width when
+//     there's no room (320px), and they breathe as the screen widens.
+//   • Time — minmax(8ch, 1fr): same, but with a floor of ~8 characters
+//     (HH:MM:SS) so the widest value can never clip even while sharing space.
+//   • Delete — auto: hugs the icon.
+// So at 320px everything sits at its minimum (fits), and every extra pixel is
+// split between the value columns — no column hoards the slack.
 // NOTE: `grid-cols-[…]` strings must be written as full literals so Tailwind can
 // see and generate them — don't build them by concatenation.
 function getGridConfig(exerciseType: ExerciseType | "", isBodyweight: boolean) {
   if (exerciseType === "duration") {
     return isBodyweight
-      ? { template: "grid-cols-[auto_auto_auto_auto_1fr]", headers: ["Difficulty", "Weights", "Time"] }
-      : { template: "grid-cols-[auto_auto_auto_1fr]", headers: ["Weights", "Time"] }
+      ? { template: "grid-cols-[min-content_minmax(min-content,1fr)_minmax(8ch,1fr)_auto]", headers: ["Difficulty", "Weights", "Time"] }
+      : { template: "grid-cols-[minmax(min-content,1fr)_minmax(8ch,1fr)_auto]", headers: ["Weights", "Time"] }
   }
   // weightsAndReps (and the "" no-exercise fallback)
   return isBodyweight
-    ? { template: "grid-cols-[auto_auto_auto_auto_1fr]", headers: ["Difficulty", "Weights", "Reps"] }
-    : { template: "grid-cols-[auto_auto_auto_1fr]", headers: ["Weights", "Reps"] }
+    ? { template: "grid-cols-[min-content_minmax(min-content,1fr)_minmax(min-content,1fr)_auto]", headers: ["Difficulty", "Weights", "Reps"] }
+    : { template: "grid-cols-[minmax(min-content,1fr)_minmax(min-content,1fr)_auto]", headers: ["Weights", "Reps"] }
 }
 
 //exercise data is like a singular workout exercise, onChange gives us the updated which is also like the
@@ -147,16 +158,16 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
               {perLimb && exerciseData.perLimbEnabled && (
 
                 <Tabs value={activeLimb} onValueChange={(v) => setActiveLimb(v as "left" | "right")}>
-                  <TabsList variant="line" className="mx-auto">
+                  <TabsList className="w-full">
                     <TabsTrigger
                       value="left"
-                      className="text-base font-normal text-[var(--color-white-1)] data-active:font-semibold data-active:text-[var(--color-neon)] data-active:after:bg-[var(--color-neon)]"
+                      className="text-base font-normal text-[var(--color-white-1)] data-active:text-[var(--color-neon)] dark:data-active:text-[var(--color-neon)]"
                     >
                       Left
                     </TabsTrigger>
                     <TabsTrigger
                       value="right"
-                      className="text-base font-normal text-[var(--color-white-1)] data-active:font-semibold data-active:text-[var(--color-neon)] data-active:after:bg-[var(--color-neon)]"
+                      className="text-base font-normal text-[var(--color-white-1)] data-active:text-[var(--color-neon)] dark:data-active:text-[var(--color-neon)]"
                     >
                       Right
                     </TabsTrigger>
@@ -164,18 +175,14 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                 </Tabs>
                 )}
 
-              <div className={`grid ${gridConfig.template} items-center gap-x-[var(--space-md)] gap-y-[var(--space-lg)]`}>
-                  <div className="text-center ">Set</div>
-                  {gridConfig.headers.map((label) => (
-                    <div key={label} className="text-center ">{label}</div>
-                  ))}
-                  <div />
+              <div className={`grid ${gridConfig.template} items-center gap-x-[var(--space-sm)] gap-y-[var(--space-md)]`}>
               {exerciseData.sets.map((set,index) => (
                 <Sets
                   key={set.id}
                   number = {index+1}
                   exerciseType={exerciseType}
                   isBodyweight={isBodyweight}
+                  headers={gridConfig.headers}
                   setData={set}
                   activeLimb={activeLimb}
                   isOnlySet={exerciseData.sets.length === 1}

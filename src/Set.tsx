@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button"
 import { CircleX } from "lucide-react"
 import { type WorkoutSet, type Dropset, type Limb } from "./data/workouts"
 import React from "react"
+import { Separator } from "./components/ui/separator"
 
 
 interface SetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
   number : number
+  headers: string[]
   setData: WorkoutSet
   activeLimb: Limb
   isOnlySet: boolean
@@ -17,7 +19,7 @@ interface SetsProps {
 }
 
 
-function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number, isOnlySet }: SetsProps) {
+function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number, headers, isOnlySet }: SetsProps) {
   {/*this is for adding new dropset */}
   function handleAddDropset() {
     const newDropset: Dropset = { id: Date.now(), left: {} }
@@ -30,6 +32,7 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number
   // One piece of state does three jobs: which row to highlight, whether the
   // modal is open, and which id to delete on confirm.
   const [pendingDeleteId, setPendingDeleteId] = React.useState<number | null>(null)
+
 
   // clicking a row's delete icon opens the confirm modal for THAT dropset
   function handleRemoveModalDropset(id: number) {
@@ -52,44 +55,58 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number
 
   return (
     <>
-      {setData.dropsets.map((dropset, i) => (
-        // Each dropset row is ONE element now: it spans all the outer columns
-        // (col-span-full) and re-uses the parent's column tracks via subgrid, so
-        // its cells still line up with the header. Being a single element means
-        // row-level styling (background, hover, highlight) is one class here.
-        <div
-          key={dropset.id}
-          className={`col-span-full grid grid-cols-subgrid items-center rounded-md transition-colors ${
-            dropset.id === pendingDeleteId ? "bg-input/30" : ""
-          }`}
-        >
-          {/* Set# cell — number on the first dropset of the set, empty on the rest */}
-          <div className="self-center text-center">{i === 0 ? number : ""}</div>
-          {/* Dropsets renders the value cells (weights, reps) */}
-          <Dropsets
-            exerciseType={exerciseType}
-            isBodyweight={isBodyweight}
-            dropsetData={dropset}
-            activeLimb={activeLimb}
-            onChange={handleDropsetChange}
-          />
-          {/* delete cell — hidden on the only set's only dropset (deleting it
-              would empty the exercise; use the kebab menu instead). The cell
-              still renders to keep the grid's delete column aligned. */}
-          <div className="flex justify-end">
-            {!(isOnlySet && setData.dropsets.length === 1) && (
-              <button
-                type="button"
-                aria-label="delete dropset"
-                onClick={() => handleRemoveModalDropset(dropset.id)}
-                className="text-white/80 transition-colors hover:text-white"
-              >
-                <CircleX className="size-5" />
-              </button>
+      {/* Set heading — one level below the exercise name, with a neon accent bar.
+          Spans all columns and sits above this set's column labels + rows. */}
+      <div className="col-span-full flex items-center gap-2">
+        <span className="h-5 w-1 rounded-full bg-[var(--color-neon)]" />
+        <h3 className="text-base font-semibold">Set {number}</h3>
+      </div>
+      {/* Column labels for this set's value cells (Set number is no longer a
+          column). Re-uses the outer grid tracks via subgrid so they line up. */}
+      <div className="col-span-full grid grid-cols-subgrid items-center text-left text-muted-foreground text-xs tracking-wider">
+        {headers.map((label) => (
+            <div
+              key={label}
+              className={label === "Weights" || label === "Reps" ? "text-center" : "text-left"}
+            >
+              {label.toLocaleUpperCase()}
+            </div>
+          ))}
+        <div />
+      </div>
+      {setData.dropsets.map((dropset, index) => (
+          <React.Fragment key={dropset.id}>
+            <div
+              className={`col-span-full grid grid-cols-subgrid items-center rounded-md transition-colors ${
+                dropset.id === pendingDeleteId ? "bg-input/30" : ""
+              }`}
+            >
+              <Dropsets
+                exerciseType={exerciseType}
+                isBodyweight={isBodyweight}
+                dropsetData={dropset}
+                activeLimb={activeLimb}
+                onChange={handleDropsetChange}
+              />
+              <div className="flex justify-end">
+                {!(isOnlySet && setData.dropsets.length === 1) && (
+                  <button
+                    type="button"
+                    aria-label="delete dropset"
+                    onClick={() => handleRemoveModalDropset(dropset.id)}
+                    className="text-white/80 transition-colors hover:text-white"
+                  >
+                    <CircleX className="size-5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {index !== setData.dropsets.length - 1 && (
+              <Separator className="col-span-full" />
             )}
-          </div>
-        </div>
-      ))}
+          </React.Fragment>
+        ))}
       {/* + for drop sets spans the whole grid row */}
       {exerciseType && (
         <Button variant="outline" className="col-span-full w-3/4 justify-self-center" onClick={handleAddDropset}>

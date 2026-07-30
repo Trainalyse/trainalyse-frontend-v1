@@ -16,7 +16,12 @@ const pad = (n: number) => String(n).padStart(2, "0")
 // so there is no internal state to keep in sync — every keystroke just recomputes
 // h/m/s and hands them up via onChange.
 function TimeInput({ hours = 0, minutes = 0, seconds = 0, onChange }: TimeInputProps) {
-  const display = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+  // Durations are usually under an hour, and HH:MM:SS is the widest cell in the
+  // row — so only show the hours group once there actually are hours; otherwise
+  // MM:SS. Entry is unaffected: keystrokes recompute from `digits`, not this.
+  const display = hours > 0
+    ? `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+    : `${pad(minutes)}:${pad(seconds)}`
   // the 6 significant digits with leading zeros stripped = what's been "typed so far"
   const digits = `${pad(hours)}${pad(minutes)}${pad(seconds)}`.replace(/^0+/, "")
   const isEmpty = !hours && !minutes && !seconds
@@ -49,7 +54,7 @@ function TimeInput({ hours = 0, minutes = 0, seconds = 0, onChange }: TimeInputP
       value={display}
       onChange={() => {}}
       onKeyDown={handleKeyDown}
-      className={`w-20 mx-auto px-0 border-0 bg-transparent dark:bg-transparent text-center shadow-none focus-visible:ring-0 ${
+      className={`w-full min-w-0 px-0 text-sm tabular-nums border-0 bg-transparent dark:bg-transparent text-left shadow-none focus-visible:ring-0 ${
         isEmpty ? "text-muted-foreground" : ""
       }`}
     />

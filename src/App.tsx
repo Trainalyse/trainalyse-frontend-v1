@@ -24,8 +24,6 @@ export function App() {
     const time = new Date().toLocaleString()
     navigate("/Workout", { state: { time } })// here we are navigating to workout page when we click on + button and state is a way so that we can transfer a data while navigating
   }
-  // this ref here we have used that when the user clicks for searching for title, the focus is already at the input and user will not have to click one more time
-  const titleSearchRef = React.useRef<HTMLInputElement>(null)
   // this here is used so that we know what the user is searching at a time like with date or title or nothing.
   const [searchMode, setSearchMode] = React.useState<"none" | "date" | "title">(
     "none"
@@ -33,7 +31,6 @@ export function App() {
 
   const [dateSearched, setDateSearched] = React.useState<Date>()
   const [titleSearched, setTitleSearched] = React.useState("")
-  const [showSearchBar, setShowSearchBar] = React.useState(false)
 
   // this function is for the onchange of the title input , so that the ui keeps in sync with what the user is typing
   function handleTitleTypeForSearch(e: ChangeEvent<HTMLInputElement>) {
@@ -44,13 +41,6 @@ export function App() {
   function handleDateSearch() {
     setSearchMode("date")
     setTitleSearched("")
-  }
-
-  //this function almost does the same work for title as the above function and it also flips the show search bar state
-  function handleTitleSearch() {
-    setSearchMode("title")
-    setShowSearchBar((current) => !current)
-    setDateSearched(undefined)
   }
 
   //this function occurs when we click on the logged workouts and it takes us to workout page but with the prefilled workout data and that is
@@ -77,13 +67,6 @@ export function App() {
         )
       : workouts
 
-
-  // this use effect is for when the component mounts and it is used for auto focusing for the user to save a click
-  React.useEffect(() => {
-    if (showSearchBar) {
-      titleSearchRef.current?.focus()
-    }
-  }, [showSearchBar])
 
   return (
     <>
@@ -112,61 +95,44 @@ export function App() {
       )}
       <main className="relative flex min-h-0 flex-1 flex-col">
         <header className="mb-[var(--space-md)] border-b border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] pt-[env(safe-area-inset-top)]">
-          {showSearchBar ? (
-            <div className="-mr-1.5 flex min-h-[80px] items-center justify-between gap-7 px-[var(--space-23)] py-6">
-              <Input
-                className="h-11 origin-left scale-x-100 opacity-100 transition duration-500 ease-out starting:scale-x-0 starting:opacity-0"
-                type="text"
-                placeholder="Enter the title of the workout"
-                value={titleSearched}
-                ref={titleSearchRef}
-                onChange={handleTitleTypeForSearch}
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  setShowSearchBar(false)
-                  setTitleSearched("")
-                }}
-              >
-                <X className="size-8" strokeWidth="1.5" />
-              </Button>
-            </div>
-          ) : (
-            <div className="flex min-h-[80px] items-center justify-between px-[var(--space-23)] py-6">
+          <div className="flex flex-col gap-[var(--space-md)] px-[var(--space-23)] pt-6 pb-4">
+            {/* Wordmark + circular icon buttons (calendar opens date search, gear opens settings) */}
+            <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-brand">Trainalyse</h1>
-              <div className="-mr-3 flex items-center gap-4">
+              <div className="flex items-center gap-4">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
                   aria-label="Search by date"
                   onClick={handleDateSearch}
-                  className="size-11 text-primary"
+                  className="size-9 rounded-full text-primary"
                 >
                   <CalendarIcon className="size-5" strokeWidth={2.25} />
                 </Button>
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Search by Title"
-                  onClick={handleTitleSearch}
-                  className="size-11 text-primary"
-                >
-                  <SearchIcon className="size-5" strokeWidth={2.25} />
-                </Button>
-                <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
                   aria-label="Go to Settings"
                   onClick={handleSettings}
-                  className="size-11 text-primary"
+                  className="size-9 rounded-full text-primary"
                 >
                   <Settings className="size-5" strokeWidth={2.25} />
                 </Button>
               </div>
             </div>
-          )}
+
+            {/* Persistent title search — the leading icon is decorative, the Input drives titleSearched */}
+            <div className="relative">
+              <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="h-11 pl-10"
+                type="text"
+                placeholder="Search by title"
+                value={titleSearched}
+                onChange={handleTitleTypeForSearch}
+              />
+            </div>
+          </div>
         </header>
 
         {/*in this section we handle all the 4 cases that the workouts can be displayed like, that are

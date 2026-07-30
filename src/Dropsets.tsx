@@ -10,9 +10,15 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 
+
+// Short forms shown in the closed trigger; the open list keeps the full names.
+const difficultyShortLabels: Record<Difficulty, string> = {
+  normal: "Norm.",
+  assisted: "Asst.",
+  weighted: "Wtd.",
+}
 
 interface DropsetsProps {
   exerciseType: ExerciseType | ""
@@ -67,10 +73,17 @@ function Dropsets({
       value={difficulty}
       onValueChange={(value) => update({ difficulty: value as Difficulty })}
     >
-      <SelectTrigger className="w-26">
-        <SelectValue placeholder="Difficulty" />
+      {/* Show the short form in the closed trigger (difficulty always has a
+          value, defaulting to "normal") instead of mirroring the item text.
+          w-full (not a fixed width) so the trigger fills the column rather than
+          forcing it wider than the "DIFFICULTY" label. */}
+      <SelectTrigger className="w-full min-w-0 gap-1 px-1.5 text-sm">
+        {difficultyShortLabels[difficulty]}
       </SelectTrigger>
-      <SelectContent>
+      {/* popper (not the default item-aligned) so the panel anchors to the
+          trigger — item-aligned needs a <SelectValue> node to align onto, which
+          we dropped for the short-form label. */}
+      <SelectContent position="popper" >
         <SelectItem value="normal">Normal</SelectItem>
         <SelectItem value="assisted">Assisted</SelectItem>
         <SelectItem value="weighted">Weighted</SelectItem>
@@ -78,18 +91,20 @@ function Dropsets({
     </Select>
   )
 
-  // shared styling for the borderless, centered numeric cells
+  // shared styling for the borderless, left-aligned numeric cells. w-full +
+  // min-w-0 so the input shrinks with its minmax(0,1fr) track instead of
+  // forcing the column wider (and expands to fill on wider screens).
   const cellInputClass =
-    "w-17 mx-auto border-0 bg-transparent dark:bg-transparent text-center shadow-none focus-visible:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+    "w-full min-w-0 border-0 bg-transparent dark:bg-transparent text-center shadow-none focus-visible:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
 
   // Weights cell for BODYWEIGHT exercises — identical in weights&reps and duration.
   // Normal adds no weight → a muted "-" that still holds the column width; Assisted/
   // Weighted → the assist/extra weight is entered here. Always rendered so the
   // column never moves when difficulty changes.
   const bodyweightWeightsCell = (
-    <div className="text-center">
+    <div className="text-left">
       {difficulty === "normal" ? (
-        <span className="inline-block w-17 text-center text-muted-foreground">NA</span>
+        <span className="inline-block w-full text-center text-muted-foreground">NA</span>
       ) : (
         <Input
           type="number"
