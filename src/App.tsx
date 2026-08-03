@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { workouts, type Workout } from "./data/workouts" // we imported both the workouts and the type Workout and mind you that workouts is in the shape of Workout[]
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { format, parseISO } from "date-fns"
+import { Card } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { workoutVolume, workoutEndurance } from "./data/calculations"
+import { cn } from "@/lib/utils"
+import { format, parse, parseISO } from "date-fns"
 import React, { type ChangeEvent } from "react"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
@@ -16,6 +14,90 @@ import { SearchIcon } from "lucide-react"
 import { Settings } from "lucide-react"
 import { Plus } from "lucide-react"
 import { X } from "lucide-react"
+
+// one grey pill inside a workout card. the number plus its short unit (vol. /
+// endu. / exc.), 8px apart from its neighbours via the row's gap.
+function Pill({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-full bg-[var(--bg-surface-secondary)] px-3 py-1.5 text-sm whitespace-nowrap text-[var(--color-white-2)]">
+      {children}
+    </span>
+  )
+}
+
+// the title row + pill row for a single workout. the duration pill is held back
+// until Save is wired, so only three pills can show: volume and endurance are
+// hidden at 0, exercise count always shows.
+function WorkoutContent({
+  workout,
+  showDay,
+}: {
+  workout: Workout
+  showDay: boolean
+}) {
+  const volume = workoutVolume(workout)
+  const endurance = workoutEndurance(workout)
+  return (
+    <>
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="text-lg leading-tight font-bold text-primary">
+          {workout.title}
+        </h3>
+        {/* the day-of-week is a property of the date, so it renders once per
+            card — on the top workout only, not on each workout. */}
+        {showDay && (
+          <span className="mt-0.5 shrink-0 text-sm font-semibold text-[var(--text-subheading)]">
+            {format(parseISO(workout.date), "EEE")}
+          </span>
+        )}
+      </div>
+      <div className="mt-[var(--space-md)] flex flex-wrap gap-[var(--space-sm)]">
+        {volume > 0 && <Pill>{volume} vol.</Pill>}
+        {endurance > 0 && <Pill>{endurance} endu.</Pill>}
+        <Pill>{workout.exercises.length} exc.</Pill>
+      </div>
+    </>
+  )
+}
+
+// one date's card. a single workout fills the card and the whole card taps
+// through to it; two workouts stack most-recent-first, split by a separator,
+// and each half is its own tap target (12px of breathing room each side of the
+// separator, 16px at the outer top and bottom).
+function DateCard({
+  group,
+  onOpen,
+}: {
+  group: { date: string; items: Workout[] }
+  onOpen: (workout: Workout) => void
+}) {
+  const twoUp = group.items.length > 1
+  return (
+    <div className="overflow-hidden rounded-[var(--radius-card)] bg-[var(--bg-surface-primary)]">
+      {group.items.map((workout, i) => (
+        <React.Fragment key={workout.id}>
+          {i > 0 && (
+            <Separator className="mx-[var(--space-md)] data-horizontal:w-auto bg-[var(--border-cardEdge)]" />
+          )}
+          <button
+            type="button"
+            onClick={() => onOpen(workout)}
+            className={cn(
+              // 12px side padding lives on the button so the whole area, gutters
+              // included, is the tap target for its workout.
+              "block w-full px-[var(--space-md)] text-left",
+              !twoUp && "py-[var(--space-lg)]",
+              twoUp && i === 0 && "pt-[var(--space-lg)] pb-[var(--space-md)]",
+              twoUp && i > 0 && "pt-[var(--space-md)] pb-[var(--space-lg)]"
+            )}
+          >
+            <WorkoutContent workout={workout} showDay={i === 0} />
+          </button>
+        </React.Fragment>
+      ))}
+    </div>
+  )
+}
 
 
 export function App() {
@@ -32,9 +114,12 @@ export function App() {
   const [dateSearched, setDateSearched] = React.useState<Date>()
   const [titleSearched, setTitleSearched] = React.useState("")
 
-  // this function is for the onchange of the title input , so that the ui keeps in sync with what the user is typing
+  // this function is for the onchange of the title input , so that the ui keeps in sync with what the user is typing.
+  // it also clears any active date search (the date filter otherwise wins over the title one), so typing a title
+  // drops the user straight onto the title results without a stale date hiding them.
   function handleTitleTypeForSearch(e: ChangeEvent<HTMLInputElement>) {
     setTitleSearched(e.target.value)
+    setDateSearched(undefined)
   }
 
   //this function is for setting the searchmode to date and clear the title so that the user can search with either date or tile at a time
@@ -67,6 +152,33 @@ export function App() {
         )
       : workouts
 
+  // group the filtered workouts for the timeline: newest date first, then
+  // workouts sharing a date collapse into one card (most recent time on top),
+  // and finally those date-cards are grouped under their month heading so a
+  // heading only renders once per month that has a hit.
+  const sortedWorkouts = [...filteredWorkouts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
+  const dateGroups: { date: string; items: Workout[] }[] = []
+  for (const workout of sortedWorkouts) {
+    const last = dateGroups[dateGroups.length - 1]
+    if (last && last.date === workout.date) last.items.push(workout)
+    else dateGroups.push({ date: workout.date, items: [workout] })
+  }
+  for (const group of dateGroups) {
+    group.items.sort(
+      (a, b) =>
+        parse(b.time ?? "12:00 AM", "h:mm a", new Date()).getTime() -
+        parse(a.time ?? "12:00 AM", "h:mm a", new Date()).getTime()
+    )
+  }
+  const monthGroups: { label: string; groups: typeof dateGroups }[] = []
+  for (const group of dateGroups) {
+    const label = format(parseISO(group.date), "MMMM yyyy")
+    const last = monthGroups[monthGroups.length - 1]
+    if (last && last.label === label) last.groups.push(group)
+    else monthGroups.push({ label, groups: [group] })
+  }
 
   return (
     <>
@@ -125,12 +237,23 @@ export function App() {
             <div className="relative">
               <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground" />
               <Input
-                className="h-11 pl-10"
+                className="h-11 pr-10 pl-10"
                 type="text"
                 placeholder="Search by title"
                 value={titleSearched}
                 onChange={handleTitleTypeForSearch}
               />
+              {/* one-tap clear for the whole title, shown only while there's text to erase */}
+              {titleSearched && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() => setTitleSearched("")}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-primary"
+                >
+                  <X className="size-5" />
+                </button>
+              )}
             </div>
           </div>
         </header>
@@ -146,37 +269,28 @@ export function App() {
               <p>Start logging — your workouts will show up here.</p>{/*when there is no workout saved , this will show */}
             </div>
           ) : filteredWorkouts.length > 0 ? (
-            [...filteredWorkouts]
-              .sort(
-                (a, b) =>
-                  new Date(b.date).getTime() - new Date(a.date).getTime()
-              )
-              .map((workout) => (
-                <div key={workout.id}>
-                  <Button
-                    className="h-auto w-full p-0 px-[var(--space-23)] py-2"
-                    variant="ghost"
-                    onClick={() => handleWorkoutOpen(workout)}
-                  >
-                    <Card className="w-full gap-0 rounded-[var(--radius-card)] bg-[var(--bg-surface-primary)] py-0 [--card-spacing:--spacing(6)]">
-                      <CardHeader className="flex flex-col items-start pt-[14px] pb-3">
-                        <CardTitle className="text-base font-normal">
-                          {workout.title}
-                        </CardTitle>
-                        <CardDescription>
-                          {format(
-                            parseISO(workout.date),
-                            "EEEE, do MMMM, yyyy"
-                          )}
-                        </CardDescription>
-                      </CardHeader>
-                      {/*<CardFooter className="rounded-b-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] py-3 text-xs text-muted-foreground">
-                        <p>Created at {workout.time}</p>
-                      </CardFooter>*/}
-                    </Card>
-                  </Button>
+            // 23px side gutters, 16px top/bottom for the middle area, and 16px
+            // between month blocks (last card of one month to the next heading).
+            <div className="flex flex-col gap-[var(--space-lg)] px-[var(--space-23)] py-[var(--space-lg)]">
+              {monthGroups.map((month) => (
+                // 16px between the heading and its first card.
+                <div key={month.label} className="flex flex-col gap-[var(--space-lg)]">
+                  <h2 className="text-2xl font-bold text-primary">
+                    {month.label}
+                  </h2>
+                  {/* 12px between date-cards within the same month. */}
+                  <div className="flex flex-col gap-[var(--space-md)]">
+                    {month.groups.map((group) => (
+                      <DateCard
+                        key={group.date}
+                        group={group}
+                        onOpen={handleWorkoutOpen}
+                      />
+                    ))}
+                  </div>
                 </div>
-              ))
+              ))}
+            </div>
           ) : (
             <div className="flex h-full items-center justify-center px-8 text-center text-muted-foreground">
               <p>
