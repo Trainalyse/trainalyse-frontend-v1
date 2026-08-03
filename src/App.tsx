@@ -7,7 +7,7 @@ import { workoutVolume, workoutEndurance } from "./data/calculations"
 import { cn } from "@/lib/utils"
 import { format, parse, parseISO } from "date-fns"
 import React, { type ChangeEvent } from "react"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
 import { CalendarIcon } from "lucide-react"
 import { SearchIcon } from "lucide-react"
@@ -15,8 +15,8 @@ import { Settings } from "lucide-react"
 import { Plus } from "lucide-react"
 import { X } from "lucide-react"
 
-// one grey pill inside a workout card. the number plus its short unit (vol. /
-// endu. / exc.), 8px apart from its neighbours via the row's gap.
+// one grey pill inside a workout card. the number plus its label (volume /
+// endurance / exercises), 8px apart from its neighbours via the row's gap.
 function Pill({ children }: { children: React.ReactNode }) {
   return (
     <span className="rounded-full bg-[var(--bg-surface-secondary)] px-3 py-1.5 text-sm whitespace-nowrap text-[var(--color-white-2)]">
@@ -52,9 +52,12 @@ function WorkoutContent({
         )}
       </div>
       <div className="mt-[var(--space-md)] flex flex-wrap gap-[var(--space-sm)]">
-        {volume > 0 && <Pill>{volume} vol.</Pill>}
-        {endurance > 0 && <Pill>{endurance} endu.</Pill>}
-        <Pill>{workout.exercises.length} exc.</Pill>
+        {volume > 0 && <Pill>{volume} volume</Pill>}
+        {endurance > 0 && <Pill>{endurance} endurance</Pill>}
+        <Pill>
+          {workout.exercises.length}{" "}
+          {workout.exercises.length === 1 ? "exercise" : "exercises"}
+        </Pill>
       </div>
     </>
   )
@@ -89,12 +92,12 @@ function TimelineRail({
       </div>
       <div className="relative w-3 self-stretch">
         {!isFirst && (
-          <span className="absolute top-[-6px] bottom-1/2 left-1/2 w-px -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
+          <span className="absolute top-[-6px] bottom-1/2 left-1/2 w-[3px] -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
         )}
         {!isLast && (
-          <span className="absolute top-1/2 bottom-[-6px] left-1/2 w-px -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
+          <span className="absolute top-1/2 bottom-[-6px] left-1/2 w-[3px] -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
         )}
-        <span className="absolute top-1/2 left-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--color-white-2)]" />
+        <span className="absolute top-1/2 left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--color-white-2)]" />
       </div>
     </div>
   )
@@ -153,6 +156,13 @@ export function App() {
 
   const [dateSearched, setDateSearched] = React.useState<Date>()
   const [titleSearched, setTitleSearched] = React.useState("")
+
+  // every date that has a logged workout, as Date objects, so the calendar can
+  // flag those days. duplicates (two workouts on one date) are harmless here.
+  const loggedDates = React.useMemo(
+    () => workouts.map((workout) => parseISO(workout.date)),
+    []
+  )
 
   // this function is for the onchange of the title input , so that the ui keeps in sync with what the user is typing.
   // it also clears any active date search (the date filter otherwise wins over the title one), so typing a title
@@ -223,25 +233,100 @@ export function App() {
   return (
     <>
       {searchMode === "date" && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <Card className="relative p-4">
+        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 p-[var(--space-lg)] backdrop-blur-sm">
+          {/* 16px padding on every side, dark surface */}
+          <Card className="w-full max-w-[400px] gap-[var(--space-lg)] rounded-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-[var(--space-lg)]">
+            <div className="flex justify-end">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Close calendar"
+                onClick={() => setSearchMode("none")}
+                className="size-9 rounded-full bg-[var(--bg-surface-secondary)] text-[var(--text-primary)]"
+              >
+                <X className="size-5" strokeWidth={2} />
+              </Button>
+            </div>
+
             <Calendar
-              className="mt-6 [--cell-size:--spacing(9)]"
+              // bg-transparent lets the card surface show through (the base
+              // Calendar ships bg-background); a small cell-size floor lets the
+              // 7 columns shrink to fit 320px and grow to fill wider screens.
+              className="w-full bg-transparent p-0 [--cell-size:--spacing(8)]"
               mode="single" // allows only one date selection and not a range
+              // slide the weeks left/right when the user changes month
+              animate
+              // always render 6 week rows so the calendar's height stays constant
+              // across months - otherwise a 5-week month is shorter and the
+              // vertically-centered modal jumps up or down when you change month
+              fixedWeeks
               selected={dateSearched}
               onSelect={(date) => {
                 setDateSearched(date)
                 setSearchMode("none")
               }}
+              // days carrying a logged workout, so the DayButton can fill them
+              modifiers={{ logged: loggedDates }}
+              classNames={{
+                root: "w-full",
+                // drop the default grey "today" fill — today is a neon ring instead
+                today: "",
+                caption_label:
+                  "text-lg font-bold text-[var(--text-primary)]",
+                // circular grey nav buttons, matching the close button
+                button_previous:
+                  "flex size-9 items-center justify-center rounded-full bg-[var(--bg-surface-secondary)] p-0 text-[var(--text-primary)] select-none aria-disabled:opacity-50",
+                button_next:
+                  "flex size-9 items-center justify-center rounded-full bg-[var(--bg-surface-secondary)] p-0 text-[var(--text-primary)] select-none aria-disabled:opacity-50",
+                // month-change slide/fade (keyframes live in globals.css)
+                weeks_before_enter: "cal-weeks-before-enter",
+                weeks_before_exit: "cal-weeks-before-exit",
+                weeks_after_enter: "cal-weeks-after-enter",
+                weeks_after_exit: "cal-weeks-after-exit",
+                caption_before_enter: "cal-caption-before-enter",
+                caption_before_exit: "cal-caption-before-exit",
+                caption_after_enter: "cal-caption-after-enter",
+                caption_after_exit: "cal-caption-after-exit",
+              }}
+              components={{
+                DayButton: (dayProps) => (
+                  <CalendarDayButton
+                    {...dayProps}
+                    className={cn(
+                      dayProps.className,
+                      // days spilling in from the neighbouring month
+                      dayProps.modifiers.outside &&
+                        "text-[var(--text-dateOutside)]",
+                      // a logged day: neon-25 fill as an inset layer behind the
+                      // number (inset-4 leaves a gap so back-to-back logged days
+                      // don't touch), with the number kept full-size on top
+                      dayProps.modifiers.logged &&
+                        "before:absolute before:inset-[4px] before:-z-10 before:rounded-(--cell-radius) before:bg-[var(--bg-dateLogged)] before:content-['']",
+                      // today: neon number plus a neon ring inset to match the
+                      // logged box's size. drawn with after: (not before:) so a
+                      // day that is both today and logged keeps its fill too.
+                      // last so its neon text wins even on an outside-month today
+                      dayProps.modifiers.today &&
+                        "text-[var(--text-accent)] after:absolute after:inset-[4px] after:rounded-full after:border-2 after:border-[var(--text-accent)] after:content-['']"
+                    )}
+                  />
+                ),
+              }}
             />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-2 right-2.5"
-              onClick={() => setSearchMode("none")}
-            >
-              <X className="size-8" strokeWidth="1.5" />
-            </Button>
+
+            <Separator className="bg-[var(--border-cardEdge)]" />
+
+            {/* legend so the fills read clearly */}
+            <div className="flex items-center justify-between text-sm font-medium text-[var(--text-subheading)]">
+              <span className="flex items-center gap-[var(--space-sm)]">
+                <span className="size-4 rounded-[6px] bg-[var(--bg-dateLogged)]" />
+                Logged Workout
+              </span>
+              <span className="flex items-center gap-[var(--space-sm)]">
+                <span className="size-4 rounded-full ring-2 ring-[var(--text-accent)] ring-inset" />
+                Today
+              </span>
+            </div>
           </Card>
         </div>
       )}
@@ -315,9 +400,25 @@ export function App() {
               {monthGroups.map((month) => (
                 // 16px between the heading and its first card.
                 <div key={month.label} className="flex flex-col gap-[var(--space-lg)]">
-                  <h2 className="text-2xl font-bold text-primary">
-                    {month.label}
-                  </h2>
+                  {/* heading + a count of the workouts currently shown for this
+                      month — it follows the filter, so a search narrows it to
+                      the matching workouts, not the month's true total. */}
+                  <div className="flex items-center justify-between gap-3">
+                    <h2 className="text-2xl font-bold text-primary">
+                      {month.label}
+                    </h2>
+                    {(() => {
+                      const count = month.groups.reduce(
+                        (sum, group) => sum + group.items.length,
+                        0
+                      )
+                      return (
+                        <span className="shrink-0 text-base  font-semibold text-[var(--text-subheading)]">
+                          {count} {count === 1 ? "Workout" : "Workouts"}
+                        </span>
+                      )
+                    })()}
+                  </div>
                   {/* 12px between date-cards within the same month. each row
                       pairs the timeline rail with its card. */}
                   <div className="flex flex-col gap-[var(--space-md)]">

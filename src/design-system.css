@@ -11,6 +11,10 @@
   --color-white-1: #fafafa;
   --color-white-2: #e5e5e5;
   --color-neon: #cdf23a;
+  /*neon at 25% — fill behind a day that has a logged workout*/
+  --color-neon-25: #cdf23a40;
+  /*muted grey at 50% — days that fall outside the month being viewed*/
+  --color-muted-50: #8a8a8a80;
 }
 
 /*2. Color Usage*/
@@ -22,6 +26,8 @@
   --bg-surface-secondary: var(--color-grey-2);
   --bg-inputBox: rgb(var(--white-channels) / 5%);
   --bg-button-primary: var(--color-white-2);
+  /*calendar: fill for a day that has a logged workout*/
+  --bg-dateLogged: var(--color-neon-25);
 
   /*Text*/
   --text-accent: var(--color-neon);
@@ -30,6 +36,8 @@
   --text-placeholder: var(--color-grey-3);
   --text-on-button: var(--color-black);
   --text-primary: var(--color-white-1);
+  /*calendar: a day that belongs to the previous/next month*/
+  --text-dateOutside: var(--color-muted-50);
 
   /*Border*/
   --border-cardEdge: rgb(var(--white-channels) / 10%);

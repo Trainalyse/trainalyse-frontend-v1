@@ -132,3 +132,78 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Calendar month-change animation. react-day-picker (animate prop) handles all
+   the overlay positioning via inline styles and just adds these class names to
+   the entering/exiting weeks and caption - we only supply the keyframes. Weeks
+   slide (left when paging to an earlier month, right to a later one); the month
+   label cross-fades. */
+@keyframes cal-slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes cal-slide-out-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes cal-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes cal-slide-out-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes cal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cal-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.cal-weeks-before-enter {
+  animation: cal-slide-in-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.cal-weeks-before-exit {
+  animation: cal-slide-out-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.cal-weeks-after-enter {
+  animation: cal-slide-in-right 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.cal-weeks-after-exit {
+  animation: cal-slide-out-right 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.cal-caption-before-enter,
+.cal-caption-after-enter {
+  animation: cal-fade-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.cal-caption-before-exit,
+.cal-caption-after-exit {
+  animation: cal-fade-out 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
