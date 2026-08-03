@@ -1,16 +1,22 @@
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
-import { X } from "lucide-react"
+import { X, SearchIcon } from "lucide-react"
 import { exercises } from "@/data/exercise"
 import React, { type ChangeEvent } from "react"
+import { cn } from "@/lib/utils"
 
 // this interface is used for the functions that are like properties of this component like onclose it should go to void
 // and onconfirm it should pass the id of the exercise which was confirmed and should go to void
 interface ExerciseSearchProps {
-    onClose: () => void
-    onConfirm: (exerciseId: number) => void
-  }
+  onClose: () => void
+  onConfirm: (exerciseId: number) => void
+}
 
+// the equipment subtitle, pulled from the trailing "(...)" in the name (e.g.
+// "Bench Press (Barbell)" -> "Barbell"). undefined when the name has none.
+function equipmentOf(name: string) {
+  return name.match(/\(([^)]+)\)/)?.[1]
+}
 
 function ExerciseSearch({ onClose, onConfirm }: ExerciseSearchProps) {
   // this if for the exercise that is being searched by the user
@@ -33,79 +39,98 @@ function ExerciseSearch({ onClose, onConfirm }: ExerciseSearchProps) {
   )
 
   return (
-    // BACKDROP: blurred workout page behind; clicking it closes the popup.
-    <div
-      className="fixed inset-0 z-10 flex items-start + pt-[15vh] justify-center bg-black/60 backdrop-blur-sm "
-      onClick={onClose}
-    >
-      {/* CARD: the small popup. stopPropagation so clicks inside don't close it. */}
-      <div
-        className="flex max-h-[70vh] w-[85%] max-w-[360px] flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center gap-3">
+    // full-screen modal: it covers the whole page but is still just an overlay
+    // rendered over the workout page (which stays mounted behind it), not a route
+    <div className="fixed inset-0 z-20 flex flex-col bg-[var(--bg-surface-primary)] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      {/* header: search input + close */}
+      <div className="flex items-center gap-[var(--space-md)] p-[var(--space-lg)]">
+        <div className="relative min-w-0 flex-1">
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            className="h-11 flex-1 min-w-0"
+            className="h-11 w-full pl-10"
             placeholder="Search your exercise"
+            // show the selected exercise in the bar when there is one, otherwise
+            // whatever the user has typed
             value={selectedExercise ? selectedExercise : exerciseSearch}
-            // so this is for the value that is being displayed in the ui , if there is a selected exercise
-            // then it will show that selected exercise in the search bar other wise it will show what the user has typed
-            // in the search bar
             onChange={handleExerciseTypeForSearch}
           />
-
-          {/*so if a exercise is selected then after clicking the confirm button it sends that name of the exc and in the
-           workout file it adds the exercise to that exercise array, but if there is no selected exc then on pressing the
-          X button the user can click the modal */}
-          <div className="flex w-24 shrink-0 justify-end">
-            {selectedExercise ? (
-              <Button
-                  className="bg-brand h-10 w-full text-base"
-                  onClick={() => {
-                    if (selectedExerciseId !== null) onConfirm(selectedExerciseId)
-                    onClose()
-                  }}
-                >
-                  Confirm
-                </Button>
-            ) : (
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="size-9" />
-              </Button>
-            )}
-          </div>
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Close"
+          className="shrink-0 text-[var(--text-primary)]"
+          onClick={onClose}
+        >
+          <X className="size-6" />
+        </Button>
+      </div>
 
-{/* so this part under it covers the logic that if there is no selected exc then after clicking the exc that the user
- wants , it will be selected, but if the exercise is selected and the user clicks on that same exercise then it deselects
-that exercise and if the user has selected some exercise and the user clicks on another exercise then that exercise replaces
-the previous exercise and it gets selected . and also the exc that is selected will be bolder and brighter than the not
-selected once.*/}
-        <div className="mt-6 flex min-h-0 flex-col overflow-y-auto">
-          {filteredExercises.map((exercise) => (
-            <Button
+      {/* the exercise list. tapping the selected one clears it, tapping any other
+          replaces it. the selected row is tinted, bold and carries a neon radio. */}
+      <div className="min-h-0 flex-1 overflow-y-auto px-[var(--space-lg)]">
+        {filteredExercises.map((exercise) => {
+          const isSelected = selectedExerciseId === exercise.id
+          const equipment = equipmentOf(exercise.name)
+          return (
+            <button
               key={exercise.id}
-              variant="ghost"
-              className="justify-start text-muted-foreground h-15 "
-              onClick={() => {
-                // tapping the selected one clears it, tapping any other replaces it
-                setSelectedExerciseId(
-                  selectedExerciseId === exercise.id ? null : exercise.id
-                )
-              }}
+              type="button"
+              onClick={() =>
+                setSelectedExerciseId(isSelected ? null : exercise.id)
+              }
+              className={cn(
+                "flex w-full items-center justify-between gap-[var(--space-md)] rounded-[var(--radius-card)] px-[var(--space-md)] py-[var(--space-md)] text-left",
+                isSelected && "bg-[var(--bg-exerciseSelected)]"
+              )}
             >
-              <p
-                className={
-                  selectedExerciseId === exercise.id
-                    ? "text-lg justify-start text-primary font-bold h-15 "
-                    : " text-lg justify-start text-muted-foreground h-15 "
-                }
-              >
-                {exercise.name}
-              </p>
-            </Button>
-          ))}
-        </div>
+              <div className="min-w-0">
+                <p
+                  className={cn(
+                    "text-lg text-[var(--text-primary)]",
+                    isSelected ? "font-bold" : "font-normal"
+                  )}
+                >
+                  {exercise.name}
+                </p>
+                {equipment && (
+                  <p className="text-sm text-[var(--text-subheading)]">
+                    {equipment}
+                  </p>
+                )}
+              </div>
+              {isSelected && (
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-neon)]">
+                  <span className="size-2.5 rounded-full bg-[var(--color-neon)]" />
+                </span>
+              )}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* bottom action bar: a disabled prompt until something is selected, then
+          it turns into the neon Confirm button */}
+      <div className="p-[var(--space-lg)]">
+        {selectedExerciseId !== null ? (
+          <Button
+            className="h-12 w-full bg-brand text-base  text-[var(--text-on-button)]"
+            onClick={() => {
+              onConfirm(selectedExerciseId)
+              onClose()
+            }}
+          >
+            Confirm
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            disabled
+            className="h-12 w-full text-base text-[var(--text-subheading)]"
+          >
+            Select an exercise to continue
+          </Button>
+        )}
       </div>
     </div>
   )

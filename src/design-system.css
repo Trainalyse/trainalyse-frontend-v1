@@ -13,6 +13,8 @@
   --color-neon: #cdf23a;
   /*neon at 25% — fill behind a day that has a logged workout*/
   --color-neon-25: #cdf23a40;
+  /*neon at 10% — subtle tint behind the selected exercise row*/
+  --color-neon-10: #cdf23a1a;
   /*muted grey at 50% — days that fall outside the month being viewed*/
   --color-muted-50: #8a8a8a80;
 }
@@ -28,6 +30,8 @@
   --bg-button-primary: var(--color-white-2);
   /*calendar: fill for a day that has a logged workout*/
   --bg-dateLogged: var(--color-neon-25);
+  /*exercise search: tint behind the currently selected row*/
+  --bg-exerciseSelected: var(--color-neon-10);
 
   /*Text*/
   --text-accent: var(--color-neon);
