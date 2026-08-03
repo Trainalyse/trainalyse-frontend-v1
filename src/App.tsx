@@ -60,6 +60,46 @@ function WorkoutContent({
   )
 }
 
+// the left rail for one date: the day number with its month below, plus a
+// track holding one circle (centred on the card) and the connecting line. the
+// line hides above the first card and below the last so it never crosses a
+// month heading, and each half reaches 6px into the 12px inter-card gap so the
+// two halves meet and read as one continuous line.
+function TimelineRail({
+  date,
+  isFirst,
+  isLast,
+}: {
+  date: string
+  isFirst: boolean
+  isLast: boolean
+}) {
+  return (
+    // items-center centers the date label on the card; the track alone stretches
+    // to full card height (self-stretch) to carry the line, so the date and the
+    // circle both sit on the card's exact centerline.
+    <div className="flex items-center gap-2">
+      <div className="flex w-9 flex-col items-start">
+        <span className="text-xl leading-none font-bold text-primary">
+          {format(parseISO(date), "d")}
+        </span>
+        <span className="mt-1 text-sm font-medium text-[var(--text-subheading)]">
+          {format(parseISO(date), "MMM")}
+        </span>
+      </div>
+      <div className="relative w-3 self-stretch">
+        {!isFirst && (
+          <span className="absolute top-[-6px] bottom-1/2 left-1/2 w-px -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
+        )}
+        {!isLast && (
+          <span className="absolute top-1/2 bottom-[-6px] left-1/2 w-px -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
+        )}
+        <span className="absolute top-1/2 left-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--color-white-2)]" />
+      </div>
+    </div>
+  )
+}
+
 // one date's card. a single workout fills the card and the whole card taps
 // through to it; two workouts stack most-recent-first, split by a separator,
 // and each half is its own tap target (12px of breathing room each side of the
@@ -278,14 +318,23 @@ export function App() {
                   <h2 className="text-2xl font-bold text-primary">
                     {month.label}
                   </h2>
-                  {/* 12px between date-cards within the same month. */}
+                  {/* 12px between date-cards within the same month. each row
+                      pairs the timeline rail with its card. */}
                   <div className="flex flex-col gap-[var(--space-md)]">
-                    {month.groups.map((group) => (
-                      <DateCard
+                    {month.groups.map((group, i) => (
+                      <div
                         key={group.date}
-                        group={group}
-                        onOpen={handleWorkoutOpen}
-                      />
+                        className="flex items-stretch gap-4"
+                      >
+                        <TimelineRail
+                          date={group.date}
+                          isFirst={i === 0}
+                          isLast={i === month.groups.length - 1}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <DateCard group={group} onOpen={handleWorkoutOpen} />
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
