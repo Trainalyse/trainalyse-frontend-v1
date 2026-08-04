@@ -14,20 +14,57 @@ import { SearchIcon } from "lucide-react"
 import { Settings } from "lucide-react"
 import { Plus } from "lucide-react"
 import { X } from "lucide-react"
+import { Dumbbell, Activity, List } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
-// one grey pill inside a workout card. the number plus its label (volume /
-// endurance / exercises), 8px apart from its neighbours via the row's gap.
-function Pill({ children }: { children: React.ReactNode }) {
+// compact k/M formatting for the big kg (volume) and kg·s (endurance) totals so
+// a 5–6 digit value never wraps or crowds its label: 20000 → 20K, 1250000 →
+// 1.25M. exact figures aren't meaningful on a summary card; full precision is
+// still one tap away via the row's title tooltip.
+const compactNumber = new Intl.NumberFormat(undefined, {
+  notation: "compact",
+  maximumFractionDigits: 1,
+})
+function formatCompact(value: number) {
+  return compactNumber.format(value)
+}
+
+// one stat line inside a workout card: a muted icon + spelled-out label on the
+// left, the value bold on the right. the label carries the icon's colour so the
+// row reads as one muted unit, and justify-between pins the value to the edge.
+// the value is shrink-0 + nowrap + tabular-nums so it stays intact and column-
+// aligned; the label alone (min-w-0) gives way if space ever gets tight.
+function StatRow({
+  icon: Icon,
+  label,
+  value,
+  title,
+}: {
+  icon: LucideIcon
+  label: string
+  value: React.ReactNode
+  title?: string
+}) {
   return (
-    <span className="rounded-full bg-[var(--bg-surface-secondary)] px-3 py-1.5 text-sm whitespace-nowrap text-[var(--color-white-2)]">
-      {children}
-    </span>
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-[var(--space-md)] text-[var(--text-subheading)]">
+        <Icon className="size-4 shrink-0" />
+        <span className="text-sm font-medium">{label}</span>
+      </div>
+      <span
+        title={title}
+        className="shrink-0 text-sm font-bold whitespace-nowrap tabular-nums text-primary"
+      >
+        {value}
+      </span>
+    </div>
   )
 }
 
-// the title row + pill row for a single workout. the duration pill is held back
-// until Save is wired, so only three pills can show: volume and endurance are
-// hidden at 0, exercise count always shows.
+// the title row + stat rows for a single workout. each stat spells out what it
+// means (Volume / Endurance / Exercises). the workout-time row is held back
+// until Save is wired; volume and endurance are hidden at 0, exercise count
+// always shows.
 function WorkoutContent({
   workout,
   showDay,
@@ -51,21 +88,36 @@ function WorkoutContent({
           </span>
         )}
       </div>
-      <div className="mt-[var(--space-md)] flex flex-wrap gap-[var(--space-sm)]">
-        {volume > 0 && <Pill>{volume} volume</Pill>}
-        {endurance > 0 && <Pill>{endurance} endurance</Pill>}
-        <Pill>
-          {workout.exercises.length}{" "}
-          {workout.exercises.length === 1 ? "exercise" : "exercises"}
-        </Pill>
+      <div className="mt-[var(--space-lg)] flex flex-col gap-[var(--space-md)]">
+        {volume > 0 && (
+          <StatRow
+            icon={Dumbbell}
+            label="Total work done (Volume)"
+            value={formatCompact(volume)}
+            title={volume.toLocaleString()}
+          />
+        )}
+        {endurance > 0 && (
+          <StatRow
+            icon={Activity}
+            label="Time under Load (Endurance)"
+            value={formatCompact(endurance)}
+            title={endurance.toLocaleString()}
+          />
+        )}
+        <StatRow
+          icon={List}
+          label="Exercises Done"
+          value={workout.exercises.length}
+        />
       </div>
     </>
   )
 }
 
 // the left rail for one date: the day number with its month below, plus a
-// track holding one circle (centred on the card) and the connecting line. the
-// line hides above the first card and below the last so it never crosses a
+// track holding one circle (on the title's centerline) and the connecting line.
+// the line hides above the first card and below the last so it never crosses a
 // month heading, and each half reaches 6px into the 12px inter-card gap so the
 // two halves meet and read as one continuous line.
 function TimelineRail({
@@ -78,12 +130,14 @@ function TimelineRail({
   isLast: boolean
 }) {
   return (
-    // items-center centers the date label on the card; the track alone stretches
-    // to full card height (self-stretch) to carry the line, so the date and the
-    // circle both sit on the card's exact centerline.
-    <div className="flex items-center gap-2">
-      <div className="flex w-9 flex-col items-start">
-        <span className="text-xl leading-none font-bold text-primary">
+    // --node-y is the y of the (top) title's centerline measured from the card
+    // top: the card's top padding (--space-lg) plus half the title's line box
+    // (text-lg 18px x leading-tight 1.25 = 22.5px). the circle sits there, the
+    // day number is centered on it, and the two line halves meet there. the
+    // track alone stretches to full card height (self-stretch) to carry the line.
+    <div className="flex items-start gap-2 [--node-y:calc(var(--space-lg)+11.25px)]">
+      <div className="flex w-9 flex-col items-start pt-[var(--space-lg)]">
+        <span className="flex h-[22.5px] items-center text-xl leading-none font-bold text-primary">
           {format(parseISO(date), "d")}
         </span>
         <span className="mt-1 text-sm font-medium text-[var(--text-subheading)]">
@@ -92,12 +146,12 @@ function TimelineRail({
       </div>
       <div className="relative w-3 self-stretch">
         {!isFirst && (
-          <span className="absolute top-[-6px] bottom-1/2 left-1/2 w-[3px] -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
+          <span className="absolute top-[-6px] bottom-[calc(100%-var(--node-y))] left-1/2 w-[3px] -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
         )}
         {!isLast && (
-          <span className="absolute top-1/2 bottom-[-6px] left-1/2 w-[3px] -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
+          <span className="absolute top-[var(--node-y)] bottom-[-6px] left-1/2 w-[3px] -translate-x-1/2 bg-[rgb(var(--white-channels)/20%)]" />
         )}
-        <span className="absolute top-1/2 left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--color-white-2)]" />
+        <span className="absolute top-[var(--node-y)] left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--color-white-2)]" />
       </div>
     </div>
   )
@@ -394,9 +448,11 @@ export function App() {
               <p>Start logging — your workouts will show up here.</p>{/*when there is no workout saved , this will show */}
             </div>
           ) : filteredWorkouts.length > 0 ? (
-            // 23px side gutters, 16px top/bottom for the middle area, and 16px
-            // between month blocks (last card of one month to the next heading).
-            <div className="flex flex-col gap-[var(--space-lg)] px-[var(--space-23)] py-[var(--space-lg)]">
+            // 23px side gutters, 16px top, and 16px between month blocks (last
+            // card of one month to the next heading). the bottom pad clears the
+            // floating + button (bottom-6 24px + its 60px height + 16px breathing
+            // room) so the last card can always scroll out from under it.
+            <div className="flex flex-col gap-[var(--space-lg)] px-[var(--space-23)] pt-[var(--space-lg)] pb-[calc(24px+60px+var(--space-lg))]">
               {monthGroups.map((month) => (
                 // 16px between the heading and its first card.
                 <div key={month.label} className="flex flex-col gap-[var(--space-lg)]">
@@ -421,11 +477,11 @@ export function App() {
                   </div>
                   {/* 12px between date-cards within the same month. each row
                       pairs the timeline rail with its card. */}
-                  <div className="flex flex-col gap-[var(--space-md)]">
+                  <div className="flex flex-col gap-[var(--space-md)] ">
                     {month.groups.map((group, i) => (
                       <div
                         key={group.date}
-                        className="flex items-stretch gap-4"
+                        className="flex items-stretch gap-4 "
                       >
                         <TimelineRail
                           date={group.date}

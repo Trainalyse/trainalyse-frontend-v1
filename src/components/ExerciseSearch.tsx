@@ -99,11 +99,7 @@ function ExerciseSearch({ onClose, onConfirm }: ExerciseSearchProps) {
                   </p>
                 )}
               </div>
-              {isSelected && (
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-neon)]">
-                  <span className="size-2.5 rounded-full bg-[var(--color-neon)]" />
-                </span>
-              )}
+
             </button>
           )
         })}
