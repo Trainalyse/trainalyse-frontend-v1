@@ -210,6 +210,9 @@ export function App() {
 
   const [dateSearched, setDateSearched] = React.useState<Date>()
   const [titleSearched, setTitleSearched] = React.useState("")
+  // the month the search calendar is showing — controlled so "Jump to today"
+  // can move the view back to the current month from anywhere.
+  const [calMonth, setCalMonth] = React.useState<Date>(new Date())
 
   // every date that has a logged workout, as Date objects, so the calendar can
   // flag those days. duplicates (two workouts on one date) are harmless here.
@@ -230,6 +233,8 @@ export function App() {
   function handleDateSearch() {
     setSearchMode("date")
     setTitleSearched("")
+    // open on the selected date's month (or today if none picked yet)
+    setCalMonth(dateSearched ?? new Date())
   }
 
   //this function occurs when we click on the logged workouts and it takes us to workout page but with the prefilled workout data and that is
@@ -314,6 +319,14 @@ export function App() {
               // across months - otherwise a 5-week month is shorter and the
               // vertically-centered modal jumps up or down when you change month
               fixedWeeks
+              // month + year dropdowns in the caption, so the user can jump
+              // straight to any month/year instead of stepping the chevrons.
+              // the range bounds the year dropdown.
+              captionLayout="dropdown"
+              startMonth={new Date(1900, 0)}
+              endMonth={new Date(new Date().getFullYear(), 11)}
+              month={calMonth}
+              onMonthChange={setCalMonth}
               selected={dateSearched}
               onSelect={(date) => {
                 setDateSearched(date)
@@ -325,8 +338,13 @@ export function App() {
                 root: "w-full",
                 // drop the default grey "today" fill — today is a neon ring instead
                 today: "",
+                // dropdown labels ("Aug ˅" / "1998 ˅"): keep them bold, and lay
+                // the text out inline with a small muted chevron beside it
                 caption_label:
-                  "text-lg font-bold text-[var(--text-primary)]",
+                  "inline-flex items-center gap-1 text-lg font-bold text-[var(--text-primary)] [&>svg]:size-4 [&>svg]:text-[var(--text-subheading)]",
+                // a little more breathing room between the month and year dropdowns
+                dropdowns:
+                  "flex h-(--cell-size) w-full items-center justify-center gap-2",
                 // circular grey nav buttons, matching the close button
                 button_previous:
                   "flex size-9 items-center justify-center rounded-full bg-[var(--bg-surface-secondary)] p-0 text-[var(--text-primary)] select-none aria-disabled:opacity-50",
@@ -376,10 +394,14 @@ export function App() {
                 <span className="size-4 rounded-[6px] bg-[var(--bg-dateLogged)]" />
                 Logged Workout
               </span>
-              <span className="flex items-center gap-[var(--space-sm)]">
+              <button
+                type="button"
+                onClick={() => setCalMonth(new Date())}
+                className="flex items-center gap-[var(--space-sm)] rounded-md outline-none transition-colors hover:text-[var(--text-primary)]"
+              >
                 <span className="size-4 rounded-full ring-2 ring-[var(--text-accent)] ring-inset" />
-                Today
-              </span>
+                Jump to today
+              </button>
             </div>
           </Card>
         </div>

@@ -1,8 +1,10 @@
 {
   "username": "hrijumana",
   "email": "hrijumanadubey@gmail.com",
-  "age": 23,
+  "dob": "2003-01-23",
   "weight": 79,
+  "weightUnit": "kg",
   "height": 179,
+  "heightUnit": "cm",
   "activity": "5 days a week"
 }
