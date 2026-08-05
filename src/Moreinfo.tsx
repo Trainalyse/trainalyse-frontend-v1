@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import Dobsetter from "@/components/ui/dobsetter"
 import StepIndicator from "@/components/ui/step-indicator"
+import { CalendarModal } from "@/components/CalendarModal"
 import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { Calendar } from "lucide-react"
 
 // small segmented control used for the kg/lbs and cm/ft unit choices. sits
 // next to its input and matches the h-11 input height.
@@ -48,11 +50,12 @@ function UnitToggle<T extends string>({
 const fieldBox =
   "flex items-center gap-2 rounded-xl border border-[var(--border-inputEdge)] bg-[var(--bg-inputBox)] py-1 pr-2 pl-3"
 const bigInput =
-  "min-w-0 flex-1 bg-transparent text-xl font-semibold text-foreground outline-none placeholder:text-base placeholder:font-normal placeholder:text-muted-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+  "min-w-0 flex-1 bg-transparent text-base font-semibold text-foreground outline-none placeholder:text-base placeholder:font-normal placeholder:text-muted-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
 
 function Moreinfo() {
   const navigate = useNavigate()
-  const [dob, setDob] = React.useState("")
+  const [dob, setDob] = React.useState<Date | undefined>(undefined)
+  const [dobOpen, setDobOpen] = React.useState(false)
   const [weight, setWeight] = React.useState("")
   const [weightUnit, setWeightUnit] = React.useState<"kg" | "lbs">("kg")
   const [height, setHeight] = React.useState("")
@@ -80,7 +83,23 @@ function Moreinfo() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <Label>Date of birth</Label>
-                <Dobsetter value={dob} onChange={setDob} />
+                <button
+                  type="button"
+                  onClick={() => setDobOpen(true)}
+                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-[var(--border-inputEdge)] bg-[var(--bg-inputBox)] py-1 pr-4 pl-3 text-left transition-colors outline-none"
+                >
+                  <span
+                    className={cn(
+                      "flex h-11 items-center",
+                      dob
+                        ? "text-base font-semibold text-foreground"
+                        : "text-base text-muted-foreground"
+                    )}
+                  >
+                    {dob ? format(dob, "d MMM yyyy") : "Select your date of birth"}
+                  </span>
+                  <Calendar className="size-5 shrink-0 text-[var(--text-subheading)]" />
+                </button>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -155,7 +174,17 @@ function Moreinfo() {
 
       {/* onboarding progress — this is the last of the sign-up steps, pinned to
           the bottom of the screen */}
-      <StepIndicator total={3} current={3} className="mt-auto pt-8 pb-2" />
+      <StepIndicator total={3} current={3} className=" pt-60 pb-10" />
+
+      {dobOpen && (
+        <CalendarModal
+          onClose={() => setDobOpen(false)}
+          selected={dob}
+          onSelect={setDob}
+          // birthdates only up to the end of 2022
+          maxDate={new Date(2022, 11, 31)}
+        />
+      )}
     </div>
   )
 }

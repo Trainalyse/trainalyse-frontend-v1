@@ -1,7 +1,7 @@
 import { Card, CardContent } from "./card"
 import React from "react"
 import { Button } from "./button"
-import { X } from "lucide-react"
+import { X, Calendar } from "lucide-react"
 import { Separator } from "./separator"
 import { cn } from "@/lib/utils"
 
@@ -181,7 +181,7 @@ function Dobsetter({ value, onChange }: DobsetterProps) {
       <button
         type="button"
         onClick={handleOpen}
-        className="flex w-full items-center rounded-xl border border-[var(--border-inputEdge)] bg-[var(--bg-inputBox)] py-1 pr-2 pl-3 text-left transition-colors outline-none"
+        className="flex w-full items-center justify-between gap-2 rounded-xl border border-[var(--border-inputEdge)] bg-[var(--bg-inputBox)] py-1 pr-4 pl-3 text-left transition-colors outline-none"
       >
         <span
           className={cn(
@@ -193,6 +193,7 @@ function Dobsetter({ value, onChange }: DobsetterProps) {
         >
           {triggerLabel}
         </span>
+        <Calendar className="size-5 shrink-0 text-[var(--text-subheading)]" />
       </button>
 
       {open && (
