@@ -466,8 +466,30 @@ export function App() {
       4.  the user is searching with title for the workouts so those workouts only which are with that title */}
         <section className="flex-1 overflow-y-auto">
           {workouts.length === 0 ? (
-            <div className="flex h-full items-center justify-center px-8 text-center text-muted-foreground">
-              <p>Start logging — your workouts will show up here.</p>{/*when there is no workout saved , this will show */}
+            // first-run empty state: an inviting icon + a prominent neon call to
+            // action, since there's no floating + button until the first workout
+            // exists. the big button and the + do the same thing (handleClick).
+            <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+              <div className="flex size-30 items-center justify-center rounded-full border border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)]">
+                <Dumbbell
+                  className="size-12 text-[var(--text-subheading)]"
+                  strokeWidth={1.5}
+                />
+              </div>
+              <h2 className="mt-6 text-3xl font-bold text-primary">
+                No workouts yet
+              </h2>
+              <p className="mt-2 max-w-[300px] text-muted-foreground">
+                Log your first session and it&apos;ll show up here, newest
+                first.
+              </p>
+              <Button
+                onClick={handleClick}
+                className="mt-8 h-14 gap-2 rounded-2xl bg-brand px-8 text-base font-bold text-[var(--bg-surface-primary)] hover:bg-brand/90"
+              >
+                <Plus className="size-5" strokeWidth={2.75} />
+                Log a workout
+              </Button>
             </div>
           ) : filteredWorkouts.length > 0 ? (
             // 23px side gutters, 16px top, and 16px between month blocks (last
@@ -540,15 +562,18 @@ export function App() {
           </Button>
         )}
 
-        {/* this is for the + button*/}
-        <Button
-          aria-label="Add workout"
-          size="icon"
-          className="absolute right-[var(--space-23)] bottom-6 size-[60px] rounded-full bg-brand text-[var(--bg-surface-primary)] shadow-lg hover:bg-brand/90"
-          onClick={handleClick}
-        >
-          <Plus className="size-8" strokeWidth={2.5} />
-        </Button>
+        {/* the floating + button — only once at least one workout exists; before
+            that, the centered "Log a workout" button in the empty state stands in */}
+        {workouts.length > 0 && (
+          <Button
+            aria-label="Add workout"
+            size="icon"
+            className="absolute right-[var(--space-23)] bottom-6 size-[60px] rounded-full bg-brand text-[var(--bg-surface-primary)] shadow-lg hover:bg-brand/90"
+            onClick={handleClick}
+          >
+            <Plus className="size-8" strokeWidth={2.5} />
+          </Button>
+        )}
       </main>
     </>
   )
