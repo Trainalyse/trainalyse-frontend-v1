@@ -4,7 +4,13 @@ import { Home, ChartLine, Target, Menu } from "lucide-react"
 import { Label } from "@/components/ui/label"
 
 function Footer() {
+  //uselocation is for the component to know that on which url the user is at like where is the current location of the
+  // user like if the user is on home page or not or is the user on graphs page , the reason is that whatvere page the
+  // user is on that icon is neon color and other are dull so thats why we need the user's current location in the footer.
   const location = useLocation()
+
+  // this is for the user to get them a function which will take them to different pages like navigate is a function which
+  // enables for the user to navigate between different pages.
   const navigate = useNavigate()
   const handleHome = () => {
     navigate("/")
@@ -23,7 +29,7 @@ function Footer() {
       {/* shrink-0 is what nails it down - as a flex child it would otherwise be
           squashed by a tall page instead of holding its height */}
       <footer className="shrink-0 border-t border-[var(--border-cardEdge)] bg-[var(--bg-surface-secondary)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <nav className="flex min-h-[80px] items-center justify-between px-[var(--space-23)]">
+        <nav className="flex min-h-20 items-center justify-between px-[var(--space-23)]">
           <Button
             variant="ghost"
             aria-label="Go to Home"

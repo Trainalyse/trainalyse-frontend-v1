@@ -1276,7 +1276,7 @@
                   "reps": 10
                 },
                 "right": {
-                  "weights": 12,
+                  "weights": 14,
                   "reps": 10
                 }
               }
@@ -1292,7 +1292,7 @@
                   "reps": 8
                 },
                 "right": {
-                  "weights": 12,
+                  "weights": 14,
                   "reps": 8
                 }
               }
@@ -1323,7 +1323,7 @@
                   "reps": 12
                 },
                 "right": {
-                  "weights": 12,
+                  "weights": 14,
                   "reps": 12
                 }
               }
@@ -1339,7 +1339,7 @@
                   "reps": 8
                 },
                 "right": {
-                  "weights": 14,
+                  "weights": 16,
                   "reps": 8
                 }
               }

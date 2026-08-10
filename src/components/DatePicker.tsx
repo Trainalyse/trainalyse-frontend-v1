@@ -35,6 +35,10 @@ export function DatePickerDemo({
           onSelect={handleSelect}
           // no logging workouts in the future
           maxDate={new Date()}
+          // floor at the start of the year two years back (e.g. in 2026 → 1 Jan
+          // 2024): long trips happen, but older than that isn't worth logging.
+          // so 2024 onward is pickable; 31 Dec 2023 and earlier are disabled.
+          minDate={new Date(new Date().getFullYear() - 2, 0, 1)}
         />
       )}
     </>

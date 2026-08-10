@@ -1,6 +1,8 @@
 import React from "react"
 import { type ChangeEvent } from "react"
 import { Input } from "@/components/ui/input"
+import NumericCell from "@/components/NumericCell"
+import { user } from "./data/user"
 import TimeInput from "@/components/TimeInput"
 import { type ExerciseType } from "./data/exercise"
 import { type Difficulty } from "./data/workouts"
@@ -20,6 +22,15 @@ const difficultyShortLabels: Record<Difficulty, string> = {
   weighted: "Wtd.",
 }
 
+// weight-cell limits keyed off the user's global unit. kg: up to 800 with 3
+// digits before the decimal; lbs: up to 1760 (800kg converted) with 4. both
+// allow 2 decimals. a value above the max can't be typed at all.
+const WORKOUT_WEIGHT_LIMITS = {
+  kg: { max: 800, intDigits: 3 },
+  lbs: { max: 1760, intDigits: 4 },
+} as const
+const WEIGHT_FRAC_DIGITS = 2
+
 interface DropsetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
@@ -36,6 +47,7 @@ function Dropsets({
   onChange,
 }: DropsetsProps) {
   const id = React.useId()
+  const weightLimit = WORKOUT_WEIGHT_LIMITS[user.weightUnit]
 
   // the values for whichever limb is active — empty when that limb has no data
   // yet, so Left and Right stay fully independent (no mirroring)
@@ -125,13 +137,15 @@ function Dropsets({
       {exerciseType === "weightsAndReps" && !isBodyweight && (
         <>
           <div>
-            <Input
-              type="number"
-              placeholder="-"
+            <NumericCell
               className={cellInputClass}
               id={id + "-weight"}
-              value={limb.weights ?? ""}
-              onChange={handleWeightsChange}
+              placeholder="-"
+              value={limb.weights}
+              onChange={(n) => update({ weights: n })}
+              intDigits={weightLimit.intDigits}
+              fracDigits={WEIGHT_FRAC_DIGITS}
+              max={weightLimit.max}
             />
           </div>
           <div>

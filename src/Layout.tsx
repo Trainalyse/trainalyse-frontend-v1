@@ -1,4 +1,7 @@
 // Layout.tsx
+// alright the imports with braces are specific imports and wihtout braces will be like the default exports the
+// file is giving like a certain file can have names exports and a default export so without braces will import
+// the default the export
 import { Outlet } from "react-router-dom"
 import Footer from "./Footer"
 

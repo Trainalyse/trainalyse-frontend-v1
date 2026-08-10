@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button"
 import { type Workout as WorkoutData, type WorkoutExercise } from "./data/workouts"
 import { format } from "date-fns"
 import Timesetter from "@/components/ui/timesetter"
-import { Trash2Icon } from "lucide-react"
+import { Trash2Icon, X } from "lucide-react"
 import { Label } from "./components/ui/label"
 import ExerciseSearch from "./components/ExerciseSearch"
 import Exercise from "./Exercise"
 import { useLocation } from "react-router-dom"
+import { Field, FieldError } from "@/components/ui/field"
+import { useTrimWhitespace, normalizeText } from "@/hooks/use-trim-whitespace"
 
 
 function Workout() {
@@ -25,6 +27,10 @@ function Workout() {
   //this is the making of a new array which will be the exercise array which will have exercises from the saved
   // workouts if saved otherwise it would start out empty
   const [title, setTitle] = React.useState(passedWorkout?.title || "") // this is for title
+  // shown only after a Save attempt with an empty title; clears as they type
+  const [titleError, setTitleError] = React.useState<string | undefined>()
+  // trim the ends live-ish and collapse internal runs ("a   b" -> "a b") on blur
+  const titleTrim = useTrimWhitespace(title, setTitle, { collapseInternal: true })
   const [pickTime, setPickTime] = React.useState(
     passedWorkout?.time ?? format(new Date(), "HH:mm")
   )
@@ -36,6 +42,21 @@ function Workout() {
   // for the title change
   function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value)
+    if (titleError) setTitleError(undefined)
+  }
+
+  // a title is required to save. normalize whitespace first (trim ends + collapse
+  // internal runs), write it back so the field shows the cleaned value, then block
+  // the save with a message if it's empty.
+  function handleSave() {
+    const cleanTitle = normalizeText(title, true)
+    if (cleanTitle !== title) setTitle(cleanTitle)
+    if (!cleanTitle) {
+      setTitleError("A title is important to save your workout.")
+      return
+    }
+    setTitleError(undefined)
+    // persistence isn't wired yet — validation only for now
   }
 
   //this is for confirming a selectedexercise and it takes the catalog id of that exercise
@@ -80,7 +101,7 @@ function Workout() {
           <Trash2Icon className="size-5" />
           Discard
         </Button>
-        <Button className="bg-brand h-10 px-4 text-base">Save</Button>
+        <Button className="bg-brand h-10 px-4 text-base" onClick={handleSave}>Save</Button>
       </div>
       <div className="flex gap-6">
         <div className="flex flex-col gap-2 flex-1">
@@ -91,13 +112,37 @@ function Workout() {
         <div className="flex flex-col gap-2 flex-1" >
         <Label className="text-muted-foreground">Time</Label>
       <Timesetter value={pickTime} onChange={setPickTime} /></div></div>
-      <Input
-        type="text"
-        placeholder="Enter your title"
-        className="pl-3.5 h-10"
-        value={title}
-        onChange={handleTitleChange}
-      />
+      <Field data-invalid={!!titleError}>
+        {/* relative wrapper so the one-tap clear button can sit inside the input;
+            pr-10 keeps the text from sliding under it */}
+        <div className="relative">
+          <Input
+            type="text"
+            placeholder="Enter your title"
+            className="pl-3.5 pr-10 h-10"
+            maxLength={80}
+            value={title}
+            onChange={handleTitleChange}
+            onBlur={titleTrim.onBlur}
+            aria-invalid={!!titleError}
+          />
+          {/* shown only while there's something to erase */}
+          {title && (
+            <button
+              type="button"
+              aria-label="Clear title"
+              onClick={() => {
+                setTitle("")
+                setTitleError(undefined)
+              }}
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-primary"
+            >
+              <X className="size-5" />
+            </button>
+          )}
+        </div>
+        <FieldError>{titleError}</FieldError>
+      </Field>
 
       {/*this is the use of new array called exercises. at first the exercises array is empty but when we click on the add
        new exercise then there is a new exercise added in the exercises array as you may have seen in the function called

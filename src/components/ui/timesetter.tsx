@@ -6,33 +6,34 @@ import { ScrollArea } from "./scroll-area"
 import { Separator } from "./separator"
 import { cn } from "@/lib/utils"
 
-// Each number row is h-12 (48px). The wheel shows 3 rows, so the middle one
-// is the "selected" slot. The math below depends on this exact height.
-const ITEM_HEIGHT = 48
-
 function pad(n: number) {
   return String(n).padStart(2, "0")
 }
 
 interface WheelProps {
   length: number
-  unit: string
   selected: number
   onSelect: (n: number) => void
 }
 
 // One scrolling column of numbers (0 .. length-1). The number sitting in the
 // center slot is the selected one — we read that from the scroll position.
-function Wheel({ length, unit, selected, onSelect }: WheelProps) {
+function Wheel({ length, selected, onSelect }: WheelProps) {
   const viewportRef = React.useRef<HTMLDivElement>(null)
+  const itemRef = React.useRef<HTMLDivElement>(null)
 
   React.useLayoutEffect(() => {
     const viewport = viewportRef.current
-    if (!viewport) return
+    const item = itemRef.current
+    if (!viewport || !item) return
+    // measure the row's real height rather than hardcoding 48px, so the scroll
+    // math stays correct even if the root font-size changes what h-12 (3rem)
+    // resolves to (the spacers and center band are rem-based and scale with it)
+    const itemHeight = item.offsetHeight || 48
     // start scrolled so the initially-selected number is in the center slot
-    viewport.scrollTop = selected * ITEM_HEIGHT
+    viewport.scrollTop = selected * itemHeight
     const handleScroll = () => {
-      const index = Math.round(viewport.scrollTop / ITEM_HEIGHT)
+      const index = Math.round(viewport.scrollTop / itemHeight)
       onSelect(Math.min(Math.max(index, 0), length - 1))
     }
     viewport.addEventListener("scroll", handleScroll, { passive: true })
@@ -47,8 +48,9 @@ function Wheel({ length, unit, selected, onSelect }: WheelProps) {
       viewportClassName="snap-y snap-mandatory"
       className="h-36 flex-1 [&_[data-slot=scroll-area-scrollbar]]:hidden"
     >
-      {/* top spacer: lets the first number reach the center slot */}
-      <div className="h-12" />
+      {/* top spacer: lets the first number reach the center slot, and doubles
+          as the measuring reference for the true row height */}
+      <div ref={itemRef} className="h-12" />
       {Array.from({ length }, (_, i) => i).map((n) => (
         <div
           key={n}
@@ -60,9 +62,6 @@ function Wheel({ length, unit, selected, onSelect }: WheelProps) {
           )}
         >
           {pad(n)}
-          {n === selected && (
-            <span className="ml-0.5 text-sm font-normal">{unit}</span>
-          )}
         </div>
       ))}
       {/* bottom spacer: lets the last number reach the center slot */}
@@ -115,14 +114,15 @@ function Timesetter({ value, onChange }: TimesetterProps) {
             </div>
 
             <CardContent className="px-0">
+              {/* column headings so it's clear which wheel is hours vs minutes.
+                  two flex-1 cells line up with the two flex-1 wheels below. */}
+              <div className="mb-2 flex text-center text-xs font-medium tracking-wider ">
+                <div className="flex-1 text-xl ">Hr</div>
+                <div className="flex-1 text-xl ">Min</div>
+              </div>
               <div className="relative flex">
-                <Wheel length={24} unit="h" selected={hour} onSelect={setHour} />
-                <Wheel
-                  length={60}
-                  unit="min"
-                  selected={minute}
-                  onSelect={setMinute}
-                />
+                <Wheel length={24} selected={hour} onSelect={setHour} />
+                <Wheel length={60} selected={minute} onSelect={setMinute} />
                 {/* center selection band: two lines bracketing the middle slot */}
                 <Separator className="pointer-events-none absolute inset-x-0 top-12" />
                 <Separator className="pointer-events-none absolute inset-x-0 top-24" />

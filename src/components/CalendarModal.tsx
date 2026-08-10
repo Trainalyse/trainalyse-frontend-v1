@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import React from "react"
 import { X } from "lucide-react"
+import type { Matcher } from "react-day-picker"
 
 interface CalendarModalProps {
   onClose: () => void
@@ -13,6 +14,10 @@ interface CalendarModalProps {
   // latest selectable day; every day after it is disabled (and the year/month
   // dropdowns stop here). omit for no upper bound.
   maxDate?: Date
+  // earliest selectable day; every day before it is disabled (and the year/month
+  // dropdowns start here). omit for no lower bound. only the workout date picker
+  // sets this (a floor two years back); the DOB picker leaves it open to 1900.
+  minDate?: Date
 }
 
 // a date with the time-of-day stripped, so comparisons are day-accurate
@@ -30,8 +35,16 @@ export function CalendarModal({
   selected,
   onSelect,
   maxDate,
+  minDate,
 }: CalendarModalProps) {
   const today = new Date()
+
+  // disable days outside [minDate, maxDate]. an array of matchers disables a day
+  // that matches ANY of them (before the floor OR after the ceiling). minDate is
+  // day-stripped so the floor day itself stays selectable regardless of its time.
+  const disabledDays: Matcher[] = []
+  if (minDate) disabledDays.push({ before: stripTime(minDate) })
+  if (maxDate) disabledDays.push({ after: maxDate })
   // is today itself out of the allowed range? (e.g. DOB capped at 2022) — if so
   // "Jump to today" is meaningless, and we open on maxDate's month instead.
   const todayOutOfRange =
@@ -65,9 +78,9 @@ export function CalendarModal({
           animate
           fixedWeeks
           captionLayout="dropdown"
-          startMonth={new Date(1900, 0)}
+          startMonth={minDate ?? new Date(1900, 0)}
           endMonth={maxDate ?? new Date(new Date().getFullYear(), 11)}
-          disabled={maxDate ? { after: maxDate } : undefined}
+          disabled={disabledDays.length ? disabledDays : undefined}
           month={month}
           onMonthChange={setMonth}
           selected={selected}
@@ -84,9 +97,9 @@ export function CalendarModal({
             dropdowns:
               "flex h-(--cell-size) w-full items-center justify-center gap-2",
             button_previous:
-              "flex size-9 items-center justify-center rounded-full bg-[var(--bg-surface-secondary)] p-0 text-[var(--text-primary)] select-none aria-disabled:opacity-50",
+              "flex size-9 items-center justify-center rounded-full bg-[var(--bg-surface-secondary)] p-0 text-[var(--text-primary)] select-none aria-disabled:invisible",
             button_next:
-              "flex size-9 items-center justify-center rounded-full bg-[var(--bg-surface-secondary)] p-0 text-[var(--text-primary)] select-none aria-disabled:opacity-50",
+              "flex size-9 items-center justify-center rounded-full bg-[var(--bg-surface-secondary)] p-0 text-[var(--text-primary)] select-none aria-disabled:invisible",
             weeks_before_enter: "cal-weeks-before-enter",
             weeks_before_exit: "cal-weeks-before-exit",
             weeks_after_enter: "cal-weeks-after-enter",
