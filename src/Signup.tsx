@@ -7,10 +7,12 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import StepIndicator from "@/components/ui/step-indicator"
 import { useTrimWhitespace, normalizeText } from "@/hooks/use-trim-whitespace"
-
-// a permissive but real email shape: something@something.something, no spaces
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const PASSWORD_SPACE_MSG = "Spaces aren't allowed in your password."
+import {
+  emailError,
+  passwordError,
+  hasSpace,
+  PASSWORD_SPACE_MSG,
+} from "@/lib/validation"
 
 interface SignupErrors {
   userName?: string
@@ -33,23 +35,17 @@ function validate(
     errors.userName = "Please choose a username."
   }
 
-  if (!email.trim()) {
-    errors.email = "Please enter your email."
-  } else if (!EMAIL_RE.test(email.trim())) {
-    errors.email = "That doesn't look like a valid email address."
-  }
+  const emailMsg = emailError(email)
+  if (emailMsg) errors.email = emailMsg
 
-  if (!password1) {
-    errors.password1 = "Please enter a password."
-  } else if (/\s/.test(password1)) {
-    errors.password1 = PASSWORD_SPACE_MSG
-  } else if (password1.length < 5) {
-    errors.password1 = "Password must be at least 5 characters."
-  }
+  const password1Msg = passwordError(password1, "Please enter a password.")
+  if (password1Msg) errors.password1 = password1Msg
 
+  // the confirm field checks a match rather than a length: empty, then no
+  // spaces, then it has to equal the first password.
   if (!password2) {
     errors.password2 = "Please re-enter your password."
-  } else if (/\s/.test(password2)) {
+  } else if (hasSpace(password2)) {
     errors.password2 = PASSWORD_SPACE_MSG
   } else if (password1 !== password2) {
     errors.password2 = "Those passwords don't match."
@@ -87,7 +83,7 @@ function Signup() {
     const value = event.target.value
     setPassword1(value)
     // flag spaces the instant they appear; otherwise clear the field's error
-    if (/\s/.test(value)) {
+    if (hasSpace(value)) {
       setErrors((prev) => ({ ...prev, password1: PASSWORD_SPACE_MSG }))
     } else if (errors.password1) {
       setErrors((prev) => ({ ...prev, password1: undefined }))
@@ -96,7 +92,7 @@ function Signup() {
   function handlePassword2(event: ChangeEvent<HTMLInputElement>) {
     const value = event.target.value
     setPassword2(value)
-    if (/\s/.test(value)) {
+    if (hasSpace(value)) {
       setErrors((prev) => ({ ...prev, password2: PASSWORD_SPACE_MSG }))
     } else if (errors.password2) {
       setErrors((prev) => ({ ...prev, password2: undefined }))

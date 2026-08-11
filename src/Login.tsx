@@ -7,10 +7,12 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import StepIndicator from "@/components/ui/step-indicator"
 import { useTrimWhitespace } from "@/hooks/use-trim-whitespace"
-
-// a permissive but real email shape: something@something.something, no spaces
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const PASSWORD_SPACE_MSG = "Spaces aren't allowed in your password."
+import {
+  emailError,
+  passwordError,
+  hasSpace,
+  PASSWORD_SPACE_MSG,
+} from "@/lib/validation"
 
 interface LoginErrors {
   email?: string
@@ -22,19 +24,11 @@ interface LoginErrors {
 function validate(email: string, password: string): LoginErrors {
   const errors: LoginErrors = {}
 
-  if (!email.trim()) {
-    errors.email = "Please enter your email."
-  } else if (!EMAIL_RE.test(email.trim())) {
-    errors.email = "That doesn't look like a valid email address."
-  }
+  const emailMsg = emailError(email)
+  if (emailMsg) errors.email = emailMsg
 
-  if (!password) {
-    errors.password = "Please enter your password."
-  } else if (/\s/.test(password)) {
-    errors.password = PASSWORD_SPACE_MSG
-  } else if (password.length < 5) {
-    errors.password = "Password must be at least 5 characters."
-  }
+  const passwordMsg = passwordError(password, "Please enter your password.")
+  if (passwordMsg) errors.password = passwordMsg
 
   return errors
 }
@@ -57,7 +51,7 @@ function Login() {
     const value = event.target.value
     setPassword(value)
     // flag spaces the instant they appear; otherwise clear the field's error
-    if (/\s/.test(value)) {
+    if (hasSpace(value)) {
       setErrors((prev) => ({ ...prev, password: PASSWORD_SPACE_MSG }))
     } else if (errors.password) {
       setErrors((prev) => ({ ...prev, password: undefined }))
