@@ -1,4 +1,15 @@
+/*the tokens in this file and global styles files are almost the same except very few tokens that i created and
+there is nothing stopping me to merge the 2 files into one global file and that the shadcn already built with most
+of the tokens already created by them , but this files main purpose is to keep the semantics like here i have defined
+in my own words that what each color is being used for and also the new tokens that i created and i named them.
+so thats why the 2 files are separate and there are 2 imports in each file and also i have mapped the global style file
+with the naming of the variable done here , go in the global styles file and check*/
+
 /*Design System for Trainalyse*/
+
+/*everywhere it is written root: and it just means that these varaible that are defined under this @-moz-document
+chunk are global and it will apply to the whole project and not one specific file or peice of code
+*/
 
 /*1. Color pallette*/
 

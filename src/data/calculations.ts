@@ -14,7 +14,7 @@ import { format, parseISO } from "date-fns"
 const EMPTY_LIMB: LimbValues = {}
 
 
-//so this is a function which has vairable like dropset which is like Dropset and then catalogperlimb is like
+// so this is a function which has vairable like dropset which is like Dropset and then catalogperlimb is like
 // whether the switch should be provided or not and then the enabled basically is the switch is on or not
 // and this function will return the values which would be either like limbvalues or null and inside the function
 // if the switch is not there then return null for the right side ,else if the enabled is on then return the values
@@ -27,10 +27,12 @@ function effectiveRight(
 ): LimbValues | null {
   if (!catalogPerLimb) return null
   return enabled ? (dropset.right ?? EMPTY_LIMB) : dropset.left
-}
+}// the result of this is either null or dropset.left or dropset.right if the user has given the input and this is just for
+//right side
 
 //this function takes the values that are input and just the smallest unit for the volume calculation, so it is basically
 // calculating the volume of one side dropset across all cases where the volume can be calculated
+// dont confuse this limb with workout.ts Limb because this is small l and it is same as Limbvalues
 function limbVolume(limb: LimbValues, isBodyweight: boolean) {
   if (!isBodyweight) {
     return (limb.weights ?? 0) * (limb.reps ?? 0)
@@ -44,7 +46,8 @@ function limbVolume(limb: LimbValues, isBodyweight: boolean) {
     }
   }
   return 0
-}
+}//this calculates volume for the dropset on one side , whichever side is given to this function
+//we can assume the above function to be like atom
 
 // this function is basically calculating dropset volume for both left and right side
 // so the above function is for only one side and this function is for both sides combined.
@@ -57,10 +60,13 @@ export function dropsetVolume(
   let total = limbVolume(dropset.left, isBodyweight)
   const right = effectiveRight(dropset, catalogPerLimb, enabled)
   if (right) {
+    //here we have used right instead of dropset.right becauase right can be anything it could be null
+    // , it could be dropset.left and it could be dropset.right so we gave it a general name.
     total += limbVolume(right, isBodyweight)
   }
   return total
-}
+}//this sums both sides and gives us the dropset volume
+//we can assume this function to be like a molecule
 
 //just a set volume
 export function setVolume(
@@ -74,7 +80,7 @@ export function setVolume(
     total += dropsetVolume(dropset, isBodyweight, catalogPerLimb, enabled)
   }
   return total
-}
+}//we can assume this function to be like a bigger molecule
 
 //just a exercise volume
 export function exerciseVolume(exercise: WorkoutExercise) {
@@ -91,7 +97,10 @@ export function exerciseVolume(exercise: WorkoutExercise) {
     total += setVolume(set, isBodyweight, catalogPerLimb, enabled)
   }
   return total
-}
+}// this function can be assumed to be like a compound and this function is for exercises like when we have to show the
+//total volume for a exercise , like say the exercise is bench press where the switch is not provided and
+// lets say the exercise is like bicep curl but the switch is off then we need this function but when the switch is on
+// then we need the other function named exercisevolumeforlimb
 
 //workout volume - dont know what is the use for this
 export function workoutVolume(workout: Workout) {
@@ -100,7 +109,8 @@ export function workoutVolume(workout: Workout) {
     total += exerciseVolume(exercise)
   }
   return total
-}
+}// i am still thinking of how can i use this cause on the home page , i dont think displaying it is the right idea
+//cause the user might get demotivated
 
 // this is just like limbvolume but instead its for endurance.
 function limbEndurance(limb: LimbValues, isBodyweight: boolean) {
@@ -207,7 +217,8 @@ export function getExerciseInstance(exerciseId: number) {
     ).getTime()
     return aTime - bTime
   })
-}
+}// graph is like searching all the instances of a exercise like say bench press then it has the id and the id is given
+//to this function and all the instances from all the workouts are gathered here for that exercise
 
 // so this is for the cases where we have to calculate the volume for both limbs separately , the earlier function for
 // the exercise volume was for the cases where there was no swtich or the switch was off.
@@ -223,7 +234,7 @@ function exerciseVolumeForLimb(exercise: WorkoutExercise, limb: Limb) {
     }
   }
   return total
-}
+}// this function is being used when the total exercise volume function is not being used like when the switch is on.
 
 //this is for getting volume for each and every instance that is stored in that results array
 // in getting the instance function.
@@ -471,4 +482,3 @@ export function instanceTotalSeconds(exerciseId: number) {
       }
     })
 }
-

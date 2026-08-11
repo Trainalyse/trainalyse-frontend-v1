@@ -89,25 +89,31 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* DARK-ONLY LOCK means this .dark block is the only one that actually renders.
+   These shadcn component tokens are bridged onto our own design-system.css
+   palette so there is a single source of truth: change a colour once in
+   design-system.css and every shadcn component follows. Tokens with no
+   design-system equivalent (destructive, ring, chart, sidebar) keep their
+   shadcn defaults. var() resolves at use-time, so file import order is fine. */
 .dark {
-  --brand: #cdf23a;
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --brand: var(--color-neon);
+  --background: var(--bg-page);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface-primary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-surface-primary);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--bg-button-primary);
+  --primary-foreground: var(--text-on-button);
+  --secondary: var(--bg-surface-secondary);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface-secondary);
+  --muted-foreground: var(--text-subheading);
+  --accent: var(--bg-surface-secondary);
+  --accent-foreground: var(--text-primary);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --border: var(--border-cardEdge);
+  --input: var(--border-inputEdge);
   --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
