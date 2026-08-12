@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./components/ui/accordion"
 import { EllipsisVerticalIcon } from "lucide-react"
+import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 // Per-exercise-type column config: the grid-cols template AND the header labels
 // come from ONE place so the header count can never drift from the column count
@@ -80,6 +81,12 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
   //this is for the limb that is currently being filled and by default it is left and we have imported the Limb
   const [activeLimb, setActiveLimb] = useState<Limb>("left")
 
+  // whether the "delete this whole exercise" confirm modal is open. deleting an
+  // exercise is more destructive than a dropset, so it goes through a confirm
+  // step (mirrors the dropset delete modal in Set.tsx) instead of firing instantly.
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  useScrollLock(confirmDelete)
+
   // grid template + header labels for THIS exercise type (see getGridConfig above)
   const gridConfig = getGridConfig(exerciseType, isBodyweight)
 
@@ -111,6 +118,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
 
 
   return (
+    <>
     <Card>
       <Accordion type="single" collapsible defaultValue="exercise">
         <AccordionItem value="exercise">
@@ -128,7 +136,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={onEdit}>Edit Exercise</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive" onClick={onDelete}>
+                  <DropdownMenuItem variant="destructive" onClick={() => setConfirmDelete(true)}>
                     Delete Exercise
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -203,6 +211,41 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
         </AccordionItem>
       </Accordion>
     </Card>
+
+    {/* Confirm-delete modal for the whole exercise. Same look as the dropset
+        delete modal (Set.tsx): tap the backdrop or Cancel to dismiss, Confirm
+        removes it. Shows the exercise name so it's clear which one is going. */}
+    {confirmDelete && (
+      <div
+        className="fixed inset-0 z-10 flex items-center justify-center bg-black/40"
+        onClick={() => setConfirmDelete(false)}
+      >
+        <div
+          className="flex w-[85%] max-w-[360px] flex-col gap-4 rounded-[var(--radius-card)] border border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <p className="text-base">
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{matchedExercise?.name}</span>?
+          </p>
+          <div className="flex justify-between">
+            <Button variant="outline" onClick={() => setConfirmDelete(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                onDelete()
+                setConfirmDelete(false)
+              }}
+            >
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   )
 }
 
