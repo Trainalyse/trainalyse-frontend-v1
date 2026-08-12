@@ -35,10 +35,13 @@ export function DatePickerDemo({
           onSelect={handleSelect}
           // no logging workouts in the future
           maxDate={new Date()}
-          // floor at the start of the year two years back (e.g. in 2026 → 1 Jan
-          // 2024): long trips happen, but older than that isn't worth logging.
-          // so 2024 onward is pickable; 31 Dec 2023 and earlier are disabled.
-          minDate={new Date(new Date().getFullYear() - 2, 0, 1)}
+          // floor at the 1st of the month three months back (e.g. in Aug 2026 →
+          // 1 May 2026; in Sep → 1 Jun): you can log/edit a workout up to three
+          // months old, month-wise, and nothing older. the Date constructor
+          // normalises a negative month into the previous year (Feb → Nov). this
+          // is also what startMonth keys off, so the left chevron auto-hides once
+          // the calendar reaches the floor month.
+          minDate={new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)}
         />
       )}
     </>

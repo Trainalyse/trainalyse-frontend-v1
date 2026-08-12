@@ -112,8 +112,14 @@ function Timesetter({ value, onChange }: TimesetterProps) {
             {/* TOP BAR: Done (left), X (right) */}
             <div className="flex items-center justify-between">
               <Button onClick={handleDone}>Done</Button>
-              <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
-                <X />
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Close time picker"
+                onClick={() => setOpen(false)}
+                className="size-9 rounded-full bg-[var(--bg-surface-secondary)] text-[var(--text-primary)]"
+              >
+                <X className="size-5" strokeWidth={2} />
               </Button>
             </div>
 
