@@ -63,8 +63,15 @@ export function CalendarModal({
   )
 
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 p-[var(--space-lg)] backdrop-blur-sm">
-      <Card className="w-full max-w-[400px] gap-[var(--space-lg)] rounded-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-[var(--space-lg)]">
+    <div
+      className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 p-[var(--space-lg)] backdrop-blur-sm"
+      onClick={onClose}
+    >
+      {/* stop taps inside the card from bubbling up and closing the modal */}
+      <Card
+        className="w-full max-w-[400px] gap-[var(--space-lg)] rounded-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-[var(--space-lg)]"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-end">
           <Button
             variant="ghost"

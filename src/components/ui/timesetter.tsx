@@ -107,8 +107,12 @@ function Timesetter({ value, onChange }: TimesetterProps) {
 
       {/* MODAL: blurred, centered backdrop (same as the calendar). */}
       {open && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <Card className="relative w-[320px] p-4">
+        <div
+          className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+        >
+          {/* stop taps inside the card from bubbling up and closing the modal */}
+          <Card className="relative w-[320px] p-4" onClick={(e) => e.stopPropagation()}>
             {/* TOP BAR: Done (left), X (right) */}
             <div className="flex items-center justify-between">
               <Button onClick={handleDone}>Done</Button>

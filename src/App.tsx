@@ -296,9 +296,16 @@ export function App() {
   return (
     <>
       {searchMode === "date" && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 p-[var(--space-lg)] backdrop-blur-sm">
-          {/* 16px padding on every side, dark surface */}
-          <Card className="w-full max-w-[400px] gap-[var(--space-lg)] rounded-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-[var(--space-lg)]">
+        <div
+          className="fixed inset-0 z-10 flex items-center justify-center bg-black/60 p-[var(--space-lg)] backdrop-blur-sm"
+          onClick={() => setSearchMode("none")}
+        >
+          {/* 16px padding on every side, dark surface. stopPropagation so taps
+              inside the card don't bubble up and close the modal */}
+          <Card
+            className="w-full max-w-[400px] gap-[var(--space-lg)] rounded-[var(--radius-card)] border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-[var(--space-lg)]"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex justify-end">
               <Button
                 variant="ghost"
