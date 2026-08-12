@@ -34,6 +34,11 @@ const WORKOUT_WEIGHT_LIMITS = {
 } as const
 const WEIGHT_FRAC_DIGITS = 2
 
+// reps are whole numbers only (fracDigits 0 = no decimal), unit-independent, up
+// to 4 digits so the highest is 9999 in one dropset. shared by both reps cells.
+// (must-be-greater-than-0 is a Save-time check, same reasoning as the weight cell.)
+const REPS_LIMIT = { max: 9999, intDigits: 4, fracDigits: 0 } as const
+
 interface DropsetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
@@ -70,10 +75,6 @@ function Dropsets({
 
   function handleWeightsChange(e: ChangeEvent<HTMLInputElement>) {
     update({ weights: e.target.valueAsNumber })
-  }
-
-  function handleRepsChange(e: ChangeEvent<HTMLInputElement>) {
-    update({ reps: e.target.valueAsNumber })
   }
 
   function handleAssistedWeightsChange(e: ChangeEvent<HTMLInputElement>) {
@@ -154,15 +155,15 @@ function Dropsets({
             />
           </div>
           <div>
-            <Input
-              type="number"
-              // blur on wheel so scrolling the row sideways can't nudge the number
-              onWheel={(e) => e.currentTarget.blur()}
-              placeholder="-"
+            <NumericCell
               className={cellInputClass}
               id={id + "-reps"}
-              value={limb.reps ?? ""}
-              onChange={handleRepsChange}
+              placeholder="-"
+              value={limb.reps}
+              onChange={(n) => update({ reps: n })}
+              intDigits={REPS_LIMIT.intDigits}
+              fracDigits={REPS_LIMIT.fracDigits}
+              max={REPS_LIMIT.max}
             />
           </div>
         </>
@@ -173,15 +174,15 @@ function Dropsets({
               <div>{difficultySelect}</div>
               {bodyweightWeightsCell}
               <div>
-                <Input
-                  type="number"
-                  // blur on wheel so scrolling the row sideways can't nudge the number
-                  onWheel={(e) => e.currentTarget.blur()}
-                  placeholder="-"
+                <NumericCell
                   className={cellInputClass}
                   id={id + "-reps"}
-                  value={limb.reps ?? ""}
-                  onChange={handleRepsChange}
+                  placeholder="-"
+                  value={limb.reps}
+                  onChange={(n) => update({ reps: n })}
+                  intDigits={REPS_LIMIT.intDigits}
+                  fracDigits={REPS_LIMIT.fracDigits}
+                  max={REPS_LIMIT.max}
                 />
               </div>
             </>
