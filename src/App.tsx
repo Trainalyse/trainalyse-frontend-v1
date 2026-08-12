@@ -14,6 +14,7 @@ import { SearchIcon } from "lucide-react"
 import { Settings } from "lucide-react"
 import { Plus } from "lucide-react"
 import { X } from "lucide-react"
+import { useScrollLock } from "@/hooks/use-scroll-lock"
 import { Dumbbell, Activity, List } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -207,6 +208,9 @@ export function App() {
   const [searchMode, setSearchMode] = React.useState<"none" | "date" | "title">(
     "none"
   )
+
+  // freeze the page behind while the date-picker modal is open so it can't scroll
+  useScrollLock(searchMode === "date")
 
   const [dateSearched, setDateSearched] = React.useState<Date>()
   const [titleSearched, setTitleSearched] = React.useState("")

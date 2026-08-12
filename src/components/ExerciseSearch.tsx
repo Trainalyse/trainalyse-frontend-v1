@@ -4,6 +4,7 @@ import { X, SearchIcon } from "lucide-react"
 import { exercises } from "@/data/exercise"
 import React, { type ChangeEvent } from "react"
 import { cn } from "@/lib/utils"
+import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 // this interface is used for the functions that are like properties of this component like onclose it should go to void
 // and onconfirm it should pass the id of the exercise which was confirmed and should go to void
@@ -19,6 +20,9 @@ function equipmentOf(name: string) {
 }
 
 function ExerciseSearch({ onClose, onConfirm }: ExerciseSearchProps) {
+  // freeze the page behind the modal so it can't scroll (only mounts while open)
+  useScrollLock(true)
+
   // this if for the exercise that is being searched by the user
   const [exerciseSearch, setExerciseSearch] = React.useState("")
   // the selection is held by id, not by name - the name is only ever display

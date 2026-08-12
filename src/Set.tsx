@@ -5,6 +5,7 @@ import { CircleX } from "lucide-react"
 import { type WorkoutSet, type Dropset, type Limb } from "./data/workouts"
 import React from "react"
 import { Separator } from "./components/ui/separator"
+import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 
 interface SetsProps {
@@ -32,6 +33,9 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number
   // One piece of state does three jobs: which row to highlight, whether the
   // modal is open, and which id to delete on confirm.
   const [pendingDeleteId, setPendingDeleteId] = React.useState<number | null>(null)
+
+  // freeze the page behind while the confirm-delete modal is open so it can't scroll
+  useScrollLock(pendingDeleteId !== null)
 
 
   // clicking a row's delete icon opens the confirm modal for THAT dropset

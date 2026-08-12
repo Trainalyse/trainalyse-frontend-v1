@@ -4,6 +4,7 @@ import { Button } from "./button"
 import { X, Calendar } from "lucide-react"
 import { Separator } from "./separator"
 import { cn } from "@/lib/utils"
+import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 // height of each row
 const ITEM_HEIGHT = 48
@@ -122,6 +123,9 @@ function Dobsetter({ value, onChange }: DobsetterProps) {
   const [day, setDay] = React.useState(1)
   const [month, setMonth] = React.useState(1)
   const [year, setYear] = React.useState(2000)
+
+  // freeze the page behind while the picker is open so it can't scroll
+  useScrollLock(open)
 
   const currentYear = new Date().getFullYear()
 

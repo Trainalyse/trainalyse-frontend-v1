@@ -5,6 +5,7 @@ import { X } from "lucide-react"
 import { ScrollArea } from "./scroll-area"
 import { Separator } from "./separator"
 import { cn } from "@/lib/utils"
+import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 function pad(n: number) {
   return String(n).padStart(2, "0")
@@ -79,6 +80,9 @@ function Timesetter({ value, onChange }: TimesetterProps) {
   const [open, setOpen] = React.useState(false)
   const [hour, setHour] = React.useState(0)
   const [minute, setMinute] = React.useState(0)
+
+  // freeze the page behind while the picker is open so it can't scroll
+  useScrollLock(open)
 
   // On open, seed the wheels from the incoming value (so the modal always
   // opens on the current time; closing with X just discards any scrolling).

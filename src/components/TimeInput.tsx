@@ -62,3 +62,6 @@ function TimeInput({ hours = 0, minutes = 0, seconds = 0, onChange }: TimeInputP
 }
 
 export default TimeInput
+
+// so this is the file where the user can input time in dropsets like if they write 1,2,1,3,1 then the time displayed
+// will be 01:21:31 so this is what this file does

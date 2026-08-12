@@ -3,6 +3,7 @@ import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
+import { useScrollLock } from "@/hooks/use-scroll-lock"
 import React from "react"
 import { X } from "lucide-react"
 import type { Matcher } from "react-day-picker"
@@ -37,6 +38,10 @@ export function CalendarModal({
   maxDate,
   minDate,
 }: CalendarModalProps) {
+  // freeze the page behind the modal so it can't scroll (this component only
+  // mounts while open, so the lock is simply always on)
+  useScrollLock(true)
+
   const today = new Date()
 
   // disable days outside [minDate, maxDate]. an array of matchers disables a day
