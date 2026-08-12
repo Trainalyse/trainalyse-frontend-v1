@@ -175,7 +175,14 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                 </Tabs>
                 )}
 
-              <div className={`grid ${gridConfig.template} items-center gap-x-[var(--space-sm)] gap-y-[var(--space-md)]`}>
+              {/* Horizontal scroll for pathologically narrow widths (< ~320px,
+                  e.g. the Galaxy Fold cover screen at 280px). The grid floors at
+                  ~240px — roughly its width inside the card at a 320px viewport —
+                  so every column including the trailing delete stays usable, and
+                  overflow-x-auto lets the row scroll sideways instead of the card
+                  clipping the delete off-screen. At >=320px it fills, no scroll. */}
+              <div className="overflow-x-auto">
+              <div className={`grid ${gridConfig.template} items-center gap-x-[var(--space-sm)] gap-y-[var(--space-md)] min-w-[240px]`}>
               {exerciseData.sets.map((set,index) => (
                 <Sets
                   key={set.id}
@@ -189,6 +196,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                   onChange={handleSetChange}
                 />
               ))}</div>
+              </div>
               <Button className="w-full" onClick={handleAddSet}>Add new Set</Button>
             </CardContent>
           </AccordionContent>

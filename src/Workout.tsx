@@ -103,13 +103,18 @@ function Workout() {
         </Button>
         <Button className="bg-brand h-10 px-4 text-base" onClick={handleSave}>Save</Button>
       </div>
-      <div className="flex gap-6">
-        <div className="flex flex-col gap-2 flex-1">
+      {/* Date + Time sit side by side, but flex-wrap lets Time drop to its own
+          full-width row below Date when the viewport gets too narrow (< ~320px)
+          for both to fit — the min-widths (Date wide enough for the full date
+          text, Time for the clock) are what trigger the wrap instead of Time
+          spilling past the page padding. */}
+      <div className="flex flex-wrap gap-x-6 gap-y-3">
+        <div className="flex flex-col gap-2 flex-1 min-w-[176px]">
         <Label className="text-muted-foreground">Date</Label>
       <DatePickerDemo
         initialDate={passedWorkout?.date ?? format(new Date(), "yyyy-MM-dd")}
          /></div>
-        <div className="flex flex-col gap-2 flex-1" >
+        <div className="flex flex-col gap-2 flex-1 min-w-[72px]" >
         <Label className="text-muted-foreground">Time</Label>
       <Timesetter value={pickTime} onChange={setPickTime} /></div></div>
       <Field data-invalid={!!titleError}>

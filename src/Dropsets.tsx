@@ -23,11 +23,14 @@ const difficultyShortLabels: Record<Difficulty, string> = {
 }
 
 // weight-cell limits keyed off the user's global unit. kg: up to 800 with 3
-// digits before the decimal; lbs: up to 1760 (800kg converted) with 4. both
-// allow 2 decimals. a value above the max can't be typed at all.
+// same ceiling regardless of unit: up to 4 digits before the decimal and 2 after,
+// so the highest weight that can be typed is 9999.99 (kg or lbs). the intDigits +
+// fracDigits caps already enforce that; max is a redundant explicit safeguard. a
+// value above this can't be typed at all. (must-be-greater-than-0 is a Save-time
+// check, not enforced here — "0" has to be typeable as the start of "0.5".)
 const WORKOUT_WEIGHT_LIMITS = {
-  kg: { max: 800, intDigits: 3 },
-  lbs: { max: 1760, intDigits: 4 },
+  kg: { max: 9999.99, intDigits: 4 },
+  lbs: { max: 9999.99, intDigits: 4 },
 } as const
 const WEIGHT_FRAC_DIGITS = 2
 
@@ -120,6 +123,8 @@ function Dropsets({
       ) : (
         <Input
           type="number"
+          // blur on wheel so scrolling the row sideways can't nudge the number
+          onWheel={(e) => e.currentTarget.blur()}
           placeholder="-"
           className={cellInputClass}
           id={id + "-weight"}
@@ -151,6 +156,8 @@ function Dropsets({
           <div>
             <Input
               type="number"
+              // blur on wheel so scrolling the row sideways can't nudge the number
+              onWheel={(e) => e.currentTarget.blur()}
               placeholder="-"
               className={cellInputClass}
               id={id + "-reps"}
@@ -168,6 +175,8 @@ function Dropsets({
               <div>
                 <Input
                   type="number"
+                  // blur on wheel so scrolling the row sideways can't nudge the number
+                  onWheel={(e) => e.currentTarget.blur()}
                   placeholder="-"
                   className={cellInputClass}
                   id={id + "-reps"}
@@ -183,6 +192,8 @@ function Dropsets({
               <div>
                 <Input
                   type="number"
+                  // blur on wheel so scrolling the row sideways can't nudge the number
+                  onWheel={(e) => e.currentTarget.blur()}
                   placeholder="-"
                   className={cellInputClass}
                   id={id + "-weight"}
