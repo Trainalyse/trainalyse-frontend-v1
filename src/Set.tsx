@@ -21,10 +21,13 @@ interface SetsProps {
   // Exercise decides whether to actually show the "enough dropsets" nudge (it
   // only shows once per exercise). The dropset is added either way.
   onAddBeyondLimit: () => void
+  // the same-positioned set from this exercise's most recent instance (or
+  // undefined). Each dropset's counterpart feeds the "last time" placeholders.
+  lastSet?: WorkoutSet
 }
 
 
-function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number, headers, isOnlySet, onAddBeyondLimit }: SetsProps) {
+function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number, headers, isOnlySet, onAddBeyondLimit, lastSet }: SetsProps) {
   {/*this is for adding new dropset */}
   function handleAddDropset() {
     // 3 dropsets is the sensible cap; adding while there are already 3+ means
@@ -99,6 +102,7 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number
                 dropsetData={dropset}
                 activeLimb={activeLimb}
                 onChange={handleDropsetChange}
+                lastDropset={lastSet?.dropsets[index]}
               />
               <div className="flex justify-end">
                 {!(isOnlySet && setData.dropsets.length === 1) && (

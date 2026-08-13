@@ -6,6 +6,8 @@ interface TimeInputProps {
   minutes?: number
   seconds?: number
   onChange: (value: { hours: number; minutes: number; seconds: number }) => void
+  // muted "last time" hint shown while the field is empty (e.g. "02:30" or "-")
+  placeholder?: string
 }
 
 const pad = (n: number) => String(n).padStart(2, "0")
@@ -15,7 +17,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 // last digit. The whole value is derived from the hours/minutes/seconds props,
 // so there is no internal state to keep in sync — every keystroke just recomputes
 // h/m/s and hands them up via onChange.
-function TimeInput({ hours = 0, minutes = 0, seconds = 0, onChange }: TimeInputProps) {
+function TimeInput({ hours = 0, minutes = 0, seconds = 0, onChange, placeholder }: TimeInputProps) {
   // Durations are usually under an hour, and HH:MM:SS is the widest cell in the
   // row — so only show the hours group once there actually are hours; otherwise
   // MM:SS. Entry is unaffected: keystrokes recompute from `digits`, not this.
@@ -51,7 +53,10 @@ function TimeInput({ hours = 0, minutes = 0, seconds = 0, onChange }: TimeInputP
     <Input
       type="text"
       inputMode="numeric"
-      value={display}
+      // blank the value while empty so the muted placeholder ("last time" hint)
+      // shows through; once anything is typed, show the masked HH:MM:SS value
+      value={isEmpty ? "" : display}
+      placeholder={placeholder}
       onChange={() => {}}
       onKeyDown={handleKeyDown}
       className={`w-full min-w-0 px-0 text-sm tabular-nums border-0 bg-transparent dark:bg-transparent text-left shadow-none focus-visible:ring-0 ${

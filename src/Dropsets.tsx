@@ -40,12 +40,28 @@ const WEIGHT_FRAC_DIGITS = 2
 // (must-be-greater-than-0 is a Save-time check, same reasoning as the weight cell.)
 const REPS_LIMIT = { max: 99999, intDigits: 5, fracDigits: 0 } as const
 
+// format a limb's logged time as the "last time" placeholder for a time cell —
+// HH:MM:SS once there are hours, else MM:SS; "-" when there's no time logged.
+function formatTimePlaceholder(limb?: LimbValues): string {
+  if (!limb) return "-"
+  const h = limb.hours ?? 0
+  const m = limb.minutes ?? 0
+  const s = limb.seconds ?? 0
+  if (!h && !m && !s) return "-"
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`
+}
+
 interface DropsetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
   dropsetData: Dropset
   activeLimb: Limb
   onChange: (updated: Dropset) => void
+  // the same-positioned dropset from this exercise's most recent instance (or
+  // undefined). Its values become each empty cell's muted placeholder — a "last
+  // time" hint. It is NEVER stored: if the user doesn't type, the cell stays empty.
+  lastDropset?: Dropset
 }
 
 function Dropsets({
@@ -54,6 +70,7 @@ function Dropsets({
   dropsetData,
   activeLimb,
   onChange,
+  lastDropset,
 }: DropsetsProps) {
   const id = React.useId()
   const weightLimit = WORKOUT_WEIGHT_LIMITS[user.weightUnit]
@@ -79,6 +96,13 @@ function Dropsets({
   // the values for whichever limb is active — empty when that limb has no data
   // yet, so Left and Right stay fully independent (no mirroring)
   const limb: LimbValues = dropsetData[activeLimb] ?? {}
+
+  // "last time" placeholders: the matching limb from the same-positioned dropset
+  // of the most recent instance. Shown muted in empty cells; "-" when there's no
+  // history for that exact slot/field. Purely a hint — never stored.
+  const lastLimb: LimbValues | undefined = lastDropset?.[activeLimb]
+  const ph = (v?: number) => (v != null ? String(v) : "-")
+  const timePlaceholder = formatTimePlaceholder(lastLimb)
 
   // rebuild the ACTIVE limb with whatever field changed, and hand it up to Set
   function update(patch: Partial<LimbValues>) {
@@ -139,7 +163,7 @@ function Dropsets({
         <NumericCell
           className={cellInputClass}
           id={id + "-weight"}
-          placeholder="-"
+          placeholder={ph(lastLimb?.assistedWeights)}
           value={limb.assistedWeights}
           onChange={(n) => update({ assistedWeights: n })}
           intDigits={weightLimit.intDigits}
@@ -152,7 +176,7 @@ function Dropsets({
         <NumericCell
           className={cellInputClass}
           id={id + "-weight"}
-          placeholder="-"
+          placeholder={ph(lastLimb?.extraWeights)}
           value={limb.extraWeights}
           onChange={(n) => update({ extraWeights: n })}
           intDigits={weightLimit.intDigits}
@@ -174,7 +198,7 @@ function Dropsets({
             <NumericCell
               className={cellInputClass}
               id={id + "-weight"}
-              placeholder="-"
+              placeholder={ph(lastLimb?.weights)}
               value={limb.weights}
               onChange={(n) => update({ weights: n })}
               intDigits={weightLimit.intDigits}
@@ -187,7 +211,7 @@ function Dropsets({
             <NumericCell
               className={cellInputClass}
               id={id + "-reps"}
-              placeholder="-"
+              placeholder={ph(lastLimb?.reps)}
               value={limb.reps}
               onChange={(n) => update({ reps: n })}
               intDigits={REPS_LIMIT.intDigits}
@@ -207,7 +231,7 @@ function Dropsets({
                 <NumericCell
                   className={cellInputClass}
                   id={id + "-reps"}
-                  placeholder="-"
+                  placeholder={ph(lastLimb?.reps)}
                   value={limb.reps}
                   onChange={(n) => update({ reps: n })}
                   intDigits={REPS_LIMIT.intDigits}
@@ -226,7 +250,7 @@ function Dropsets({
                   type="number"
                   // blur on wheel so scrolling the row sideways can't nudge the number
                   onWheel={(e) => e.currentTarget.blur()}
-                  placeholder="-"
+                  placeholder={ph(lastLimb?.weights)}
                   className={cellInputClass}
                   id={id + "-weight"}
                   value={limb.weights ?? ""}
@@ -239,6 +263,7 @@ function Dropsets({
                   minutes={limb.minutes}
                   seconds={limb.seconds}
                   onChange={(v) => update(v)}
+                  placeholder={timePlaceholder}
                 />
               </div>
             </>
@@ -254,6 +279,7 @@ function Dropsets({
                   minutes={limb.minutes}
                   seconds={limb.seconds}
                   onChange={(v) => update(v)}
+                  placeholder={timePlaceholder}
                 />
               </div>
             </>

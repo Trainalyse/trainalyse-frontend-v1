@@ -92,10 +92,15 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
   // there's any past logged instance to show — the menu item is disabled and
   // muted when this exercise has never been performed.
   const [showPrevious, setShowPrevious] = useState(false)
-  const hasPrevious = useMemo(
-    () => getExerciseInstance(exerciseData.exerciseId).length > 0,
-    [exerciseData.exerciseId]
-  )
+  // the most recent logged instance of this exercise (or null). Drives BOTH the
+  // "previous performance" menu enable state AND the per-cell "last time" muted
+  // placeholders (matched positionally: current set i / dropset j -> this
+  // instance's sets[i].dropsets[j]).
+  const lastInstance = useMemo(() => {
+    const instances = getExerciseInstance(exerciseData.exerciseId)
+    return instances.length ? instances[instances.length - 1].exercise : null
+  }, [exerciseData.exerciseId])
+  const hasPrevious = lastInstance !== null
 
   // "enough dropsets" nudge — shown the first time the user adds a 4th dropset to
   // ANY set of THIS exercise. `dropsetWarned` makes it fire once per exercise:
@@ -249,6 +254,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                   isOnlySet={exerciseData.sets.length === 1}
                   onChange={handleSetChange}
                   onAddBeyondLimit={handleDropsetBeyondLimit}
+                  lastSet={lastInstance?.sets[index]}
                 />
               ))}</div>
               </div>
