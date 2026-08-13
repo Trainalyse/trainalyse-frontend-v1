@@ -10,17 +10,18 @@ import { exercises, type ExerciseType } from "./data/exercise"
 import { Button } from "@/components/ui/button"
 import { type WorkoutExercise, type WorkoutSet ,type Limb} from "./data/workouts"
 import { Switch } from "@/components/ui/switch"
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import PreviousPerformance from "@/components/PreviousPerformance"
+import { getExerciseInstance } from "./data/calculations"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./components/ui/accordion"
-import { EllipsisVerticalIcon } from "lucide-react"
+import { EllipsisVerticalIcon, Pencil, History, Trash2 } from "lucide-react"
 import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 // Per-exercise-type column config: the grid-cols template AND the header labels
@@ -87,6 +88,15 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   useScrollLock(confirmDelete)
 
+  // whether the read-only "previous performance" sheet is open, and whether
+  // there's any past logged instance to show — the menu item is disabled and
+  // muted when this exercise has never been performed.
+  const [showPrevious, setShowPrevious] = useState(false)
+  const hasPrevious = useMemo(
+    () => getExerciseInstance(exerciseData.exerciseId).length > 0,
+    [exerciseData.exerciseId]
+  )
+
   // grid template + header labels for THIS exercise type (see getGridConfig above)
   const gridConfig = getGridConfig(exerciseType, isBodyweight)
 
@@ -133,10 +143,33 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                     <EllipsisVerticalIcon className="size-6" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={onEdit}>Edit Exercise</DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                {/* align="end" anchors the menu's right edge to the (right-side)
+                    kebab and lets it grow leftward OVER the card; w-max sizes it
+                    to the widest item so labels stay on one line, capped at the
+                    collision-available width so it wraps only when it must; and
+                    collisionPadding keeps it 23px off the viewport edges — the
+                    same 23px the page frame uses — so it never leaks out. */}
+                {/* flex column with gap-3 (12px) gives even breathing room
+                    between the three options; p-2 keeps the same room at the
+                    top/bottom edges. No separator before Delete — kept simple. */}
+                <DropdownMenuContent
+                  align="end"
+                  collisionPadding={23}
+                  className="flex w-max max-w-[var(--radix-dropdown-menu-content-available-width)] flex-col gap-3 p-2"
+                >
+                  <DropdownMenuItem onClick={onEdit}>
+                    <Pencil />
+                    Edit Exercise
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={!hasPrevious}
+                    onClick={() => setShowPrevious(true)}
+                  >
+                    <History />
+                    Previous performance
+                  </DropdownMenuItem>
                   <DropdownMenuItem variant="destructive" onClick={() => setConfirmDelete(true)}>
+                    <Trash2 />
                     Delete Exercise
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -245,6 +278,15 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
         </div>
       </div>
     )}
+
+    {/* Read-only snapshot of the most recent logged instance of this exercise.
+        Bottom sheet, 70% height, dimmed/blurred backdrop, X or backdrop tap to
+        close. Only reachable when hasPrevious, so it never opens empty. */}
+    <PreviousPerformance
+      open={showPrevious}
+      onOpenChange={setShowPrevious}
+      exerciseId={exerciseData.exerciseId}
+    />
     </>
   )
 }
