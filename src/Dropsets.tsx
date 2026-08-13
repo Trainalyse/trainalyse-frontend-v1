@@ -104,6 +104,16 @@ function Dropsets({
   const ph = (v?: number) => (v != null ? String(v) : "-")
   const timePlaceholder = formatTimePlaceholder(lastLimb)
 
+  // For BODYWEIGHT weight cells the sign encodes last time's difficulty (so the
+  // load is readable without touching the difficulty selector): "+20" if last
+  // time was weighted (+extra), "-10" if assisted (−assist), "-" for normal/none.
+  const lastLoadHint =
+    lastLimb?.difficulty === "weighted" && lastLimb.extraWeights != null
+      ? `+${lastLimb.extraWeights}`
+      : lastLimb?.difficulty === "assisted" && lastLimb.assistedWeights != null
+        ? `-${lastLimb.assistedWeights}`
+        : "-"
+
   // rebuild the ACTIVE limb with whatever field changed, and hand it up to Set
   function update(patch: Partial<LimbValues>) {
     onChange({ ...dropsetData, [activeLimb]: { ...limb, ...patch } })
@@ -147,7 +157,7 @@ function Dropsets({
   // min-w-0 so the input shrinks with its minmax(0,1fr) track instead of
   // forcing the column wider (and expands to fill on wider screens).
   const cellInputClass =
-    "w-full min-w-0 border-0 bg-transparent dark:bg-transparent text-center shadow-none focus-visible:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+    "w-full min-w-0 border-0 bg-transparent dark:bg-transparent text-center text-sm shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/50 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
 
   // Weights cell for BODYWEIGHT exercises — identical in weights&reps and duration.
   // Normal adds no weight → a muted "-" that still holds the column width; Assisted/
@@ -156,14 +166,21 @@ function Dropsets({
   const bodyweightWeightsCell = (
     <div className="text-left">
       {difficulty === "normal" ? (
-        <span className="inline-block w-full text-center text-muted-foreground">NA</span>
+        // normal = no added weight now, but still surface last time's signed load
+        // (dim, like a placeholder) so a weighted/assisted history is visible here;
+        // "NA" only when there was no load last time either
+        lastLoadHint !== "-" ? (
+          <span className="inline-block w-full text-center text-sm text-muted-foreground/50">{lastLoadHint}</span>
+        ) : (
+          <span className="inline-block w-full text-center text-sm text-muted-foreground">NA</span>
+        )
       ) : difficulty === "assisted" ? (
         // assistance is capped just below bodyweight (see assistedMax) so the
         // effective load never reaches 0
         <NumericCell
           className={cellInputClass}
           id={id + "-weight"}
-          placeholder={ph(lastLimb?.assistedWeights)}
+          placeholder={lastLoadHint}
           value={limb.assistedWeights}
           onChange={(n) => update({ assistedWeights: n })}
           intDigits={weightLimit.intDigits}
@@ -176,7 +193,7 @@ function Dropsets({
         <NumericCell
           className={cellInputClass}
           id={id + "-weight"}
-          placeholder={ph(lastLimb?.extraWeights)}
+          placeholder={lastLoadHint}
           value={limb.extraWeights}
           onChange={(n) => update({ extraWeights: n })}
           intDigits={weightLimit.intDigits}

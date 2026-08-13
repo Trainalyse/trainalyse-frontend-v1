@@ -78,7 +78,7 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number
       </div>
       {/* Column labels for this set's value cells (Set number is no longer a
           column). Re-uses the outer grid tracks via subgrid so they line up. */}
-      <div className="col-span-full grid grid-cols-subgrid items-center text-left text-muted-foreground text-xs tracking-wider">
+      <div className="col-span-full grid grid-cols-subgrid items-center text-left text-base text-xs tracking-wider">
         {headers.map((label) => (
             <div
               key={label}

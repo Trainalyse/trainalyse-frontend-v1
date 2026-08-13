@@ -59,7 +59,7 @@ function TimeInput({ hours = 0, minutes = 0, seconds = 0, onChange, placeholder 
       placeholder={placeholder}
       onChange={() => {}}
       onKeyDown={handleKeyDown}
-      className={`w-full min-w-0 px-0 text-sm tabular-nums border-0 bg-transparent dark:bg-transparent text-left shadow-none focus-visible:ring-0 ${
+      className={`w-full min-w-0 px-0 text-sm tabular-nums border-0 bg-transparent dark:bg-transparent text-left shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/50 ${
         isEmpty ? "text-muted-foreground" : ""
       }`}
     />
