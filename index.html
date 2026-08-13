@@ -5,9 +5,13 @@
 
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
 
+    <!-- interactive-widget=resizes-content: when the mobile keyboard opens, shrink
+         the LAYOUT viewport (not just the visual one) so position:fixed elements —
+         e.g. the range-warning toast — reposition into the visible area instead of
+         being parked off-screen above the scroll (a Chrome-Android quirk). -->
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content"
     />
     <title>Kasrat</title>
   </head>
