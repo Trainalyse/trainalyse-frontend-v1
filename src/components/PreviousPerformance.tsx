@@ -3,7 +3,6 @@ import { format, parseISO } from "date-fns"
 import { ChevronDown, X } from "lucide-react"
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { exercises, type ExerciseType } from "@/data/exercise"
@@ -75,7 +74,6 @@ function PreviousPerformance({ open, onOpenChange, exerciseId }: PreviousPerform
 
   const exerciseType: ExerciseType | "" = matched?.type ?? ""
   const isBodyweight = matched?.isBodyweight ?? false
-  const perLimbCapable = matched?.perLimb ?? false
   const workoutExercise = latest.exercise
   const perLimbEnabled = workoutExercise.perLimbEnabled ?? false
 
@@ -167,22 +165,11 @@ function PreviousPerformance({ open, onOpenChange, exerciseId }: PreviousPerform
 
         {/* Scrollable read-only body; the page behind is locked by the Sheet. */}
         <div className="flex flex-1 flex-col gap-[var(--space-md)] overflow-y-auto px-[var(--space-23)] pt-[var(--space-sm)] pb-[var(--space-md)]">
-          {/* per-limb: static "on" switch + Left/Right tabs to read each side */}
-          {perLimbCapable && (
-            <div className="flex items-center gap-2">
-              {/* Same full-brightness look as the live card switch, but read-only:
-                  no `disabled` (that dims it to 50%) — instead block all pointer
-                  and keyboard interaction so it can't be toggled. */}
-              <Switch
-                checked={perLimbEnabled}
-                aria-readonly
-                tabIndex={-1}
-                className="pointer-events-none"
-              />
-              <span>Log separate for each limb</span>
-            </div>
-          )}
-          {perLimbCapable && perLimbEnabled && (
+          {/* Only when this instance was logged per-limb: read-only Left/Right
+              tabs to switch between each side. The "Log separate for each limb"
+              toggle is intentionally NOT shown — a non-interactive switch read
+              as confusing. No per-limb data = nothing here at all. */}
+          {perLimbEnabled && (
             <Tabs value={activeLimb} onValueChange={(v) => setActiveLimb(v as Limb)}>
               <TabsList className="w-full">
                 <TabsTrigger

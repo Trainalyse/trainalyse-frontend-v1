@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./components/ui/accordion"
-import { EllipsisVerticalIcon, Pencil, History, Trash2 } from "lucide-react"
+import { EllipsisVerticalIcon, Pencil, History, Trash2, X, Info } from "lucide-react"
 import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 // Per-exercise-type column config: the grid-cols template AND the header labels
@@ -96,6 +96,19 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
     () => getExerciseInstance(exerciseData.exerciseId).length > 0,
     [exerciseData.exerciseId]
   )
+
+  // "enough dropsets" nudge — shown the first time the user adds a 4th dropset to
+  // ANY set of THIS exercise. `dropsetWarned` makes it fire once per exercise:
+  // once it's true, further 4th+ adds (this set or any other) are left alone.
+  const [dropsetWarned, setDropsetWarned] = useState(false)
+  const [showDropsetWarning, setShowDropsetWarning] = useState(false)
+  useScrollLock(showDropsetWarning)
+
+  function handleDropsetBeyondLimit() {
+    if (dropsetWarned) return
+    setDropsetWarned(true)
+    setShowDropsetWarning(true)
+  }
 
   // grid template + header labels for THIS exercise type (see getGridConfig above)
   const gridConfig = getGridConfig(exerciseType, isBodyweight)
@@ -235,6 +248,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                   activeLimb={activeLimb}
                   isOnlySet={exerciseData.sets.length === 1}
                   onChange={handleSetChange}
+                  onAddBeyondLimit={handleDropsetBeyondLimit}
                 />
               ))}</div>
               </div>
@@ -275,6 +289,44 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
               Confirm
             </Button>
           </div>
+        </div>
+      </div>
+    )}
+
+    {/* "Enough dropsets" nudge — informational only, the dropset was already
+        added. Closes on the X, a backdrop tap, or OK. Shows once per exercise. */}
+    {showDropsetWarning && (
+      <div
+        className="fixed inset-0 z-10 flex items-center justify-center bg-black/40"
+        onClick={() => setShowDropsetWarning(false)}
+      >
+        <div
+          className="flex w-[85%] max-w-[360px] flex-col gap-4 rounded-[var(--radius-card)] border border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-5"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header: neon info icon + "A QUICK TIP" label, round grey X on the right */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Info className="size-[18px] text-[var(--color-neon)]" />
+              <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                A quick tip
+              </span>
+            </div>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setShowDropsetWarning(false)}
+              className="flex size-7 items-center justify-center rounded-full bg-white/10 text-muted-foreground hover:text-foreground"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+          <p className="text-lg">
+            2 dropsets are enough to tire your muscles, going to 3rd dropset is not needed
+          </p>
+          <Button className="w-full" onClick={() => setShowDropsetWarning(false)}>
+            OK
+          </Button>
         </div>
       </div>
     )}

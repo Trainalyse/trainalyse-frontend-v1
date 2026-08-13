@@ -17,15 +17,23 @@ interface SetsProps {
   activeLimb: Limb
   isOnlySet: boolean
   onChange: (updated: WorkoutSet) => void
+  // called when the user adds a 4th (or later) dropset to this set — the parent
+  // Exercise decides whether to actually show the "enough dropsets" nudge (it
+  // only shows once per exercise). The dropset is added either way.
+  onAddBeyondLimit: () => void
 }
 
 
-function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number, headers, isOnlySet }: SetsProps) {
+function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number, headers, isOnlySet, onAddBeyondLimit }: SetsProps) {
   {/*this is for adding new dropset */}
   function handleAddDropset() {
+    // 3 dropsets is the sensible cap; adding while there are already 3+ means
+    // this new one is the 4th or beyond — tell the parent so it can nudge.
+    const beyondLimit = setData.dropsets.length >= 3
     const newDropset: Dropset = { id: Date.now(), left: {} }
     // rebuild THIS set with the new dropset, and hand it up to Exercise
     onChange({ ...setData, dropsets: [...setData.dropsets, newDropset] })
+    if (beyondLimit) onAddBeyondLimit()
   }
 
 
