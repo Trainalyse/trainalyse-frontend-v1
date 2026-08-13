@@ -35,9 +35,10 @@ const WORKOUT_WEIGHT_LIMITS = {
 const WEIGHT_FRAC_DIGITS = 2
 
 // reps are whole numbers only (fracDigits 0 = no decimal), unit-independent, up
-// to 4 digits so the highest is 9999 in one dropset. shared by both reps cells.
+// to 5 digits so the highest is 99999 in one dropset (the no-rest pushup record
+// is north of 10,000, so 4 digits wasn't enough). shared by both reps cells.
 // (must-be-greater-than-0 is a Save-time check, same reasoning as the weight cell.)
-const REPS_LIMIT = { max: 9999, intDigits: 4, fracDigits: 0 } as const
+const REPS_LIMIT = { max: 99999, intDigits: 5, fracDigits: 0 } as const
 
 interface DropsetsProps {
   exerciseType: ExerciseType | ""
@@ -57,6 +58,24 @@ function Dropsets({
   const id = React.useId()
   const weightLimit = WORKOUT_WEIGHT_LIMITS[user.weightUnit]
 
+  // Assisted weight (bodyweight exercises) must be STRICTLY less than the user's
+  // bodyweight, so the effective load — (bodyweight − assistance) — stays > 0 and
+  // volume/endurance can never hit 0 or go negative. With 2-decimal precision the
+  // ceiling is bodyweight minus one cent (e.g. 56.65 → 56.64), computed in integer
+  // cents to dodge float error. Falls back to the normal weight ceiling if the
+  // user's bodyweight isn't set, so the cell never locks up.
+  const assistedMax =
+    user.weight > 0 ? (Math.round(user.weight * 100) - 1) / 100 : weightLimit.max
+
+  // messages shown (as a toast) when a keystroke is rejected for exceeding a
+  // cell's ceiling — so the user knows the allowed range instead of just being
+  // silently blocked. Assisted references the bodyweight, since that's the cap.
+  const unit = user.weightUnit
+  const assistedRejectMsg = `You can only enter assisted weight between 0 and your bodyweight (${user.weight} ${unit}).`
+  const weightRejectMsg = `You can only enter weight between 0 and ${weightLimit.max} ${unit}.`
+  const extraRejectMsg = `You can only add extra weight between 0 and ${weightLimit.max} ${unit}.`
+  const repsRejectMsg = `You can only enter reps between 0 and ${REPS_LIMIT.max}.`
+
   // the values for whichever limb is active — empty when that limb has no data
   // yet, so Left and Right stay fully independent (no mirroring)
   const limb: LimbValues = dropsetData[activeLimb] ?? {}
@@ -75,13 +94,6 @@ function Dropsets({
 
   function handleWeightsChange(e: ChangeEvent<HTMLInputElement>) {
     update({ weights: e.target.valueAsNumber })
-  }
-
-  function handleAssistedWeightsChange(e: ChangeEvent<HTMLInputElement>) {
-    update({ assistedWeights: e.target.valueAsNumber })
-  }
-  function handleExtraWeightsChange(e: ChangeEvent<HTMLInputElement>) {
-    update({ extraWeights: e.target.valueAsNumber })
   }
 
   const difficultySelect = (
@@ -121,16 +133,32 @@ function Dropsets({
     <div className="text-left">
       {difficulty === "normal" ? (
         <span className="inline-block w-full text-center text-muted-foreground">NA</span>
-      ) : (
-        <Input
-          type="number"
-          // blur on wheel so scrolling the row sideways can't nudge the number
-          onWheel={(e) => e.currentTarget.blur()}
-          placeholder="-"
+      ) : difficulty === "assisted" ? (
+        // assistance is capped just below bodyweight (see assistedMax) so the
+        // effective load never reaches 0
+        <NumericCell
           className={cellInputClass}
           id={id + "-weight"}
-          value={(difficulty === "assisted" ? limb.assistedWeights : limb.extraWeights) ?? ""}
-          onChange={difficulty === "assisted" ? handleAssistedWeightsChange : handleExtraWeightsChange}
+          placeholder="-"
+          value={limb.assistedWeights}
+          onChange={(n) => update({ assistedWeights: n })}
+          intDigits={weightLimit.intDigits}
+          fracDigits={WEIGHT_FRAC_DIGITS}
+          max={assistedMax}
+          rejectMessage={assistedRejectMsg}
+        />
+      ) : (
+        // weighted: extra load on top of bodyweight, same ceiling as a plain weight
+        <NumericCell
+          className={cellInputClass}
+          id={id + "-weight"}
+          placeholder="-"
+          value={limb.extraWeights}
+          onChange={(n) => update({ extraWeights: n })}
+          intDigits={weightLimit.intDigits}
+          fracDigits={WEIGHT_FRAC_DIGITS}
+          max={weightLimit.max}
+          rejectMessage={extraRejectMsg}
         />
       )}
     </div>
@@ -152,6 +180,7 @@ function Dropsets({
               intDigits={weightLimit.intDigits}
               fracDigits={WEIGHT_FRAC_DIGITS}
               max={weightLimit.max}
+              rejectMessage={weightRejectMsg}
             />
           </div>
           <div>
@@ -164,6 +193,7 @@ function Dropsets({
               intDigits={REPS_LIMIT.intDigits}
               fracDigits={REPS_LIMIT.fracDigits}
               max={REPS_LIMIT.max}
+              rejectMessage={repsRejectMsg}
             />
           </div>
         </>
@@ -183,6 +213,7 @@ function Dropsets({
                   intDigits={REPS_LIMIT.intDigits}
                   fracDigits={REPS_LIMIT.fracDigits}
                   max={REPS_LIMIT.max}
+                  rejectMessage={repsRejectMsg}
                 />
               </div>
             </>

@@ -14,7 +14,6 @@ import Settings from "./Settings.tsx"
 import Improve from "./Improve.tsx"
 import More from "./More.tsx"
 import Layout from "./Layout.tsx"
-import { Toaster } from "@/components/ui/sonner.tsx"
 
 createRoot(document.getElementById("root")!).render(
   //this only works in production side and not when the user is using the project and the job for strictmode is
@@ -42,8 +41,6 @@ createRoot(document.getElementById("root")!).render(
           </Route>
         </Routes>
       </BrowserRouter>
-      {/* App-wide toast host: outside the router so it shows on every route (incl. Workout, which sits outside Layout). top-center avoids the mobile keyboard. */}
-      <Toaster position="top-center" />
     </ThemeProvider>
   </StrictMode>
 )

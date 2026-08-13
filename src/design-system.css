@@ -28,6 +28,12 @@ chunk are global and it will apply to the whole project and not one specific fil
   --color-neon-10: #cdf23a1a;
   /*muted grey at 50% — days that fall outside the month being viewed*/
   --color-muted-50: #8a8a8a80;
+  /*amber — warnings (e.g. the out-of-range input toast)*/
+  --color-warning: #d4a72c;
+  /*warning amber at 40% — ring around the warning badge*/
+  --color-warning-40: #d4a72c66;
+  /*warning amber at 10% — subtle fill inside the warning badge*/
+  --color-warning-10: #d4a72c1a;
 }
 
 /*2. Color Usage*/

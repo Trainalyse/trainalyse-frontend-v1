@@ -1,6 +1,7 @@
 //so it says that import all the named exports form the react library under the name React and it is different from the line
 // import React from react because the react library dosent have any default exports and so it can break
 import * as React from "react"
+import { warnToast } from "@/components/warn-toast"
 import { Input } from "@/components/ui/input"
 import { sanitizeNumeric, stripLeadingZeros } from "@/lib/number-input"
 
@@ -19,6 +20,10 @@ interface NumericCellProps {
   fracDigits: number
   // hard ceiling — a keystroke that would push the value above this is rejected
   max?: number
+  // shown as a toast when a keystroke is rejected for exceeding `max`, so the
+  // user understands WHY the value won't go in (e.g. the allowed range). No
+  // message = silent reject (previous behaviour).
+  rejectMessage?: string
   id?: string
   className?: string
   placeholder?: string
@@ -47,6 +52,7 @@ function NumericCell({
   intDigits,
   fracDigits,
   max,
+  rejectMessage,
   id,
   className,
   placeholder,
@@ -54,6 +60,9 @@ function NumericCell({
   // the string being edited. seeded from the stored number and kept in sync when
   // that number changes from the outside (e.g. switching the active limb).
   const [draft, setDraft] = React.useState<string>(() => toDraft(value))
+  // stable id so repeated over-limit keystrokes refresh ONE toast instead of
+  // stacking a new one per rejected key.
+  const toastId = React.useId()
 
   // keeps the two copies of the value in sync: the parent owns `value` (a number),
   // this cell owns `draft` (the string in the box). they can drift apart, so:
@@ -69,6 +78,9 @@ function NumericCell({
   // is the one case we actually resync. runs on [value] only — draft is left out of
   // the deps on purpose (that's the eslint-disable), since typing must not re-trigger it.
   React.useEffect(() => {
+    // intentional controlled resync: copy the number back down ONLY when it
+    // changed from the outside (see the block comment above). safe here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (toValue(draft) !== value) setDraft(toDraft(value))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
@@ -82,14 +94,26 @@ function NumericCell({
   }, [draft])
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const next = sanitizeNumeric(event.target.value, intDigits, fracDigits)
-    // hard max: reject the keystroke if it would exceed the ceiling
-    if (max !== undefined) {
-      const n = toValue(next)
-      if (n !== undefined && n > max) return
+    const raw = event.target.value
+    const next = sanitizeNumeric(raw, intDigits, fracDigits)
+    const n = toValue(next)
+
+    // Two ways a keystroke gets blocked, both worth a toast (deduped by toastId)
+    // so it isn't a silent mystery:
+    //   1. overMax   — the value would exceed the ceiling (e.g. assisted > bodyweight)
+    //   2. droppedChar — the sanitiser threw the character away: too many digits
+    //      (the 4999.99 / 99999 caps), a 2nd decimal point, or a decimal in an
+    //      integer-only cell. That shows up as "the raw input changed, but
+    //      sanitising collapsed it right back to the current draft".
+    const overMax = max !== undefined && n !== undefined && n > max
+    const droppedChar = next === draft && raw !== draft
+    if (overMax || droppedChar) {
+      if (rejectMessage) warnToast(rejectMessage, toastId)
+      return
     }
+
     setDraft(next)
-    onChange(toValue(next))
+    onChange(n)
   }
 
   return (
