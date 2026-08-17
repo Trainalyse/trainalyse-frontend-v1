@@ -101,7 +101,7 @@ function Sets({ exerciseType, isBodyweight, bodyWeight, setData, activeLimb, onC
                 className="flex items-center gap-1 text-left"
               >
                 {label.toLocaleUpperCase()}
-                <CircleHelp className="size-3.5 text-brand" />
+                <CircleHelp className="size-3.5 text-[var(--color-neon)]" />
               </button>
             ) : (
               <div
