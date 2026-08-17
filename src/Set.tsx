@@ -101,7 +101,7 @@ function Sets({ exerciseType, isBodyweight, bodyWeight, setData, activeLimb, onC
                 className="flex items-center gap-1 text-left"
               >
                 {label.toLocaleUpperCase()}
-                <CircleHelp className="size-3.5" />
+                <CircleHelp className="size-3.5 text-brand" />
               </button>
             ) : (
               <div
@@ -140,7 +140,7 @@ function Sets({ exerciseType, isBodyweight, bodyWeight, setData, activeLimb, onC
                     onClick={() => handleRemoveModalDropset(dropset.id)}
                     className="text-white/80 transition-colors hover:text-white"
                   >
-                    <CircleX className="size-5" />
+                    <CircleX className="size-5 " />
                   </button>
                 )}
               </div>
