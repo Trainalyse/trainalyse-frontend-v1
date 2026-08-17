@@ -1,6 +1,6 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import "@/styles/globals.css"
 import "@/design-system.css"
 import { App } from "./App.tsx"
@@ -26,7 +26,10 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/Workout" element={<Workout />} />
-          <Route path="*" element={<App />} />
+          {/* unknown paths bounce to home (rendered WITH footer via Layout);
+              `replace` keeps the bad URL out of history. Without this, `*`
+              rendered a bare footerless <App/> — the "no footer" bug. */}
+          <Route path="*" element={<Navigate to="/" replace />} />
           <Route path="/Settings" element={<Settings />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
