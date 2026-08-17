@@ -411,7 +411,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit, bodyWeight, onBody
           </button>
 
             <p className="text-base font-medium">Update your bodyweight</p>
-            <p className="text-base text-center">This is to calculate volume for Bodyweight exercises</p>
+            <p className="text-base text-center">This is to calculate {metricLabel.toLowerCase()} for Bodyweight exercises</p>
 
           {/* the big number = the input; empty shows the last weight, muted.
               field-sizing:content makes the field hug the number so the "kg"
