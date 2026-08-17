@@ -4,6 +4,7 @@ import React, { type ChangeEvent } from "react"
 import { DatePickerDemo } from "./components/DatePicker"
 import { Button } from "@/components/ui/button"
 import { type Workout as WorkoutData, type WorkoutExercise } from "./data/workouts"
+import { user } from "./data/user"
 import { format } from "date-fns"
 import Timesetter from "@/components/ui/timesetter"
 import { Trash2Icon, X } from "lucide-react"
@@ -38,6 +39,12 @@ function Workout() {
   const [showExerciseSearch, setShowExerciseSearch] =
     React.useState<boolean>(false)
   const[editingExerciseId, setEditingExerciseId] = React.useState<number | null>(null)
+  // the workout's bodyweight — one shared value for every bodyweight exercise,
+  // seeded from the user's saved weight. Editing it in any exercise's modal
+  // updates it here, so the last value entered wins and every bodyweight
+  // exercise recalculates from it. Persisted to the user's profile at Save
+  // (backend wiring is deferred with the rest of Save).
+  const [bodyWeight, setBodyWeight] = React.useState<number>(user.weight)
 
   // for the title change
   function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -158,6 +165,8 @@ function Workout() {
             key={exercise.id}
             exerciseData={exercise}
             onChange={handleExerciseChange}
+          bodyWeight={bodyWeight}
+          onBodyWeightChange={setBodyWeight}
           onDelete={() => handleDeleteExercise(exercise.id)}
           onEdit={() => {
                 setEditingExerciseId(exercise.id)

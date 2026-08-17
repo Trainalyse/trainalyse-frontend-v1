@@ -55,6 +55,10 @@ function formatTimePlaceholder(limb?: LimbValues): string {
 interface DropsetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
+  // the workout's live bodyweight (editable mid-workout via the header icon).
+  // Used as the assisted-weight ceiling, so the cap tracks the latest value
+  // instead of the stale global user.weight.
+  bodyWeight: number
   dropsetData: Dropset
   activeLimb: Limb
   onChange: (updated: Dropset) => void
@@ -67,6 +71,7 @@ interface DropsetsProps {
 function Dropsets({
   exerciseType,
   isBodyweight,
+  bodyWeight,
   dropsetData,
   activeLimb,
   onChange,
@@ -82,13 +87,13 @@ function Dropsets({
   // cents to dodge float error. Falls back to the normal weight ceiling if the
   // user's bodyweight isn't set, so the cell never locks up.
   const assistedMax =
-    user.weight > 0 ? (Math.round(user.weight * 100) - 1) / 100 : weightLimit.max
+    bodyWeight > 0 ? (Math.round(bodyWeight * 100) - 1) / 100 : weightLimit.max
 
   // messages shown (as a toast) when a keystroke is rejected for exceeding a
   // cell's ceiling — so the user knows the allowed range instead of just being
   // silently blocked. Assisted references the bodyweight, since that's the cap.
   const unit = user.weightUnit
-  const assistedRejectMsg = `You can only enter assisted weight between 0 and your bodyweight (${user.weight} ${unit}).`
+  const assistedRejectMsg = `You can only enter assisted weight between 0 and your bodyweight (${bodyWeight} ${unit}).`
   const weightRejectMsg = `You can only enter weight between 0 and ${weightLimit.max} ${unit}.`
   const extraRejectMsg = `You can only add extra weight between 0 and ${weightLimit.max} ${unit}.`
   const repsRejectMsg = `You can only enter reps between 0 and ${REPS_LIMIT.max}.`

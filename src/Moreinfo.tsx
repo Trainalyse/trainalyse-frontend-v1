@@ -8,6 +8,11 @@ import StepIndicator from "@/components/ui/step-indicator"
 import { CalendarModal } from "@/components/CalendarModal"
 import { cn } from "@/lib/utils"
 import { sanitizeNumeric, stripLeadingZeros } from "@/lib/number-input"
+import {
+  type WeightUnit,
+  WEIGHT_LIMITS,
+  sanitizeWeight,
+} from "@/lib/weight"
 import { format, differenceInYears } from "date-fns"
 import { Calendar } from "lucide-react"
 
@@ -54,29 +59,11 @@ const fieldBox =
 const bigInput =
   "min-w-0 flex-1 bg-transparent text-base font-semibold text-foreground outline-none placeholder:text-base placeholder:font-normal placeholder:text-muted-foreground [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
 
-type WeightUnit = "kg" | "lbs"
-
-// plausible human bounds + how many digits the input accepts, per unit. lbs is
-// the kg range converted (10kg≈22lbs, 500kg≈1102lbs). intDigits is how many
-// figures may sit before the decimal; everything allows 2 after it.
-const WEIGHT_LIMITS: Record<
-  WeightUnit,
-  { min: number; max: number; intDigits: number }
-> = {
-  kg: { min: 10, max: 500, intDigits: 3 },
-  lbs: { min: 22, max: 1102, intDigits: 4 },
-}
-const WEIGHT_FRAC_DIGITS = 2
-
 // height bounds are kept canonically in cm; the ft/in inputs are converted to
 // cm before the range check. 20cm ≈ 0'8", 400cm ≈ 13'1".
 const HEIGHT_CM_MIN = 20
 const HEIGHT_CM_MAX = 400
 const CM_PER_INCH = 2.54
-
-function sanitizeWeight(raw: string, unit: WeightUnit): string {
-  return sanitizeNumeric(raw, WEIGHT_LIMITS[unit].intDigits, WEIGHT_FRAC_DIGITS)
-}
 
 interface MoreinfoErrors {
   dob?: string

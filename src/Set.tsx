@@ -1,8 +1,9 @@
 import Dropsets from "./Dropsets"
 import { type ExerciseType } from "./data/exercise"
 import { Button } from "@/components/ui/button"
-import { CircleX } from "lucide-react"
+import { CircleX, CircleHelp } from "lucide-react"
 import { type WorkoutSet, type Dropset, type Limb } from "./data/workouts"
+import { user } from "./data/user"
 import React from "react"
 import { Separator } from "./components/ui/separator"
 import { useScrollLock } from "@/hooks/use-scroll-lock"
@@ -11,6 +12,8 @@ import { useScrollLock } from "@/hooks/use-scroll-lock"
 interface SetsProps {
   exerciseType: ExerciseType | ""
   isBodyweight: boolean
+  // the workout's live bodyweight, threaded down to each dropset's assisted cap
+  bodyWeight: number
   number : number
   headers: string[]
   setData: WorkoutSet
@@ -21,13 +24,19 @@ interface SetsProps {
   // Exercise decides whether to actually show the "enough dropsets" nudge (it
   // only shows once per exercise). The dropset is added either way.
   onAddBeyondLimit: () => void
+  // opens the Exercise-level "how difficulty works" modal (the ? next to the
+  // DIFFICULTY column label). Only bodyweight exercises show that column.
+  onDifficultyHelp: () => void
   // the same-positioned set from this exercise's most recent instance (or
   // undefined). Each dropset's counterpart feeds the "last time" placeholders.
   lastSet?: WorkoutSet
 }
 
 
-function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number, headers, isOnlySet, onAddBeyondLimit, lastSet }: SetsProps) {
+function Sets({ exerciseType, isBodyweight, bodyWeight, setData, activeLimb, onChange,number, headers, isOnlySet, onAddBeyondLimit, onDifficultyHelp, lastSet }: SetsProps) {
+  // the Weights column header shows the user's chosen unit, uppercased to match
+  // the other headers (WEIGHTS/REPS/TIME).
+  const weightUnitLabel = user.weightUnit === "kg" ? "KGS" : "LBS"
   {/*this is for adding new dropset */}
   function handleAddDropset() {
     // 3 dropsets is the sensible cap; adding while there are already 3+ means
@@ -79,14 +88,32 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number
       {/* Column labels for this set's value cells (Set number is no longer a
           column). Re-uses the outer grid tracks via subgrid so they line up. */}
       <div className="col-span-full grid grid-cols-subgrid items-center text-left text-base text-xs tracking-wider">
-        {headers.map((label) => (
-            <div
-              key={label}
-              className={label === "Weights" || label === "Reps" ? "text-center" : "text-left"}
-            >
-              {label.toLocaleUpperCase()}
-            </div>
-          ))}
+        {headers.map((label) =>
+            // the Difficulty label + a ? that opens the "how difficulty works"
+            // modal; the whole label is the button, inheriting the header's
+            // colour and size so the icon matches the text.
+            label === "Difficulty" ? (
+              <button
+                key={label}
+                type="button"
+                aria-label="How difficulty works"
+                onClick={onDifficultyHelp}
+                className="flex items-center gap-1 text-left"
+              >
+                {label.toLocaleUpperCase()}
+                <CircleHelp className="size-3.5" />
+              </button>
+            ) : (
+              <div
+                key={label}
+                className={label === "Weights" || label === "Reps" ? "text-center" : "text-left"}
+              >
+                {/* the Weights column is labelled with the user's chosen unit
+                    (KGS / LBS) rather than the word "Weights". */}
+                {label === "Weights" ? weightUnitLabel : label.toLocaleUpperCase()}
+              </div>
+            )
+          )}
         <div />
       </div>
       {setData.dropsets.map((dropset, index) => (
@@ -99,6 +126,7 @@ function Sets({ exerciseType, isBodyweight, setData, activeLimb, onChange,number
               <Dropsets
                 exerciseType={exerciseType}
                 isBodyweight={isBodyweight}
+                bodyWeight={bodyWeight}
                 dropsetData={dropset}
                 activeLimb={activeLimb}
                 onChange={handleDropsetChange}

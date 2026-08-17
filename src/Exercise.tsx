@@ -13,6 +13,14 @@ import { Switch } from "@/components/ui/switch"
 import { useId, useMemo, useState } from "react"
 import PreviousPerformance from "@/components/PreviousPerformance"
 import { tipToast } from "@/components/tip-toast"
+import { warnToast } from "@/components/warn-toast"
+import NumericCell from "@/components/NumericCell"
+import { user } from "./data/user"
+import {
+  WEIGHT_LIMITS,
+  WEIGHT_FRAC_DIGITS,
+  weightRangeError,
+} from "@/lib/weight"
 import { getExerciseInstance } from "./data/calculations"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -22,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./components/ui/accordion"
-import { EllipsisVerticalIcon, Pencil, History, Trash2 } from "lucide-react"
+import { EllipsisVerticalIcon, Pencil, History, Trash2, PersonStanding, X } from "lucide-react"
 import { useScrollLock } from "@/hooks/use-scroll-lock"
 
 // Per-exercise-type column config: the grid-cols template AND the header labels
@@ -62,10 +70,14 @@ interface ExerciseProps {
   onChange: (updated: WorkoutExercise) => void
   onDelete: () => void
    onEdit: () => void
+  // the workout's live bodyweight + a way to update it. Shared across every
+  // exercise so the last value entered (in any bodyweight exercise's modal) wins.
+  bodyWeight: number
+  onBodyWeightChange: (weight: number) => void
 }
 
 
-function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
+function Exercise({ exerciseData, onChange, onDelete, onEdit, bodyWeight, onBodyWeightChange }: ExerciseProps) {
   // The exercise is already chosen (via the popup), so just look up its
   // type/bodyweight from the catalog by id — no local state needed. the name
   // comes from here too now, rather than being stored on the workout row
@@ -119,6 +131,57 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
     )
   }
 
+  // "update your bodyweight" modal — reachable only on bodyweight exercises (the
+  // header person icon). The value it edits lives on the Workout (shared across
+  // every exercise), so the last weight SAVED anywhere wins. The draft starts
+  // empty so the big number shows the last logged weight as a muted placeholder
+  // and Save stays disabled until a fresh, in-range value is typed.
+  const [showWeightModal, setShowWeightModal] = useState(false)
+  const [weightDraft, setWeightDraft] = useState<number | undefined>(undefined)
+  const weightToastId = useId()
+  useScrollLock(showWeightModal)
+  const weightUnit = user.weightUnit
+  const weightLimit = WEIGHT_LIMITS[weightUnit]
+  // Save is enabled only when a value has been typed AND it's in range. The max
+  // is already blocked live by NumericCell; this also catches a below-min entry
+  // (which CAN be typed, since "50" passes through "5") by keeping Save off.
+  const canSaveWeight = weightRangeError(weightDraft, weightUnit) === undefined
+
+  function openWeightModal() {
+    setWeightDraft(undefined) // empty → placeholder shows last weight, Save off
+    setShowWeightModal(true)
+  }
+
+  // Save commits the new weight up (becomes the shared bodyweight) and closes.
+  // Guarded, though the button is disabled unless canSaveWeight anyway.
+  function saveWeight() {
+    if (!canSaveWeight) return
+    onBodyWeightChange(weightDraft as number)
+    setShowWeightModal(false)
+  }
+
+  // The X / backdrop just closes WITHOUT saving. If the user had typed something,
+  // warn that it wasn't kept (so a dismissed edit isn't silently lost); if they
+  // never typed, close quietly.
+  function closeWeightModal() {
+    if (weightDraft !== undefined) {
+      warnToast(
+        "You didn't press Save, so your bodyweight wasn't updated.",
+        weightToastId
+      )
+    }
+    setShowWeightModal(false)
+  }
+
+  // "how difficulty works" modal (the ? by the DIFFICULTY column). The metric is
+  // volume (bodyweight × reps) for weights-and-reps exercises and endurance
+  // (bodyweight × time) for duration ones — matching the calc layer.
+  const [showDifficultyHelp, setShowDifficultyHelp] = useState(false)
+  useScrollLock(showDifficultyHelp)
+  const isDuration = exerciseType === "duration"
+  const metricLabel = isDuration ? "Endurance" : "Volume"
+  const factorLabel = isDuration ? "total seconds" : "reps"
+
   // grid template + header labels for THIS exercise type (see getGridConfig above)
   const gridConfig = getGridConfig(exerciseType, isBodyweight)
 
@@ -158,10 +221,30 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
             <AccordionTrigger className="py-0">
               <CardTitle className="text-lg font-bold">{matchedExercise?.name}</CardTitle>
             </AccordionTrigger>
-            <CardAction className="self-center row-span-1">
+            {/* All three controls are bare, evenly-spaced glyphs: the person +
+                chevron are matching 22px circles, the kebab is a padding-free icon
+                nudged right (translate-x-2) so its centered dots land on the same
+                right line as Save / the inputs. That 8px shift widens the visual
+                person↔kebab gap to ~20px (gap-3 + translate), so chevron↔person is
+                matched with ml-4 (16px) + the grid's own gap-1 (4px) = 20px. */}
+            <CardAction className="self-center row-span-1 ml-4 flex items-center gap-3">
+              {/* bodyweight exercises only: tap to update the workout's bodyweight.
+                  Circle mirrors the accordion chevron; neon dot marks it as the
+                  "your weight" affordance. */}
+              {isBodyweight && (
+                <button
+                  type="button"
+                  aria-label="Update your bodyweight"
+                  onClick={openWeightModal}
+                  className="relative flex size-[22px] shrink-0 items-center justify-center rounded-full border border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] text-[var(--color-white-1)] transition-colors hover:text-[var(--color-neon)]"
+                >
+                  <PersonStanding className="size-4" />
+                  <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full border border-[var(--bg-surface-primary)] bg-[var(--color-neon)]" />
+                </button>
+              )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="translate-x-3.5">
+                  <Button variant="ghost" className="size-6 translate-x-2 p-0">
                     <EllipsisVerticalIcon className="size-6" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -252,12 +335,14 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
                   number = {index+1}
                   exerciseType={exerciseType}
                   isBodyweight={isBodyweight}
+                  bodyWeight={bodyWeight}
                   headers={gridConfig.headers}
                   setData={set}
                   activeLimb={activeLimb}
                   isOnlySet={exerciseData.sets.length === 1}
                   onChange={handleSetChange}
                   onAddBeyondLimit={handleDropsetBeyondLimit}
+                  onDifficultyHelp={() => setShowDifficultyHelp(true)}
                   lastSet={lastInstance?.sets[index]}
                 />
               ))}</div>
@@ -299,6 +384,108 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit }: ExerciseProps) {
               Confirm
             </Button>
           </div>
+        </div>
+      </div>
+    )}
+
+    {/* "Update your bodyweight" modal (bodyweight exercises only). The big number
+        IS the input (reuses NumericCell, so the max is blocked live with a toast).
+        Empty shows the last logged weight as a muted placeholder and keeps Save
+        off; Save commits, the X / backdrop closes WITHOUT saving. */}
+    {showWeightModal && (
+      <div
+        className="fixed inset-0 z-10 flex items-center justify-center bg-black/40"
+        onClick={closeWeightModal}
+      >
+        <div
+          className="relative flex w-[85%] max-w-[360px] flex-col items-center gap-4 rounded-[var(--radius-card)] border border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-6"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={closeWeightModal}
+            className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full border border-[var(--border-cardEdge)] bg-white/5 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
+
+            <p className="text-base font-medium">Update your bodyweight</p>
+            <p className="text-base text-center">This is to calculate volume for Bodyweight exercises</p>
+
+          {/* the big number = the input; empty shows the last weight, muted.
+              field-sizing:content makes the field hug the number so the "kg"
+              stays next to it and the pair reads centered. */}
+          <div className="flex items-baseline justify-center gap-1">
+            <NumericCell
+              value={weightDraft}
+              onChange={setWeightDraft}
+              intDigits={weightLimit.intDigits}
+              fracDigits={WEIGHT_FRAC_DIGITS}
+              max={weightLimit.max}
+              rejectMessage={`You can only enter weight between ${weightLimit.min} and ${weightLimit.max} ${weightUnit}.`}
+              placeholder={String(bodyWeight)}
+              className="h-auto w-auto border-0 bg-transparent p-0 text-center text-6xl font-bold text-foreground shadow-none [field-sizing:content] placeholder:text-muted-foreground focus-visible:ring-0 dark:bg-transparent"
+            />
+            <span className="text-2xl font-semibold text-muted-foreground">{weightUnit}</span>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            Last logged Bodyweight - {bodyWeight} {weightUnit}
+          </p>
+
+          <Button className="w-full h-11" onClick={saveWeight} disabled={!canSaveWeight}>
+            Save
+          </Button>
+        </div>
+      </div>
+    )}
+
+    {/* "How difficulty works" modal (the ? by the DIFFICULTY column). X or
+        backdrop or OK all just close it. Formulas mirror the calc layer:
+        volume × reps for weights-and-reps, endurance × time for duration. */}
+    {showDifficultyHelp && (
+      <div
+        className="fixed inset-0 z-10 flex items-center justify-center bg-black/40"
+        onClick={() => setShowDifficultyHelp(false)}
+      >
+        <div
+          className="relative flex w-[85%] max-w-[360px] flex-col gap-4 rounded-[var(--radius-card)] border border-[var(--border-cardEdge)] bg-[var(--bg-surface-primary)] p-5 pt-6"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setShowDifficultyHelp(false)}
+            className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full border border-[var(--border-cardEdge)] bg-white/5 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
+
+          <div className="flex flex-col gap-1 pr-8">
+            <p className="text-base font-semibold">How difficulty works</p>
+            <p className="text-sm text-muted-foreground">
+              Difficulty changes how this exercise's {metricLabel.toLowerCase()} is
+              calculated.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {[
+              { name: "Normal", formula: `${metricLabel} = bodyweight × ${factorLabel}` },
+              { name: "Assisted", formula: `${metricLabel} = (bodyweight − assisted weight) × ${factorLabel}` },
+              { name: "Weighted", formula: `${metricLabel} = (bodyweight + extra weight) × ${factorLabel}` },
+            ].map((row) => (
+              <div key={row.name} className="flex flex-col gap-0.5">
+                <span className="text-sm font-semibold">{row.name}</span>
+                <span className="text-sm text-muted-foreground">{row.formula}</span>
+              </div>
+            ))}
+          </div>
+
+          <Button className="h-11 w-full" onClick={() => setShowDifficultyHelp(false)}>
+            OK
+          </Button>
         </div>
       </div>
     )}
