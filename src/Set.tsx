@@ -153,7 +153,7 @@ function Sets({ exerciseType, isBodyweight, bodyWeight, setData, activeLimb, onC
         ))}
       {/* + for drop sets spans the whole grid row */}
       {exerciseType && (
-        <Button variant="outline" className="col-span-full w-3/4 justify-self-center" onClick={handleAddDropset}>
+        <Button variant="outline" className="col-span-full h-9 w-3/4  justify-self-center" onClick={handleAddDropset}>
           Add new Drop set
         </Button>
       )}

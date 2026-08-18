@@ -31,6 +31,9 @@ export type WorkoutExercise = {
   exerciseId: number
   sets: WorkoutSet[]
   perLimbEnabled?: boolean
+  // optional free-text note the user jots about how the exercise felt. Absent /
+  // empty string both mean "no note" — it's never required.
+  notes?: string
 }
 
 export type Workout = {

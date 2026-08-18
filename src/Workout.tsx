@@ -160,6 +160,13 @@ function Workout() {
        new exercise then there is a new exercise added in the exercises array as you may have seen in the function called
       handleexerciseChange and in this ondelete is a callback function which means the button is in the child component and the
      function is in the parent component and it takes the argument of the exercise id so as to delete specifically that exc. */}
+      {/* own flex column at --space-lg (16px) so the gap BETWEEN exercise cards
+          is 16px, independent of the page's 12px (--space-md) gap that still
+          spaces this block from the title above and the Add button below. Only
+          rendered when there ARE exercises, so an empty wrapper can't add a
+          stray gap between the title and the Add button. */}
+      {exercises.length > 0 && (
+      <div className="flex flex-col gap-[var(--space-lg)]">
       {exercises.map((exercise) => (
         <Exercise
             key={exercise.id}
@@ -174,9 +181,11 @@ function Workout() {
               }}
           />
         ))}
+      </div>
+      )}
 
       {/*for the add new exercise button */}
-      <Button className="bg-brand h-11" onClick={() => (setShowExerciseSearch(true))}>Add new Exercise</Button>
+      <Button className="bg-brand h-9" onClick={() => (setShowExerciseSearch(true))}>Add new Exercise</Button>
 
       {/* this is for modal which shows all the exercise list and the user can search their exercise for them to add it*/}
       {showExerciseSearch && (

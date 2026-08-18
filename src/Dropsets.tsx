@@ -149,8 +149,18 @@ function Dropsets({
       </SelectTrigger>
       {/* popper (not the default item-aligned) so the panel anchors to the
           trigger — item-aligned needs a <SelectValue> node to align onto, which
-          we dropped for the short-form label. */}
-      <SelectContent position="popper" >
+          we dropped for the short-form label. Styled to match the kebab menu in
+          Exercise.tsx: p-2 padding + gap-3 (12px) between items for the same airy
+          feel, w-max so the panel hugs the labels, and collisionPadding={23} with
+          a max-width cap so it never spills past the page's 23px side margins.
+          The gap goes on the inner viewport (Select nests items there, unlike the
+          DropdownMenu) via its data-slot handle. */}
+      <SelectContent
+        position="popper"
+        align="start"
+        collisionPadding={23}
+        className="w-max max-w-[var(--radix-select-content-available-width)] p-2 [&_[data-slot=select-viewport]]:flex [&_[data-slot=select-viewport]]:flex-col [&_[data-slot=select-viewport]]:gap-3"
+      >
         <SelectItem value="normal">Normal</SelectItem>
         <SelectItem value="assisted">Assisted</SelectItem>
         <SelectItem value="weighted">Weighted</SelectItem>

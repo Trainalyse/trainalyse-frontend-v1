@@ -15,6 +15,7 @@ import PreviousPerformance from "@/components/PreviousPerformance"
 import { tipToast } from "@/components/tip-toast"
 import { warnToast } from "@/components/warn-toast"
 import NumericCell from "@/components/NumericCell"
+import { Textarea } from "@/components/ui/textarea"
 import { user } from "./data/user"
 import {
   WEIGHT_LIMITS,
@@ -347,7 +348,21 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit, bodyWeight, onBody
                 />
               ))}</div>
               </div>
-              <Button className="w-full" onClick={handleAddSet}>Add new Set</Button>
+              <Button className="h-9 w-full " onClick={handleAddSet}>Add new Set</Button>
+
+              {/* Optional note about how the exercise felt. Never required — an
+                  empty box just stays empty. The muted uppercase label matches
+                  the KGS/REPS column headers; gap-1 (4px) sits it above the box. */}
+              <div className="flex flex-col gap-1">
+                <span className="text-sm uppercase tracking-wider text-muted-foreground">
+                  Notes
+                  </span>
+                <Textarea
+                  value={exerciseData.notes ?? ""}
+                  onChange={(e) => onChange({ ...exerciseData, notes: e.target.value })}
+                  placeholder="how did this exercise feel? e.g. tired today, fewer reps than last time (optional)"
+                />
+              </div>
             </CardContent>
           </AccordionContent>
         </AccordionItem>
@@ -425,7 +440,7 @@ function Exercise({ exerciseData, onChange, onDelete, onEdit, bodyWeight, onBody
               max={weightLimit.max}
               rejectMessage={`You can only enter weight between ${weightLimit.min} and ${weightLimit.max} ${weightUnit}.`}
               placeholder={String(bodyWeight)}
-              className="h-auto w-auto border-0 bg-transparent p-0 text-center text-6xl font-bold text-foreground shadow-none [field-sizing:content] placeholder:text-muted-foreground focus-visible:ring-0 dark:bg-transparent"
+              className="h-auto w-auto border-0 bg-transparent p-0 text-center text-6xl font-bold text-foreground shadow-none [field-sizing:content] placeholder:text-muted-foreground focus-visible:ring-0 md:text-6xl dark:bg-transparent"
             />
             <span className="text-2xl font-semibold text-muted-foreground">{weightUnit}</span>
           </div>
