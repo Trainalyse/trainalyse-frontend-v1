@@ -11,3 +11,21 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# index.html points at the current hashed JS/CSS bundle, so a stale copy loads
+# old code. Force the browser AND Netlify's edge to revalidate every HTML
+# request. Netlify-CDN-Cache-Control controls Netlify's own edge, which plain
+# Cache-Control does not touch.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Netlify-CDN-Cache-Control = "public, max-age=0, must-revalidate"
+
+# Hashed assets are immutable — the filename changes when the content changes,
+# so they can be cached forever. This more specific rule overrides the one above.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Netlify-CDN-Cache-Control = "public, max-age=31536000, immutable"
